@@ -1,0 +1,46 @@
+
+# **ReactNative/.gitignore**
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Expo
+ReactNative/.expo/
+ReactNative/dist/
+ReactNative/web-build/
+
+# Native
+ReactNative/*.orig.*
+ReactNative/*.jks
+ReactNative/*.p8
+ReactNative/*.p12
+ReactNative/*.key
+ReactNative/*.mobileprovision
+
+# Metro
+ReactNative/.metro-health-check*
+
+# debug
+ReactNative/npm-debug.*
+ReactNative/yarn-debug.*
+ReactNative/yarn-error.*
+
+# macOS
+ReactNative/.DS_Store
+ReactNative/*.pem
+
+# local env files
+ReactNative/.env*.local
+
+# typescript
+ReactNative/*.tsbuildinfo
+
+
+# **ReactNative/.idea/.gitignore**
+
+# Default ignored files
+ReactNative/.idea/shelf/
+ReactNative/.idea/workspace.xml
+# Editor-based HTTP Client requests
+ReactNative/.idea/httpRequests/
