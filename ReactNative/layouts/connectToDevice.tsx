@@ -1,12 +1,10 @@
 import { PeripheralCard, PeripheralModel } from "../components/peripheralCard";
 import {
   FlatList,
-  Image,
   Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
-  View,
   ActivityIndicator,
   Animated,
 } from "react-native";
@@ -17,14 +15,13 @@ import {
   placeholder_color,
   card_border_color,
   button_pressed_background_color,
-  text_color,
   button_pressed_text_color,
 } from "../assets/thems/colors";
 import { useEffect, useState } from "react";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useFonts } from "expo-font";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
+import { Header } from "../components/header";
 
 export const ConnectToDeviceScreen = ({ navigation }: any) => {
   const [loaded] = useFonts({
@@ -37,7 +34,6 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
   const fadeOut = new FadeOut();
 
   const [isScanButtonPressed, setIsScanButtonPressed] = useState(false);
-  const [isBackButtonPressed, setIsBackButtonPressed] = useState(false);
   const [peripheralDevices, setPeripheralDevices] = useState<PeripheralModel[]>(
     [],
   );
@@ -71,12 +67,6 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
     setIsLoading(false);
   };
 
-  const handleBackPress = () => {
-    fadeOut.animate().start(() => {
-      navigation.replace("login");
-    });
-  };
-
   if (!loaded) {
     return <ActivityIndicator size="large" color={background_color} />;
   }
@@ -91,39 +81,12 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
           },
         ]}
       >
-        <Animated.View
-          style={[
-            styles.header,
-            {
-              opacity: headerFadeIn.fadeAnim,
-              translateY: headerFadeIn.translateY,
-            },
-          ]}
-        >
-          <Pressable
-            style={styles.pressable}
-            onPress={handleBackPress}
-            onPressIn={() => setIsBackButtonPressed(true)}
-            onPressOut={() => setIsBackButtonPressed(false)}
-          >
-            <Ionicons
-              style={styles.icon}
-              name="arrow-back-circle-outline"
-              size={45}
-              color={isBackButtonPressed ? button_background_color : text_color}
-            />
-          </Pressable>
-          <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
-            <Image
-              style={styles.logo}
-              resizeMode={"contain"}
-              source={require("../assets/images/small-icon.png")}
-            />
-          </View>
-          <View style={{ flex: 1 }} />
-        </Animated.View>
+        <Header
+          headerFadeIn={headerFadeIn}
+          fadeOut={fadeOut}
+          backPage={"login"}
+          navigation={navigation}
+        />
         <Animated.View
           style={[
             styles.card,
@@ -197,24 +160,6 @@ const styles = StyleSheet.create({
   },
   list: {
     width: "100%",
-  },
-  header: {
-    flexDirection: "row",
-    width: "100%",
-    height: 70,
-    padding: 10,
-    alignItems: "center",
-  },
-  logo: {
-    width: 150,
-    maxHeight: 60,
-  },
-  pressable: {
-    borderRadius: 25,
-    flex: 1,
-  },
-  icon: {
-    alignSelf: "flex-start",
   },
   card: {
     width: "90%",
