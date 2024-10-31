@@ -15,8 +15,8 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [fontsLoaded] = useFonts({
     fontTitle: require("./assets/fonts/OpenSans-BoldItalic.ttf"),
-    fontRegular: require("./assets/fonts/OpenSans-Regular.ttf"),
-    fontItalic: require("./assets/fonts/OpenSans-Italic.ttf"),
+    errorFont: require("./assets/fonts/OpenSans-Regular.ttf"),
+    fontHeader: require("./assets/fonts/OpenSans-Italic.ttf"),
   });
 
   useEffect(() => {

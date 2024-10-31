@@ -68,21 +68,14 @@ export function Login({ navigation }: Props) {
     };
   }, []);
 
-  const [loaded] = useFonts({
-    fontHeader: require("../assets/fonts/OpenSans-Italic.ttf"),
-    errorFont: require("../assets/fonts/OpenSans-Regular.ttf"),
-  });
-
   useEffect(() => {
-    if (loaded) {
-      Animated.parallel([
-        logoFadeIn.animate(),
-        userFadeIn.animate(),
-        passFadeIn.animate(),
-        loginFadeIn.animate(),
-      ]).start();
-    }
-  }, [loaded]);
+    Animated.parallel([
+      logoFadeIn.animate(),
+      userFadeIn.animate(),
+      passFadeIn.animate(),
+      loginFadeIn.animate(),
+    ]).start();
+  }, []);
 
   const login = useCallback(() => {
     Keyboard.dismiss();
@@ -101,7 +94,7 @@ export function Login({ navigation }: Props) {
       hashPassword.hex() === credential.password
     ) {
       fadeOut.animate().start(() => {
-        navigation.replace("connect-to-device");
+        //navigation.replace("connect-to-device");
       });
     } else {
       setShowError(true);
@@ -109,10 +102,6 @@ export function Login({ navigation }: Props) {
       setPassword("");
     }
   }, [username, password]);
-
-  if (!loaded) {
-    return <View style={styles.container}></View>;
-  }
 
   return (
     <SafeAreaView style={styles.container}>
