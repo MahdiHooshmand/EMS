@@ -13,7 +13,6 @@ import {
   button_background_color,
   button_text_color,
   placeholder_color,
-  card_border_color,
   button_pressed_background_color,
   button_pressed_text_color,
 } from "../assets/thems/colors";
@@ -153,15 +152,6 @@ const styles = StyleSheet.create({
   },
   list: {
     width: "100%",
-  },
-  card: {
-    width: "90%",
-    flex: 1,
-    borderWidth: 3,
-    borderColor: card_border_color,
-    borderRadius: 15,
-    padding: 10,
-    alignItems: "center",
   },
   scanButton: {
     marginTop: 20,
