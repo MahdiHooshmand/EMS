@@ -13,7 +13,7 @@ export class PeripheralModel {
 }
 
 export const FakePeripheralModel = () => {
-  const connections = [1, 2, 3, 0, 1, 2, 3, 1, 2, 3];
+  const connections = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
   const newDevices: PeripheralModel[] = connections.map((connection, index) => {
     return new PeripheralModel(
       `Febina EMS 2502${index + 4}`,

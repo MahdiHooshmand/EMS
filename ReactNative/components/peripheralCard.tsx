@@ -23,7 +23,12 @@ import { useEffect, useState } from "react";
 import { FadeIn } from "../assets/thems/animations";
 import { PeripheralModel } from "../models/peripheralCardModel";
 
-export const PeripheralCard = (initialPeripheral: PeripheralModel) => {
+interface Props {
+  initialPeripheral: PeripheralModel;
+  navigation: any;
+}
+
+export const PeripheralCard = ({ initialPeripheral, navigation }: Props) => {
   const [peripheral, setPeripheral] = useState(initialPeripheral);
   const cardFadeIn = new FadeIn(0);
 
@@ -32,11 +37,19 @@ export const PeripheralCard = (initialPeripheral: PeripheralModel) => {
   }, []);
 
   const connect = () => {
-    console.log("pressed");
     setPeripheral((prev) => ({
       ...prev,
       connection: 2,
     }));
+    setTimeout(() => {
+      setPeripheral((prev) => ({
+        ...prev,
+        connection: 3,
+      }));
+      setTimeout(() => {
+        navigation.replace("connect-to-device");
+      }, 2000);
+    }, 2000);
   };
 
   return (
@@ -88,7 +101,7 @@ export const PeripheralCard = (initialPeripheral: PeripheralModel) => {
           size={24}
           color={card_text_color}
         />
-        {peripheral.connection === 2 ? (
+        {peripheral.connection === 2 || peripheral.connection === 3 ? (
           <ActivityIndicator size="large" color={card_text_color} />
         ) : peripheral.isValid ? (
           <Pressable

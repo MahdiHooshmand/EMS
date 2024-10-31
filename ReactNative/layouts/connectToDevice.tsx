@@ -78,7 +78,12 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
             <FlatList
               style={styles.list}
               data={peripheralDevices}
-              renderItem={({ item }) => <PeripheralCard {...item} />}
+              renderItem={({ item }) => (
+                <PeripheralCard
+                  initialPeripheral={item}
+                  navigation={navigation}
+                />
+              )}
               keyExtractor={(item) => item.name}
             />
           )}
