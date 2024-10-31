@@ -22,6 +22,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useFonts } from "expo-font";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
+import { BorderBox } from "../components/borderBox";
 
 export const ConnectToDeviceScreen = ({ navigation }: any) => {
   const [loaded] = useFonts({
@@ -87,15 +88,7 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
           backPage={"login"}
           navigation={navigation}
         />
-        <Animated.View
-          style={[
-            styles.card,
-            {
-              opacity: listFadeIn.fadeAnim,
-              translateY: listFadeIn.translateY,
-            },
-          ]}
-        >
+        <BorderBox fadeAnim={listFadeIn}>
           {peripheralDevices.length === 0 ? (
             <Text style={styles.emptyMessage}>
               No devices found. Please click "Scan Device" to search for
@@ -109,7 +102,7 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
               keyExtractor={(item) => item.name}
             />
           )}
-        </Animated.View>
+        </BorderBox>
         <Animated.View
           style={[
             {
