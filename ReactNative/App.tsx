@@ -18,6 +18,7 @@ export default function App() {
     fontTitle: require("./assets/fonts/OpenSans-BoldItalic.ttf"),
     errorFont: require("./assets/fonts/OpenSans-Regular.ttf"),
     fontHeader: require("./assets/fonts/OpenSans-Italic.ttf"),
+    fontText: require("../assets/fonts/OpenSans-Italic.ttf"),
   });
 
   useEffect(() => {

@@ -1,11 +1,14 @@
-import { PeripheralCard, PeripheralModel } from "../components/peripheralCard";
+import { PeripheralCard } from "../components/peripheralCard";
+import {
+  PeripheralModel,
+  FakePeripheralModel,
+} from "../models/peripheralCardModel";
 import {
   FlatList,
   Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
-  ActivityIndicator,
   Animated,
 } from "react-native";
 import {
@@ -18,16 +21,11 @@ import {
 } from "../assets/thems/colors";
 import { useEffect, useState } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useFonts } from "expo-font";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
 import { BorderBox } from "../components/borderBox";
 
 export const ConnectToDeviceScreen = ({ navigation }: any) => {
-  const [loaded] = useFonts({
-    fontText: require("../assets/fonts/OpenSans-Italic.ttf"),
-  });
-
   const headerFadeIn = new FadeIn(0);
   const listFadeIn = new FadeIn(1);
   const buttonFadeIn = new FadeIn(2);
@@ -38,38 +36,21 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
     [],
   );
   const [isLoading, setIsLoading] = useState(false);
-  const connections = [1, 2, 3, 0, 1, 2, 3, 1, 2, 3];
 
   useEffect(() => {
-    if (loaded) {
-      Animated.parallel([
-        headerFadeIn.animate(),
-        listFadeIn.animate(),
-        buttonFadeIn.animate(),
-      ]).start();
-    }
-  }, [loaded]);
+    Animated.parallel([
+      headerFadeIn.animate(),
+      listFadeIn.animate(),
+      buttonFadeIn.animate(),
+    ]).start();
+  }, []);
 
   const handleScanDevice = () => {
     setIsLoading(true);
-    const newDevices: PeripheralModel[] = connections.map(
-      (connection, index) => {
-        return new PeripheralModel(
-          `Febina EMS 2502${index + 4}`,
-          -50 + index * 10,
-          connection,
-        );
-      },
-    );
-
-    newDevices.push(new PeripheralModel("hands free", -153, 0));
+    const newDevices = FakePeripheralModel();
     setPeripheralDevices(newDevices);
     setIsLoading(false);
   };
-
-  if (!loaded) {
-    return <ActivityIndicator size="large" color={background_color} />;
-  }
 
   return (
     <SafeAreaView style={styles.container}>

@@ -19,37 +19,17 @@ import {
 } from "../assets/thems/colors";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useFonts } from "expo-font";
 import { useEffect, useState } from "react";
 import { FadeIn } from "../assets/thems/animations";
-
-export class PeripheralModel {
-  public readonly name: string;
-  public readonly quality: number;
-  public readonly isValid: boolean;
-  public readonly connection: number;
-
-  constructor(name: string, quality: number, connection: number) {
-    this.name = name;
-    this.quality = quality;
-    this.isValid = this.name.startsWith("Febina EMS");
-    this.connection = connection;
-  }
-}
+import { PeripheralModel } from "../models/peripheralCardModel";
 
 export const PeripheralCard = (initialPeripheral: PeripheralModel) => {
   const [peripheral, setPeripheral] = useState(initialPeripheral);
   const cardFadeIn = new FadeIn(0);
-  const [loaded] = useFonts({
-    fontHeader: require("../assets/fonts/OpenSans-Italic.ttf"),
-    errorFont: require("../assets/fonts/OpenSans-Regular.ttf"),
-  });
 
   useEffect(() => {
-    if (loaded) {
-      cardFadeIn.animate().start();
-    }
-  }, [loaded]);
+    cardFadeIn.animate().start();
+  }, []);
 
   const connect = () => {
     console.log("pressed");
@@ -58,10 +38,6 @@ export const PeripheralCard = (initialPeripheral: PeripheralModel) => {
       connection: 2,
     }));
   };
-
-  if (!loaded) {
-    return <></>;
-  }
 
   return (
     <Animated.View
