@@ -1,5 +1,5 @@
 // EMS/App.tsx
-import { StyleSheet, StatusBar } from "react-native";
+import { StatusBar } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
@@ -7,6 +7,7 @@ import { Login } from "./layouts/login";
 import { background_color } from "./assets/thems/colors";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { ConnectToDeviceScreen } from "./layouts/connectToDevice";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -36,6 +37,10 @@ export default function App() {
         screenOptions={{ headerShown: false }}
         initialRouteName="login"
       >
+        <Stack.Screen
+          name="connect-to-device"
+          component={ConnectToDeviceScreen}
+        />
         <Stack.Screen name="login" component={Login} />
       </Stack.Navigator>
     </NavigationContainer>

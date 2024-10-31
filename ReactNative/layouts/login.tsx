@@ -94,7 +94,7 @@ export function Login({ navigation }: Props) {
       hashPassword.hex() === credential.password
     ) {
       fadeOut.animate().start(() => {
-        //navigation.replace("connect-to-device");
+        navigation.replace("connect-to-device");
       });
     } else {
       setShowError(true);
