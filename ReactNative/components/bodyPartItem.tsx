@@ -21,7 +21,7 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
   navigation,
 }) => {
   const handleEMSPress = () => {
-    navigation.replace("test", {
+    navigation.replace("set-info", {
       bodyPartName: name,
       source: source,
       stimulationType: "EMS",
@@ -29,7 +29,7 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
   };
 
   const handleTENSPress = () => {
-    navigation.replace("test", {
+    navigation.replace("set-info", {
       bodyPartName: name,
       source: source,
       stimulationType: "TENS",
