@@ -24,7 +24,6 @@ export const BodyPartsScreen = ({ navigation }: any) => {
   const containerFadeOut = new FadeOut();
 
   const [bodyPartList, setBodyPartList] = useState<BodyPartData[]>([]);
-  const [isAnimationRunning, setIsAnimationRunning] = useState(false); // برای کنترل انیمیشن
 
   useEffect(() => {
     setBodyPartList(fetchBodyParts());
@@ -36,7 +35,6 @@ export const BodyPartsScreen = ({ navigation }: any) => {
         headerAnimation.animate(),
         listAnimation.animate(),
       ]).start();
-      setIsAnimationRunning(true);
     }
   }, [bodyPartList]);
 
@@ -57,9 +55,9 @@ export const BodyPartsScreen = ({ navigation }: any) => {
             data={bodyPartList}
             renderItem={({ item }) => (
               <BodyPartCard
-                id={item.id}
                 name={item.name}
                 source={item.source}
+                navigation={navigation}
               />
             )}
             keyExtractor={(item) => item.id.toString()}

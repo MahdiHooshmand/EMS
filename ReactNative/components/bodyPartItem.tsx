@@ -1,22 +1,67 @@
 // BodyPartItem.tsx
-import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  button_background_color,
+  button_pressed_background_color,
+  button_text_color,
+  card_background_color,
+  card_text_color,
+} from "../assets/thems/colors";
 
 interface BodyPartCardProps {
-  id: number;
   name: string;
   source: any;
+  navigation: any;
 }
 
 export const BodyPartCard: React.FC<BodyPartCardProps> = ({
-  id,
   name,
   source,
+  navigation,
 }) => {
+  const handleEMSPress = () => {
+    navigation.replace("test", {
+      bodyPartName: name,
+      source: source,
+      stimulationType: "EMS",
+    });
+  };
+
+  const handleTENSPress = () => {
+    navigation.replace("test", {
+      bodyPartName: name,
+      source: source,
+      stimulationType: "TENS",
+    });
+  };
+
   return (
     <View style={styles.card}>
       <Text style={styles.title}>{name}</Text>
-      <Image source={source} style={styles.image} />
+      <View style={styles.image_container}>
+        <Image source={source} style={styles.image} resizeMode={"contain"} />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            pressed && styles.buttonPressed,
+          ]}
+          onPress={handleEMSPress}
+        >
+          <Text style={styles.buttonText}>EMS</Text>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            pressed && styles.buttonPressed,
+          ]}
+          onPress={handleTENSPress}
+        >
+          <Text style={styles.buttonText}>TENS</Text>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -103,18 +148,48 @@ export const fetchBodyParts = () => {
 
 const styles = StyleSheet.create({
   card: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    backgroundColor: card_background_color,
     alignItems: "center",
+    borderRadius: 10,
+    margin: 10,
+    padding: 15,
   },
   title: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontFamily: "fontHeader",
+    fontSize: 20,
+    textAlign: "center",
+    color: card_text_color,
   },
   image: {
-    width: 100,
-    height: 100,
     marginTop: 10,
+    flex: 1,
+  },
+  image_container: {
+    aspectRatio: 1.0,
+    width: "80%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+    marginTop: 10,
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: button_background_color,
+    borderRadius: 30,
+    width: "40%", // عرض دکمه‌ها
+    alignItems: "center",
+  },
+  buttonPressed: {
+    backgroundColor: button_pressed_background_color,
+  },
+  buttonText: {
+    fontFamily: "fontText",
+    color: button_text_color,
+    fontSize: 16,
   },
 });

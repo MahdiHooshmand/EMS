@@ -17,7 +17,6 @@ import {
   button_text_color,
   placeholder_color,
   button_pressed_background_color,
-  button_pressed_text_color,
 } from "../assets/thems/colors";
 import { useEffect, useState } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -31,7 +30,6 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
   const buttonFadeIn = new FadeIn(2);
   const fadeOut = new FadeOut();
 
-  const [isScanButtonPressed, setIsScanButtonPressed] = useState(false);
   const [peripheralDevices, setPeripheralDevices] = useState<PeripheralModel[]>(
     [],
   );
@@ -103,23 +101,13 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
             ]}
             onPress={handleScanDevice}
           >
-            <Text
-              style={
-                isScanButtonPressed
-                  ? [styles.scanButtonText, styles.scanButtonTextPressed]
-                  : styles.scanButtonText
-              }
-            >
+            <Text style={styles.scanButtonText}>
               {isLoading ? "Scanning..." : "Scan Device"}
             </Text>
             <MaterialIcons
               name="bluetooth-searching"
               size={24}
-              color={
-                isScanButtonPressed
-                  ? button_pressed_text_color
-                  : button_text_color
-              }
+              color={button_text_color}
               style={styles.scanIcon}
             />
           </Pressable>
@@ -155,9 +143,6 @@ const styles = StyleSheet.create({
     fontFamily: "fontText",
     color: button_text_color,
     fontSize: 16,
-  },
-  scanButtonTextPressed: {
-    color: button_pressed_text_color,
   },
   scanIcon: {
     marginLeft: 5,

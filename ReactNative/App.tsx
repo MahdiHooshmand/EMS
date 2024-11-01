@@ -9,6 +9,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ConnectToDeviceScreen } from "./layouts/connectToDevice";
 import { BodyPartsScreen } from "./layouts/bodyParts";
+import { Test } from "./layouts/test";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -45,6 +46,7 @@ export default function App() {
           component={ConnectToDeviceScreen}
         />
         <Stack.Screen name="body-parts" component={BodyPartsScreen} />
+        <Stack.Screen name="test" component={Test} />
       </Stack.Navigator>
     </NavigationContainer>
   );
