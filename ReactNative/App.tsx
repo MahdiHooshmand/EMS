@@ -8,6 +8,7 @@ import { background_color } from "./assets/thems/colors";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ConnectToDeviceScreen } from "./layouts/connectToDevice";
+import { BodyPartsScreen } from "./layouts/bodyParts";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,11 +39,12 @@ export default function App() {
         screenOptions={{ headerShown: false }}
         initialRouteName="login"
       >
+        <Stack.Screen name="login" component={Login} />
         <Stack.Screen
           name="connect-to-device"
           component={ConnectToDeviceScreen}
         />
-        <Stack.Screen name="login" component={Login} />
+        <Stack.Screen name="body-parts" component={BodyPartsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

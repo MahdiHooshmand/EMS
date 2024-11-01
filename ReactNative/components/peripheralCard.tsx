@@ -47,7 +47,7 @@ export const PeripheralCard = ({ initialPeripheral, navigation }: Props) => {
         connection: 3,
       }));
       setTimeout(() => {
-        navigation.replace("connect-to-device");
+        navigation.replace("body-parts");
       }, 2000);
     }, 2000);
   };
