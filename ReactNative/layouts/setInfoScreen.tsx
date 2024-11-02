@@ -25,7 +25,7 @@ import { Header } from "../components/header";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { EMS, TENS } from "../models/stimulateInfoModel";
 import { OneButton } from "../components/footer";
-import { Combo } from "../components/formComponents";
+import { Combo, Seekbar } from "../components/formComponents";
 
 interface Props {
   navigation: any;
@@ -144,156 +144,33 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
               items={pulseWidthItems}
               value={pulseWidth}
             />
-            <View style={styles.select_item_view}>
-              <Text style={styles.select_item_text}>On Time : </Text>
-              <Text style={styles.slider_text}>{onTime.toFixed(1)} sec</Text>
-            </View>
-            <View style={styles.select_item_view}>
-              <TouchableOpacity
-                style={styles.inc_dec_button}
-                onPress={() => {
-                  const newValue = Math.round((onTime - 0.1) * 10) / 10;
-                  if (newValue >= 0.1) {
-                    setOnTime(newValue);
-                  }
-                }}
-              >
-                <MaterialIcons
-                  name="remove-circle"
-                  size={40}
-                  color={button_background_color}
-                />
-              </TouchableOpacity>
-              <Slider
-                style={styles.slider}
-                minimumValue={0.1}
-                maximumValue={10}
-                step={0.1}
-                value={onTime}
-                onValueChange={(value) => {
-                  const newValue = Math.round(value * 10) / 10;
-                  setOnTime(newValue);
-                }}
-                minimumTrackTintColor={button_pressed_background_color}
-                maximumTrackTintColor={button_pressed_background_color}
-                thumbTintColor={button_pressed_background_color}
-              />
-              <TouchableOpacity
-                style={styles.inc_dec_button}
-                onPress={() => {
-                  const newValue = Math.round((onTime + 0.1) * 10) / 10;
-                  if (newValue <= 10.0) {
-                    setOnTime(newValue);
-                  }
-                }}
-              >
-                <MaterialIcons
-                  name="add-circle"
-                  size={40}
-                  color={button_background_color}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.select_item_view}>
-              <Text style={styles.select_item_text}>Off Time : </Text>
-              <Text style={styles.slider_text}>{offTime.toFixed(1)} sec</Text>
-            </View>
-            <View style={styles.select_item_view}>
-              <TouchableOpacity
-                style={styles.inc_dec_button}
-                onPress={() => {
-                  const newValue = Math.round((offTime - 0.1) * 10) / 10;
-                  if (newValue >= 0.1) {
-                    setOffTime(newValue);
-                  }
-                }}
-              >
-                <MaterialIcons
-                  name="remove-circle"
-                  size={40}
-                  color={button_background_color}
-                />
-              </TouchableOpacity>
-              <Slider
-                style={styles.slider}
-                minimumValue={0.1}
-                maximumValue={10}
-                step={0.1}
-                value={offTime}
-                onValueChange={(value) => {
-                  const newValue = Math.round(value * 10) / 10;
-                  setOffTime(newValue);
-                }}
-                minimumTrackTintColor={button_pressed_background_color}
-                maximumTrackTintColor={button_pressed_background_color}
-                thumbTintColor={button_pressed_background_color}
-              />
-              <TouchableOpacity
-                style={styles.inc_dec_button}
-                onPress={() => {
-                  const newValue = Math.round((offTime + 0.1) * 10) / 10;
-                  if (newValue <= 10.0) {
-                    setOffTime(newValue);
-                  }
-                }}
-              >
-                <MaterialIcons
-                  name="add-circle"
-                  size={40}
-                  color={button_background_color}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.select_item_view}>
-              <Text style={styles.select_item_text}>Duration : </Text>
-              <Text style={styles.slider_text}>{duration.toFixed(0)} min</Text>
-            </View>
-            <View style={styles.select_item_view}>
-              <TouchableOpacity
-                style={styles.inc_dec_button}
-                onPress={() => {
-                  const newValue = Math.round(duration - 1);
-                  if (newValue >= 1) {
-                    setDuration(newValue);
-                  }
-                }}
-              >
-                <MaterialIcons
-                  name="remove-circle"
-                  size={40}
-                  color={button_background_color}
-                />
-              </TouchableOpacity>
-              <Slider
-                style={styles.slider}
-                minimumValue={1}
-                maximumValue={60}
-                step={1}
-                value={duration}
-                onValueChange={(value) => {
-                  const newValue = Math.round(value);
-                  setDuration(newValue);
-                }}
-                minimumTrackTintColor={button_pressed_background_color}
-                maximumTrackTintColor={button_pressed_background_color}
-                thumbTintColor={button_pressed_background_color}
-              />
-              <TouchableOpacity
-                style={styles.inc_dec_button}
-                onPress={() => {
-                  const newValue = Math.round(duration + 1);
-                  if (newValue <= 60) {
-                    setDuration(newValue);
-                  }
-                }}
-              >
-                <MaterialIcons
-                  name="add-circle"
-                  size={40}
-                  color={button_background_color}
-                />
-              </TouchableOpacity>
-            </View>
+            <Seekbar
+              title={"On Time : "}
+              valueText={`${onTime.toFixed(1)} sec`}
+              value={onTime}
+              setValue={setOnTime}
+              step={0.1}
+              min={0.1}
+              max={10}
+            />
+            <Seekbar
+              title={"Off Time : "}
+              valueText={`${offTime.toFixed(1)} sec`}
+              value={offTime}
+              setValue={setOffTime}
+              step={0.1}
+              min={0.1}
+              max={10}
+            />
+            <Seekbar
+              title={"Duration : "}
+              valueText={`${duration.toFixed(0)} min`}
+              value={duration}
+              setValue={setDuration}
+              step={1}
+              min={1}
+              max={60}
+            />
           </Animated.ScrollView>
         </Animated.View>
         <OneButton
