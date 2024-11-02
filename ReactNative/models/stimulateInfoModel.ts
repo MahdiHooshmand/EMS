@@ -157,11 +157,11 @@ class Electrotherapy {
 
 // EMS class with specific validation
 export class EMS extends Electrotherapy {
-  public readonly validFrequencies = [
+  public static readonly validFrequencies = [
     500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000,
     9000, 10000,
   ];
-  public readonly validPulseWidths = [300, 500];
+  public static readonly validPulseWidths = [300, 500];
 
   constructor(
     muscle: MuscleName,
@@ -175,21 +175,21 @@ export class EMS extends Electrotherapy {
   }
 
   protected isFrequencyValid(frequency: number): boolean {
-    return this.validFrequencies.includes(frequency);
+    return EMS.validFrequencies.includes(frequency);
   }
 
   protected isPulseWidthValid(pulseWidth: number): boolean {
-    return this.validPulseWidths.includes(pulseWidth);
+    return EMS.validPulseWidths.includes(pulseWidth);
   }
 }
 
 // TENS class with specific validation
 export class TENS extends Electrotherapy {
-  public readonly validFrequencies = [
+  public static readonly validFrequencies = [
     2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90,
     100, 110, 120,
   ];
-  public readonly validPulseWidths = [50, 75, 100, 150, 200, 250, 300];
+  public static readonly validPulseWidths = [50, 75, 100, 150, 200, 250, 300];
 
   constructor(
     muscle: MuscleName,
@@ -203,11 +203,11 @@ export class TENS extends Electrotherapy {
   }
 
   protected isFrequencyValid(frequency: number): boolean {
-    return this.validFrequencies.includes(frequency);
+    return TENS.validFrequencies.includes(frequency);
   }
 
   protected isPulseWidthValid(pulseWidth: number): boolean {
-    return this.validPulseWidths.includes(pulseWidth);
+    return TENS.validPulseWidths.includes(pulseWidth);
   }
 }
 

@@ -27,7 +27,18 @@ import { EMS, TENS } from "../models/stimulateInfoModel";
 
 interface Props {
   navigation: any;
-  route: any;
+  route: {
+    params: {
+      bodyPartName: string;
+      source: any;
+      stimulationType: "EMS" | "TENS";
+    };
+  };
+}
+
+interface PickerItem {
+  label: string;
+  value: number;
 }
 
 export const SetInfoScreen = ({ navigation, route }: Props) => {
@@ -37,24 +48,46 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
   const listAnimation = new FadeIn(1);
   const buttonFadeIn = new FadeIn(2);
 
-  const [frequency, setFrequency] = useState(500);
-  const [pulseWidth, setPulseWidth] = useState(300);
-  const [onTime, setOnTime] = useState(1.0);
-  const [offTime, setOffTime] = useState(4.0);
-  const [duration, setDuration] = useState(5);
-
-  let data;
-  if (stimulationType === "EMS") {
-    setFrequency(500);
-    setPulseWidth(300);
-    data = new EMS(bodyPartName, frequency, pulseWidth, 1.0, 4.0, 5);
-  } else {
-    setFrequency(80);
-    setPulseWidth(200);
-    data = new TENS(bodyPartName, frequency, pulseWidth, 1.0, 4.0, 5);
-  }
+  const [frequencyItems, setFrequencyItems] = useState<PickerItem[]>([]);
+  const [pulseWidthItems, setPulseWidthItems] = useState<PickerItem[]>([]);
+  const [frequency, setFrequency] = useState<number>(
+    stimulationType === "EMS" ? 500 : 80,
+  );
+  const [pulseWidth, setPulseWidth] = useState<number>(
+    stimulationType === "EMS" ? 300 : 200,
+  );
+  const [onTime, setOnTime] = useState<number>(1.0);
+  const [offTime, setOffTime] = useState<number>(4.0);
+  const [duration, setDuration] = useState<number>(5);
 
   useEffect(() => {
+    if (stimulationType === "EMS") {
+      setFrequencyItems(
+        EMS.validFrequencies.map((frequency) => ({
+          label: `${frequency} Hz`,
+          value: frequency,
+        })),
+      );
+      setPulseWidthItems(
+        EMS.validPulseWidths.map((pulseWidth) => ({
+          label: `${pulseWidth} us`,
+          value: pulseWidth,
+        })),
+      );
+    } else {
+      setFrequencyItems(
+        TENS.validFrequencies.map((frequency) => ({
+          label: `${frequency} Hz`,
+          value: frequency,
+        })),
+      );
+      setPulseWidthItems(
+        TENS.validPulseWidths.map((pulseWidth) => ({
+          label: `${pulseWidth} us`,
+          value: pulseWidth,
+        })),
+      );
+    }
     Animated.parallel([
       headerAnimation.animate(),
       listAnimation.animate(),
@@ -62,17 +95,9 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
     ]).start();
   }, []);
 
-  const handleStartProgram = () => {};
-
-  const frequencyItems = data.validFrequencies.map((frequency) => ({
-    label: `${frequency} Hz`,
-    value: frequency,
-  }));
-
-  const pulseWidthItems = data.validPulseWidths.map((frequency) => ({
-    label: `${frequency} us`,
-    value: frequency,
-  }));
+  const handleStartProgram = () => {
+    //code
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -109,9 +134,9 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
               <Text style={styles.select_item_text}>Frequency : </Text>
               <View style={styles.input_view}>
                 <RNPickerSelect
-                  onValueChange={(value) => (data.frequency = value)}
+                  onValueChange={setFrequency}
                   items={frequencyItems}
-                  value={data.frequency}
+                  value={frequency}
                   style={{
                     inputIOS: styles.input,
                     inputAndroid: styles.input,
@@ -123,9 +148,9 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
               <Text style={styles.select_item_text}>Pulse Width : </Text>
               <View style={styles.input_view}>
                 <RNPickerSelect
-                  onValueChange={(value) => (data.pulseWidth = value)}
+                  onValueChange={setPulseWidth}
                   items={pulseWidthItems}
-                  value={data.pulseWidth}
+                  value={pulseWidth}
                   style={{
                     inputIOS: styles.input,
                     inputAndroid: styles.input,
@@ -144,7 +169,6 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
                   const newValue = Math.round((onTime - 0.1) * 10) / 10;
                   if (newValue >= 0.1) {
                     setOnTime(newValue);
-                    data.onTime = newValue;
                   }
                 }}
               >
@@ -162,9 +186,11 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
                 value={onTime}
                 onValueChange={(value) => {
                   const newValue = Math.round(value * 10) / 10;
-                  data.onTime = newValue;
                   setOnTime(newValue);
                 }}
+                minimumTrackTintColor={button_pressed_background_color}
+                maximumTrackTintColor={button_pressed_background_color}
+                thumbTintColor={button_pressed_background_color}
               />
               <TouchableOpacity
                 style={styles.inc_dec_button}
@@ -172,7 +198,6 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
                   const newValue = Math.round((onTime + 0.1) * 10) / 10;
                   if (newValue <= 10.0) {
                     setOnTime(newValue);
-                    data.onTime = newValue;
                   }
                 }}
               >
@@ -194,7 +219,6 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
                   const newValue = Math.round((offTime - 0.1) * 10) / 10;
                   if (newValue >= 0.1) {
                     setOffTime(newValue);
-                    data.offTime = newValue;
                   }
                 }}
               >
@@ -212,9 +236,11 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
                 value={offTime}
                 onValueChange={(value) => {
                   const newValue = Math.round(value * 10) / 10;
-                  data.offTime = newValue;
                   setOffTime(newValue);
                 }}
+                minimumTrackTintColor={button_pressed_background_color}
+                maximumTrackTintColor={button_pressed_background_color}
+                thumbTintColor={button_pressed_background_color}
               />
               <TouchableOpacity
                 style={styles.inc_dec_button}
@@ -222,7 +248,6 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
                   const newValue = Math.round((offTime + 0.1) * 10) / 10;
                   if (newValue <= 10.0) {
                     setOffTime(newValue);
-                    data.offTime = newValue;
                   }
                 }}
               >
@@ -244,7 +269,6 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
                   const newValue = Math.round(duration - 1);
                   if (newValue >= 1) {
                     setDuration(newValue);
-                    data.duration = newValue;
                   }
                 }}
               >
@@ -262,9 +286,11 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
                 value={duration}
                 onValueChange={(value) => {
                   const newValue = Math.round(value);
-                  data.duration = newValue;
                   setDuration(newValue);
                 }}
+                minimumTrackTintColor={button_pressed_background_color}
+                maximumTrackTintColor={button_pressed_background_color}
+                thumbTintColor={button_pressed_background_color}
               />
               <TouchableOpacity
                 style={styles.inc_dec_button}
@@ -272,7 +298,6 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
                   const newValue = Math.round(duration + 1);
                   if (newValue <= 60) {
                     setDuration(newValue);
-                    data.duration = newValue;
                   }
                 }}
               >
