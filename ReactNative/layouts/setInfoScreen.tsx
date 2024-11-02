@@ -25,6 +25,7 @@ import { Header } from "../components/header";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { EMS, TENS } from "../models/stimulateInfoModel";
 import { OneButton } from "../components/footer";
+import { Combo } from "../components/formComponents";
 
 interface Props {
   navigation: any;
@@ -131,34 +132,18 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
             <Text style={styles.title}>
               {stimulationType} : {bodyPartName}
             </Text>
-            <View style={styles.select_item_view}>
-              <Text style={styles.select_item_text}>Frequency : </Text>
-              <View style={styles.input_view}>
-                <RNPickerSelect
-                  onValueChange={setFrequency}
-                  items={frequencyItems}
-                  value={frequency}
-                  style={{
-                    inputIOS: styles.input,
-                    inputAndroid: styles.input,
-                  }}
-                />
-              </View>
-            </View>
-            <View style={styles.select_item_view}>
-              <Text style={styles.select_item_text}>Pulse Width : </Text>
-              <View style={styles.input_view}>
-                <RNPickerSelect
-                  onValueChange={setPulseWidth}
-                  items={pulseWidthItems}
-                  value={pulseWidth}
-                  style={{
-                    inputIOS: styles.input,
-                    inputAndroid: styles.input,
-                  }}
-                />
-              </View>
-            </View>
+            <Combo
+              text={"Frequency : "}
+              onValueChange={setFrequency}
+              items={frequencyItems}
+              value={frequency}
+            />
+            <Combo
+              text={"Pulse Width : "}
+              onValueChange={setPulseWidth}
+              items={pulseWidthItems}
+              value={pulseWidth}
+            />
             <View style={styles.select_item_view}>
               <Text style={styles.select_item_text}>On Time : </Text>
               <Text style={styles.slider_text}>{onTime.toFixed(1)} sec</Text>
