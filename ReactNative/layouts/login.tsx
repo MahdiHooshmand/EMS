@@ -20,7 +20,6 @@ import {
   input_text_color,
   button_pressed_text_color,
 } from "../assets/thems/colors";
-import { useFonts } from "expo-font";
 import { useEffect, useState, useCallback } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { FadeIn, FadeOut } from "../assets/thems/animations";

@@ -4,38 +4,23 @@ import {
   Text,
   SafeAreaView,
   StyleSheet,
-  Pressable,
   Animated,
   Image,
-  TouchableOpacity,
 } from "react-native";
 import {
   background_color,
-  button_background_color,
-  button_pressed_background_color,
-  button_text_color,
   card_background_color,
   card_text_color,
-  input_text_color,
 } from "../assets/thems/colors";
-import RNPickerSelect from "react-native-picker-select";
-import Slider from "@react-native-community/slider";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { EMS, TENS } from "../models/stimulateInfoModel";
 import { OneButton } from "../components/footer";
 import { Combo, Seekbar } from "../components/formComponents";
 
 interface Props {
   navigation: any;
-  route: {
-    params: {
-      bodyPartName: string;
-      source: any;
-      stimulationType: "EMS" | "TENS";
-    };
-  };
+  route: any;
 }
 
 interface PickerItem {
@@ -191,26 +176,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
-  startButton: {
-    marginTop: 20,
-    marginBottom: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: button_background_color,
-    borderRadius: 30,
-    flexDirection: "row",
-  },
-  startButtonPressed: {
-    backgroundColor: button_pressed_background_color,
-  },
-  startButtonText: {
-    fontFamily: "fontText",
-    color: button_text_color,
-    fontSize: 16,
-  },
-  startIcon: {
-    marginLeft: 5,
-  },
   image: {
     marginTop: 10,
     flex: 1,
@@ -234,42 +199,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: card_text_color,
     margin: 10,
-  },
-  select_item_view: {
-    flexDirection: "row",
-    alignItems: "center",
-    margin: 5,
-  },
-  select_item_text: {
-    fontFamily: "fontText",
-    fontSize: 15,
-    color: card_text_color,
-    flex: 1,
-  },
-  input_view: {
-    flex: 1.5,
-    backgroundColor: button_background_color,
-    borderRadius: 10,
-  },
-  input: {
-    color: input_text_color,
-  },
-  slider: {
-    flex: 1.5,
-  },
-  slider_text: {
-    fontFamily: "errorFont",
-    fontSize: 15,
-    color: card_text_color,
-    flex: 1.5,
-    marginTop: 10,
-    marginLeft: 15,
-  },
-  inc_dec_button: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
   },
 });

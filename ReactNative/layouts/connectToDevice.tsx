@@ -5,21 +5,19 @@ import {
 } from "../models/peripheralCardModel";
 import {
   FlatList,
-  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
   Animated,
+  ActivityIndicator,
+  View,
 } from "react-native";
 import {
   background_color,
-  button_background_color,
   button_text_color,
   placeholder_color,
-  button_pressed_background_color,
 } from "../assets/thems/colors";
 import { useEffect, useState } from "react";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
 import { BorderBox } from "../components/borderBox";
@@ -46,9 +44,11 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
 
   const handleScanDevice = () => {
     setIsLoading(true);
-    const newDevices = FakePeripheralModel();
-    setPeripheralDevices(newDevices);
-    setIsLoading(false);
+    setTimeout(() => {
+      const newDevices = FakePeripheralModel();
+      setPeripheralDevices(newDevices);
+      setIsLoading(false);
+    }, 2000);
   };
 
   return (
@@ -87,12 +87,18 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
             />
           )}
         </BorderBox>
-        <OneButton
-          buttonFadeIn={buttonFadeIn}
-          onPress={handleScanDevice}
-          materialIconName={"bluetooth-searching"}
-          text={"Scan Devices"}
-        />
+        {isLoading ? (
+          <View style={styles.indicatorView}>
+            <ActivityIndicator size="large" color={button_text_color} />
+          </View>
+        ) : (
+          <OneButton
+            buttonFadeIn={buttonFadeIn}
+            onPress={handleScanDevice}
+            materialIconName={"bluetooth-searching"}
+            text={"Scan Devices"}
+          />
+        )}
       </Animated.View>
     </SafeAreaView>
   );
@@ -108,31 +114,15 @@ const styles = StyleSheet.create({
   list: {
     width: "100%",
   },
-  scanButton: {
-    marginTop: 20,
-    marginBottom: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: button_background_color,
-    borderRadius: 30,
-    flexDirection: "row",
-  },
-  scanButtonPressed: {
-    backgroundColor: button_pressed_background_color,
-  },
-  scanButtonText: {
-    fontFamily: "fontText",
-    color: button_text_color,
-    fontSize: 16,
-  },
-  scanIcon: {
-    marginLeft: 5,
-  },
   emptyMessage: {
     fontFamily: "fontText",
     color: placeholder_color,
     fontSize: 16,
     textAlign: "center",
     marginVertical: 20,
+  },
+  indicatorView: {
+    margin: 24,
+    justifyContent: "center",
   },
 });

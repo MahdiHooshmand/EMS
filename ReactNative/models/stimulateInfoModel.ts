@@ -16,10 +16,8 @@ type MuscleName =
   | "CALVES"
   | "FOREARMS";
 
-// StimulationType to allow only "EMS" or "TENS"
 type StimulationType = "EMS" | "TENS";
 
-// Base model for shared properties and methods
 class Electrotherapy {
   private _muscle: MuscleName;
   private _frequency: number;
@@ -47,7 +45,6 @@ class Electrotherapy {
     this._duration = duration;
   }
 
-  // Getter and Setter for Muscle
   get muscle(): MuscleName {
     return this._muscle;
   }
@@ -56,12 +53,10 @@ class Electrotherapy {
     this._muscle = value;
   }
 
-  // Getter for Stimulation Type
   get stimulationType(): StimulationType {
     return this._stimulationType;
   }
 
-  // Setter with validation for Frequency
   set frequency(value: number) {
     if (this.isFrequencyValid(value)) {
       this._frequency = value;
@@ -74,7 +69,6 @@ class Electrotherapy {
     return this._frequency;
   }
 
-  // Setter with validation for Pulse Width
   set pulseWidth(value: number) {
     if (this.isPulseWidthValid(value)) {
       this._pulseWidth = value;
@@ -87,7 +81,6 @@ class Electrotherapy {
     return this._pulseWidth;
   }
 
-  // Setter with validation for onTime
   set onTime(value: number) {
     if (value >= 0.1 && value <= 10 && Number.isInteger(value * 10)) {
       this._onTime = value;
@@ -102,7 +95,6 @@ class Electrotherapy {
     return this._onTime;
   }
 
-  // Setter with validation for offTime
   set offTime(value: number) {
     if (value >= 0.1 && value <= 10 && Number.isInteger(value * 10)) {
       this._offTime = value;
@@ -117,7 +109,6 @@ class Electrotherapy {
     return this._offTime;
   }
 
-  // Setter with validation for duration
   set duration(value: number) {
     if (value >= 1 && value <= 60 && Number.isInteger(value)) {
       this._duration = value;
@@ -132,7 +123,6 @@ class Electrotherapy {
     return this._duration;
   }
 
-  // Method to return object data as JSON
   toJSON(): string {
     return JSON.stringify({
       muscle: this._muscle,
@@ -145,7 +135,6 @@ class Electrotherapy {
     });
   }
 
-  // Placeholder methods for specific validation in subclasses
   protected isFrequencyValid(frequency: number): boolean {
     return false;
   }
@@ -155,7 +144,6 @@ class Electrotherapy {
   }
 }
 
-// EMS class with specific validation
 export class EMS extends Electrotherapy {
   public static readonly validFrequencies = [
     500, 600, 700, 800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000,
@@ -183,7 +171,6 @@ export class EMS extends Electrotherapy {
   }
 }
 
-// TENS class with specific validation
 export class TENS extends Electrotherapy {
   public static readonly validFrequencies = [
     2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90,
@@ -210,14 +197,3 @@ export class TENS extends Electrotherapy {
     return TENS.validPulseWidths.includes(pulseWidth);
   }
 }
-
-// Example usage
-// try {
-//   const emsTreatment = new EMS("BICEPS", 1000, 300, 2.5, 1.0, 30);
-//   console.log("EMS JSON:", emsTreatment.toJSON());
-//
-//   const tensTreatment = new TENS("TRAPEZIUS", 20, 150, 3.0, 0.5, 20);
-//   console.log("TENS JSON:", tensTreatment.toJSON());
-// } catch (error) {
-//   console.error(error.message);
-// }

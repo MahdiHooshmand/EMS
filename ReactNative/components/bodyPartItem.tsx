@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: button_background_color,
     borderRadius: 30,
-    width: "40%", // عرض دکمه‌ها
+    width: "40%",
     alignItems: "center",
   },
   buttonPressed: {

@@ -6,7 +6,7 @@ import {
   button_text_color,
 } from "../assets/thems/colors";
 import React from "react";
-import { FadeIn, FadeOut } from "../assets/thems/animations";
+import { FadeIn } from "../assets/thems/animations";
 
 interface Props {
   buttonFadeIn: FadeIn;
