@@ -23,6 +23,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
 import { BorderBox } from "../components/borderBox";
+import { OneButton } from "../components/footer";
 
 export const ConnectToDeviceScreen = ({ navigation }: any) => {
   const headerFadeIn = new FadeIn(0);
@@ -86,32 +87,12 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
             />
           )}
         </BorderBox>
-        <Animated.View
-          style={[
-            {
-              opacity: buttonFadeIn.fadeAnim,
-              translateY: buttonFadeIn.translateY,
-            },
-          ]}
-        >
-          <Pressable
-            style={({ pressed }) => [
-              styles.scanButton,
-              pressed && styles.scanButtonPressed,
-            ]}
-            onPress={handleScanDevice}
-          >
-            <Text style={styles.scanButtonText}>
-              {isLoading ? "Scanning..." : "Scan Device"}
-            </Text>
-            <MaterialIcons
-              name="bluetooth-searching"
-              size={24}
-              color={button_text_color}
-              style={styles.scanIcon}
-            />
-          </Pressable>
-        </Animated.View>
+        <OneButton
+          buttonFadeIn={buttonFadeIn}
+          onPress={handleScanDevice}
+          materialIconName={"bluetooth-searching"}
+          text={"Scan Devices"}
+        />
       </Animated.View>
     </SafeAreaView>
   );

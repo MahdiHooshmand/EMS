@@ -24,6 +24,7 @@ import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { EMS, TENS } from "../models/stimulateInfoModel";
+import { OneButton } from "../components/footer";
 
 interface Props {
   navigation: any;
@@ -310,30 +311,12 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
             </View>
           </Animated.ScrollView>
         </Animated.View>
-        <Animated.View
-          style={[
-            {
-              opacity: buttonFadeIn.fadeAnim,
-              translateY: buttonFadeIn.translateY,
-            },
-          ]}
-        >
-          <Pressable
-            style={({ pressed }) => [
-              styles.startButton,
-              pressed && styles.startButtonPressed,
-            ]}
-            onPress={handleStartProgram}
-          >
-            <Text style={styles.startButtonText}>START</Text>
-            <MaterialIcons
-              name="play-arrow"
-              size={24}
-              color={button_text_color}
-              style={styles.startIcon}
-            />
-          </Pressable>
-        </Animated.View>
+        <OneButton
+          buttonFadeIn={buttonFadeIn}
+          onPress={handleStartProgram}
+          materialIconName={"play-arrow"}
+          text={"START"}
+        />
       </Animated.View>
     </SafeAreaView>
   );
