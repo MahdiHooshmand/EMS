@@ -104,7 +104,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
       );
     }
     containerFadeOut.animate().start(() => {
-      navigation.replace("run", { data: data });
+      navigation.replace("run", { data: data, source: source });
     });
   };
 

@@ -6,27 +6,25 @@ import {
   Animated,
   View,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { Electrotherapy } from "../models/stimulateInfoModel";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import {
   background_color,
+  card_background_color,
+  card_text_color,
   stop_color,
   text_color,
 } from "../assets/thems/colors";
-import { BorderBox } from "../components/borderBox";
 
 interface RunScreenProps {
   navigation: any;
-  route: {
-    params: {
-      data: Electrotherapy;
-    };
-  };
+  route: any;
 }
 
 export const RunScreen = ({ navigation, route }: RunScreenProps) => {
-  const { data } = route.params;
+  const { data, source } = route.params;
   const containerFadeOut = new FadeOut();
   const infoFadeIn = new FadeIn(0);
   const stopFadeIn = new FadeIn(1);
@@ -46,14 +44,13 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
         setCountdown((prev) => prev - 1);
       }, 1000);
     } else if (isInitialCountdown) {
-      setCountdown(data.duration * 60); // تبدیل دقیقه به ثانیه
+      setCountdown(data.duration * 60);
       setIsInitialCountdown(false);
     }
 
     return () => clearInterval(interval);
   }, [countdown, isInitialCountdown]);
 
-  // تبدیل ثانیه به قالب MM:SS
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
@@ -65,18 +62,37 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
       <Animated.View
         style={[styles.container, { opacity: containerFadeOut.fadeAnim }]}
       >
-        <BorderBox fadeAnim={infoFadeIn}>
-          <Text style={styles.title}>
-            {data.stimulationType} : {data.muscle}
-          </Text>
-          <Text style={styles.label}>
-            on time : {data.onTime} second , off time : {data.offTime} second
-          </Text>
-          <Text style={styles.label}>
-            Frequency: {data.frequency} Hz , Pulse Width: {data.pulseWidth} µs
-          </Text>
-        </BorderBox>
-
+        <Animated.View
+          style={[
+            styles.card,
+            {
+              opacity: infoFadeIn.fadeAnim,
+              translateY: infoFadeIn.translateY,
+            },
+          ]}
+        >
+          <View style={styles.cardHeader}>
+            <Image
+              source={source}
+              style={styles.image}
+              resizeMode={"contain"}
+            />
+            <View style={styles.cardHeaderInfo}>
+              <Text style={styles.title}>{data.stimulationType}</Text>
+              <Text style={styles.title}>{data.muscle}</Text>
+            </View>
+          </View>
+          <View style={styles.cardBody}>
+            <Text style={styles.label}>
+              on time : {data.onTime.toFixed(1)} second
+            </Text>
+            <Text style={styles.label}>
+              off time : {data.offTime.toFixed(1)} second
+            </Text>
+            <Text style={styles.label}>Frequency: {data.frequency} Hz</Text>
+            <Text style={styles.label}>Pulse Width: {data.pulseWidth} µs</Text>
+          </View>
+        </Animated.View>
         <Animated.View
           style={[
             styles.stopView,
@@ -107,18 +123,45 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
+  card: {
+    backgroundColor: card_background_color,
+    borderRadius: 10,
+    padding: 15,
+    width: "90%",
+    flex: 1,
+    alignItems: "center",
+  },
+  cardHeader: {
+    aspectRatio: 2,
+    flexDirection: "row",
+    margin: 5,
+  },
+  cardHeaderInfo: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  image: {
+    marginTop: 10,
+    flex: 1,
+    aspectRatio: 1,
+    width: "50%",
+  },
+  cardBody: {
+    margin: 5,
+  },
   title: {
     fontFamily: "fontHeader",
-    fontSize: 24,
+    fontSize: 20,
     textAlign: "center",
-    color: text_color,
-    margin: 10,
+    color: card_text_color,
+    margin: 5,
   },
   label: {
     fontFamily: "fontHeader",
-    fontSize: 18,
+    fontSize: 15,
     textAlign: "center",
-    color: text_color,
+    color: card_text_color,
     margin: 5,
   },
   stopView: {
