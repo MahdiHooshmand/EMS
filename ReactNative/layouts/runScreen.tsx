@@ -7,16 +7,19 @@ import {
   View,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { Electrotherapy } from "../models/stimulateInfoModel";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import {
   background_color,
+  button_text_color,
   card_background_color,
   card_text_color,
   stop_color,
   text_color,
 } from "../assets/thems/colors";
+import { FakePeripheralModel } from "../models/peripheralCardModel";
 
 interface RunScreenProps {
   navigation: any;
@@ -31,6 +34,23 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
 
   const [countdown, setCountdown] = useState(5);
   const [isInitialCountdown, setIsInitialCountdown] = useState(true);
+  const [stopping, setStopping] = useState(false);
+
+  const stop = () => {
+    console.log("stop");
+    if (stopping) {
+      return;
+    }
+    setStopping(true);
+    setTimeout(() => {
+      navigation.replace("set-info", {
+        bodyPartName: data.muscle,
+        source: source,
+        stimulationType: data.stimulationType,
+      });
+      setStopping(false);
+    }, 500);
+  };
 
   useEffect(() => {
     Animated.parallel([infoFadeIn.animate(), stopFadeIn.animate()]).start();
@@ -46,6 +66,8 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
     } else if (isInitialCountdown) {
       setCountdown(data.duration * 60);
       setIsInitialCountdown(false);
+    } else {
+      stop();
     }
 
     return () => clearInterval(interval);
@@ -102,13 +124,21 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
             },
           ]}
         >
-          <TouchableOpacity style={styles.stopButton} onPress={() => {}}>
-            {isInitialCountdown ? (
-              <Text style={styles.stopLabel}>{countdown}</Text>
+          <TouchableOpacity style={styles.stopButton} onPress={stop}>
+            {stopping ? (
+              <ActivityIndicator size="large" color={button_text_color} />
             ) : (
-              <Text style={styles.countdownText}>{formatTime(countdown)}</Text>
+              <>
+                {isInitialCountdown ? (
+                  <Text style={styles.stopLabel}>{countdown}</Text>
+                ) : (
+                  <Text style={styles.countdownText}>
+                    {formatTime(countdown)}
+                  </Text>
+                )}
+                <Text style={styles.stopLabel}>STOP</Text>
+              </>
             )}
-            <Text style={styles.stopLabel}>STOP</Text>
           </TouchableOpacity>
         </Animated.View>
       </Animated.View>
