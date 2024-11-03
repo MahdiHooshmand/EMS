@@ -13,6 +13,7 @@ import { FadeIn, FadeOut } from "../assets/thems/animations";
 import {
   background_color,
   button_text_color,
+  card_background_color,
   card_text_color,
   stop_color,
   text_color,
@@ -30,20 +31,20 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
   const infoFadeIn = new FadeIn(0);
   const stopFadeIn = new FadeIn(1);
 
-  const [state, setState] = useState({
-    countdown: 5,
-    isInitialCountdown: true,
-    stopping: false,
-  });
+  const [countdown, setCountdown] = useState(5);
+  const [isInitialCountdown, setIsInitialCountdown] = useState(true);
+  const [stopping, setStopping] = useState(false);
 
   const stop = () => {
-    if (state.stopping) return;
-    setState((prev) => ({ ...prev, stopping: true }));
+    if (stopping) {
+      return;
+    }
+    setStopping(true);
     setTimeout(() => {
       containerFadeOut.animate().start(() => {
         navigation.replace("set-info", {
           bodyPartName: data.muscle,
-          source,
+          source: source,
           stimulationType: data.stimulationType,
         });
       });
@@ -55,28 +56,27 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setState((prev) => {
-        if (prev.countdown > 0) {
-          return { ...prev, countdown: prev.countdown - 1 };
-        }
-        if (prev.isInitialCountdown) {
-          return {
-            ...prev,
-            countdown: data.duration * 60,
-            isInitialCountdown: false,
-          };
-        }
-        stop();
-        return prev;
-      });
-    }, 1000);
+    let interval: NodeJS.Timeout;
+
+    if (countdown > 0) {
+      interval = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (isInitialCountdown) {
+      setCountdown(data.duration * 60);
+      setIsInitialCountdown(false);
+    } else {
+      stop();
+    }
 
     return () => clearInterval(interval);
-  }, [state]);
+  }, [countdown, isInitialCountdown]);
 
-  const formatTime = (time: number) =>
-    `${String(Math.floor(time / 60)).padStart(2, "0")}:${String(time % 60).padStart(2, "0")}`;
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -85,7 +85,11 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
       >
         <CardView fadeInAnim={infoFadeIn}>
           <View style={styles.cardHeader}>
-            <Image source={source} style={styles.image} resizeMode="contain" />
+            <Image
+              source={source}
+              style={styles.image}
+              resizeMode={"contain"}
+            />
             <View style={styles.cardHeaderInfo}>
               <Text style={styles.title}>{data.stimulationType}</Text>
               <Text style={styles.title}>{data.muscle}</Text>
@@ -93,10 +97,10 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
           </View>
           <View style={styles.cardBody}>
             <Text style={styles.label}>
-              on time: {data.onTime.toFixed(1)} seconds
+              on time : {data.onTime.toFixed(1)} second
             </Text>
             <Text style={styles.label}>
-              off time: {data.offTime.toFixed(1)} seconds
+              off time : {data.offTime.toFixed(1)} second
             </Text>
             <Text style={styles.label}>Frequency: {data.frequency} Hz</Text>
             <Text style={styles.label}>Pulse Width: {data.pulseWidth} µs</Text>
@@ -112,15 +116,17 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
           ]}
         >
           <TouchableOpacity style={styles.stopButton} onPress={stop}>
-            {state.stopping ? (
+            {stopping ? (
               <ActivityIndicator size="large" color={button_text_color} />
             ) : (
               <>
-                <Text style={styles.stopLabel}>
-                  {state.isInitialCountdown
-                    ? state.countdown
-                    : formatTime(state.countdown)}
-                </Text>
+                {isInitialCountdown ? (
+                  <Text style={styles.stopLabel}>{countdown}</Text>
+                ) : (
+                  <Text style={styles.countdownText}>
+                    {formatTime(countdown)}
+                  </Text>
+                )}
                 <Text style={styles.stopLabel}>STOP</Text>
               </>
             )}
@@ -186,10 +192,16 @@ const styles = StyleSheet.create({
     maxHeight: "80%",
     maxWidth: "80%",
   },
-  stopLabel: {
+  countdownText: {
     fontFamily: "stopText",
     fontSize: 36,
     color: text_color,
+    margin: 10,
+  },
+  stopLabel: {
+    fontFamily: "stopText",
+    fontSize: 36,
+    color: stop_color,
     margin: 10,
   },
 });
