@@ -16,6 +16,13 @@ export class FadeIn {
     this.translateY = useRef(new Animated.Value(this.__course)).current;
   }
 
+  getStyles = () => {
+    return {
+      opacity: this.fadeAnim,
+      translateY: this.translateY,
+    };
+  };
+
   animate = () => {
     this.fadeAnim.setValue(0);
     this.translateY.setValue(this.__course);
