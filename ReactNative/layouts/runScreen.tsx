@@ -18,6 +18,7 @@ import {
   stop_color,
   text_color,
 } from "../assets/thems/colors";
+import { CardView } from "../components/card";
 
 interface RunScreenProps {
   navigation: any;
@@ -83,15 +84,7 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
       <Animated.View
         style={[styles.container, { opacity: containerFadeOut.fadeAnim }]}
       >
-        <Animated.View
-          style={[
-            styles.card,
-            {
-              opacity: infoFadeIn.fadeAnim,
-              translateY: infoFadeIn.translateY,
-            },
-          ]}
-        >
+        <CardView fadeInAnim={infoFadeIn}>
           <View style={styles.cardHeader}>
             <Image
               source={source}
@@ -113,7 +106,7 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
             <Text style={styles.label}>Frequency: {data.frequency} Hz</Text>
             <Text style={styles.label}>Pulse Width: {data.pulseWidth} µs</Text>
           </View>
-        </Animated.View>
+        </CardView>
         <Animated.View
           style={[
             styles.stopView,
@@ -158,7 +151,6 @@ const styles = StyleSheet.create({
     padding: 15,
     width: "90%",
     flex: 1,
-    alignItems: "center",
   },
   cardHeader: {
     aspectRatio: 2,

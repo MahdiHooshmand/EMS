@@ -17,6 +17,7 @@ import { Header } from "../components/header";
 import { EMS, TENS } from "../models/stimulateInfoModel";
 import { OneButton } from "../components/footer";
 import { Combo, Seekbar } from "../components/formComponents";
+import { CardView } from "../components/card";
 
 interface Props {
   navigation: any;
@@ -119,15 +120,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
           backPage={"body-parts"}
           navigation={navigation}
         />
-        <Animated.View
-          style={[
-            styles.card,
-            {
-              opacity: listAnimation.fadeAnim,
-              translateY: listAnimation.translateY,
-            },
-          ]}
-        >
+        <CardView fadeInAnim={listAnimation}>
           <Animated.ScrollView>
             <View style={styles.image_container}>
               <Image
@@ -179,7 +172,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
               max={60}
             />
           </Animated.ScrollView>
-        </Animated.View>
+        </CardView>
         <OneButton
           buttonFadeIn={buttonFadeIn}
           onPress={handleStartProgram}

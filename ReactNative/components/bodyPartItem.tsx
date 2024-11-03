@@ -9,6 +9,7 @@ import {
   card_text_color,
 } from "../assets/thems/colors";
 import { FadeOut } from "../assets/thems/animations";
+import { CardList } from "./card";
 
 interface BodyPartCardProps {
   name: string;
@@ -44,7 +45,7 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
   };
 
   return (
-    <View style={styles.card}>
+    <CardList>
       <Text style={styles.title}>{name}</Text>
       <View style={styles.image_container}>
         <Image source={source} style={styles.image} resizeMode={"contain"} />
@@ -69,7 +70,7 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
           <Text style={styles.buttonText}>TENS</Text>
         </Pressable>
       </View>
-    </View>
+    </CardList>
   );
 };
 
@@ -158,8 +159,9 @@ const styles = StyleSheet.create({
     backgroundColor: card_background_color,
     alignItems: "center",
     borderRadius: 10,
-    margin: 10,
+    width: "90%",
     padding: 15,
+    flex: 1,
   },
   title: {
     fontFamily: "fontHeader",
