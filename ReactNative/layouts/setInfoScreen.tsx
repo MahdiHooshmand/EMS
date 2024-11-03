@@ -7,14 +7,10 @@ import {
   Animated,
   Image,
 } from "react-native";
-import {
-  background_color,
-  card_background_color,
-  card_text_color,
-} from "../assets/thems/colors";
+import { background_color, card_text_color } from "../assets/thems/colors";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
-import { EMS, TENS } from "../models/stimulateInfoModel";
+import { Electrotherapy, EMS, TENS } from "../models/stimulateInfoModel";
 import { OneButton } from "../components/footer";
 import { Combo, Seekbar } from "../components/formComponents";
 import { CardView } from "../components/card";
@@ -50,33 +46,17 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
   const [isStarting, setIsStarting] = useState(false);
 
   useEffect(() => {
-    if (stimulationType === "EMS") {
-      setFrequencyItems(
-        EMS.validFrequencies.map((frequency) => ({
-          label: `${frequency} Hz`,
-          value: frequency,
-        })),
-      );
-      setPulseWidthItems(
-        EMS.validPulseWidths.map((pulseWidth) => ({
-          label: `${pulseWidth} µs`,
-          value: pulseWidth,
-        })),
-      );
-    } else {
-      setFrequencyItems(
-        TENS.validFrequencies.map((frequency) => ({
-          label: `${frequency} Hz`,
-          value: frequency,
-        })),
-      );
-      setPulseWidthItems(
-        TENS.validPulseWidths.map((pulseWidth) => ({
-          label: `${pulseWidth} µs`,
-          value: pulseWidth,
-        })),
-      );
-    }
+    setFrequencyItems(
+      (stimulationType === "EMS" ? EMS : TENS).validFrequencies.map(
+        (frequency) => ({ label: `${frequency} Hz`, value: frequency }),
+      ),
+    );
+    setPulseWidthItems(
+      (stimulationType === "EMS" ? EMS : TENS).validPulseWidths.map(
+        (pulseWidth) => ({ label: `${pulseWidth} µs`, value: pulseWidth }),
+      ),
+    );
+
     Animated.parallel([
       headerAnimation.animate(),
       listAnimation.animate(),
@@ -86,26 +66,15 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
 
   const handleStartProgram = () => {
     if (isStarting) return;
-    let data;
-    if (stimulationType === "EMS") {
-      data = new EMS(
-        bodyPartName,
-        frequency,
-        pulseWidth,
-        onTime,
-        offTime,
-        duration,
-      );
-    } else {
-      data = new TENS(
-        bodyPartName,
-        frequency,
-        pulseWidth,
-        onTime,
-        offTime,
-        duration,
-      );
-    }
+    const data = new Electrotherapy(
+      bodyPartName,
+      frequency,
+      pulseWidth,
+      stimulationType,
+      onTime,
+      offTime,
+      duration,
+    );
     setIsStarting(true);
     setTimeout(() => {
       containerFadeOut.animate().start(() => {
@@ -206,13 +175,6 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
-  },
-  card: {
-    backgroundColor: card_background_color,
-    borderRadius: 10,
-    padding: 15,
-    width: "90%",
-    flex: 1,
   },
   title: {
     fontFamily: "fontHeader",
