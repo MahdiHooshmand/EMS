@@ -8,31 +8,38 @@ import {
   card_background_color,
   card_text_color,
 } from "../assets/thems/colors";
+import { FadeOut } from "../assets/thems/animations";
 
 interface BodyPartCardProps {
   name: string;
   source: any;
   navigation: any;
+  fadeOut: FadeOut;
 }
 
 export const BodyPartCard: React.FC<BodyPartCardProps> = ({
   name,
   source,
+  fadeOut,
   navigation,
 }) => {
   const handleEMSPress = () => {
-    navigation.replace("set-info", {
-      bodyPartName: name,
-      source: source,
-      stimulationType: "EMS",
+    fadeOut.animate().start(() => {
+      navigation.replace("set-info", {
+        bodyPartName: name,
+        source: source,
+        stimulationType: "EMS",
+      });
     });
   };
 
   const handleTENSPress = () => {
-    navigation.replace("set-info", {
-      bodyPartName: name,
-      source: source,
-      stimulationType: "TENS",
+    fadeOut.animate().start(() => {
+      navigation.replace("set-info", {
+        bodyPartName: name,
+        source: source,
+        stimulationType: "TENS",
+      });
     });
   };
 

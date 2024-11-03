@@ -20,15 +20,20 @@ import {
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useEffect, useState } from "react";
-import { FadeIn } from "../assets/thems/animations";
+import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { PeripheralModel } from "../models/peripheralCardModel";
 
 interface Props {
   initialPeripheral: PeripheralModel;
+  fadeOut: FadeOut;
   navigation: any;
 }
 
-export const PeripheralCard = ({ initialPeripheral, navigation }: Props) => {
+export const PeripheralCard = ({
+  initialPeripheral,
+  fadeOut,
+  navigation,
+}: Props) => {
   const [peripheral, setPeripheral] = useState(initialPeripheral);
   const cardFadeIn = new FadeIn(0);
 
@@ -47,7 +52,9 @@ export const PeripheralCard = ({ initialPeripheral, navigation }: Props) => {
         connection: 3,
       }));
       setTimeout(() => {
-        navigation.replace("body-parts");
+        fadeOut.animate().start(() => {
+          navigation.navigate("body-parts");
+        });
       }, 2000);
     }, 2000);
   };

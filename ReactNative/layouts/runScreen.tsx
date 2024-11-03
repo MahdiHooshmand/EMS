@@ -9,7 +9,6 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import { Electrotherapy } from "../models/stimulateInfoModel";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import {
   background_color,
@@ -19,7 +18,6 @@ import {
   stop_color,
   text_color,
 } from "../assets/thems/colors";
-import { FakePeripheralModel } from "../models/peripheralCardModel";
 
 interface RunScreenProps {
   navigation: any;
@@ -37,16 +35,17 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
   const [stopping, setStopping] = useState(false);
 
   const stop = () => {
-    console.log("stop");
     if (stopping) {
       return;
     }
     setStopping(true);
     setTimeout(() => {
-      navigation.replace("set-info", {
-        bodyPartName: data.muscle,
-        source: source,
-        stimulationType: data.stimulationType,
+      containerFadeOut.animate().start(() => {
+        navigation.replace("set-info", {
+          bodyPartName: data.muscle,
+          source: source,
+          stimulationType: data.stimulationType,
+        });
       });
       setStopping(false);
     }, 500);

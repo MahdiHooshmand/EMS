@@ -57,6 +57,7 @@ export const BodyPartsScreen = ({ navigation }: any) => {
               <BodyPartCard
                 name={item.name}
                 source={item.source}
+                fadeOut={containerFadeOut}
                 navigation={navigation}
               />
             )}

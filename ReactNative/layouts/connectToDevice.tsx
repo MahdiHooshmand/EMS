@@ -80,6 +80,7 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
               renderItem={({ item }) => (
                 <PeripheralCard
                   initialPeripheral={item}
+                  fadeOut={fadeOut}
                   navigation={navigation}
                 />
               )}
