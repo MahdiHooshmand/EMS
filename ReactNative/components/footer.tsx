@@ -4,7 +4,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  View,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import {
@@ -12,7 +11,7 @@ import {
   button_pressed_background_color,
   button_text_color,
 } from "../assets/thems/colors";
-import React, { useState } from "react";
+import React from "react";
 import { FadeIn } from "../assets/thems/animations";
 
 interface Props {
@@ -71,7 +70,6 @@ const styles = StyleSheet.create({
   footer: {
     height: 90,
     justifyContent: "center",
-    alignItems: "center",
   },
   button: {
     paddingVertical: 10,
@@ -90,8 +88,5 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 5,
-  },
-  indicatorView: {
-    justifyContent: "center",
   },
 });
