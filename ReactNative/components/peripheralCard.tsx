@@ -108,26 +108,32 @@ export const PeripheralCard = ({
           size={24}
           color={card_text_color}
         />
-        {peripheral.connection === 2 || peripheral.connection === 3 ? (
-          <ActivityIndicator size="large" color={card_text_color} />
-        ) : peripheral.isValid ? (
-          <Pressable
-            onPress={connect}
-            style={({ pressed }) => [
-              pressed ? styles.addIconPressed : styles.addIcon,
-            ]}
-          >
-            <SimpleLineIcons name={"plus"} size={50} color={card_text_color} />
-          </Pressable>
-        ) : (
-          <Pressable style={styles.inValidIcon}>
-            <SimpleLineIcons
-              name={"question"}
-              size={50}
-              color={card_text_color}
-            />
-          </Pressable>
-        )}
+        <View style={styles.addIconContainer}>
+          {peripheral.connection === 2 || peripheral.connection === 3 ? (
+            <ActivityIndicator size="large" color={card_text_color} />
+          ) : peripheral.isValid ? (
+            <Pressable
+              onPress={connect}
+              style={({ pressed }) => [
+                pressed ? styles.addIconPressed : styles.addIcon,
+              ]}
+            >
+              <SimpleLineIcons
+                name={"plus"}
+                size={50}
+                color={card_text_color}
+              />
+            </Pressable>
+          ) : (
+            <Pressable style={styles.inValidIcon}>
+              <SimpleLineIcons
+                name={"question"}
+                size={50}
+                color={card_text_color}
+              />
+            </Pressable>
+          )}
+        </View>
       </View>
     </Animated.View>
   );
@@ -224,6 +230,12 @@ const styles = StyleSheet.create({
   addIconPressed: {
     backgroundColor: button_pressed_background_color,
     borderRadius: 25,
+  },
+  addIconContainer: {
+    width: 52,
+    height: 52,
+    justifyContent: "center",
+    alignItems: "center",
   },
   inValidIcon: {
     borderRadius: 25,
