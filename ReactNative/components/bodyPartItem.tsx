@@ -1,11 +1,9 @@
-// BodyPartItem.tsx
-import React, { useState } from "react";
+import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import {
   button_background_color,
   button_pressed_background_color,
   button_text_color,
-  card_background_color,
   card_text_color,
 } from "../assets/thems/colors";
 import { FadeOut } from "../assets/thems/animations";
@@ -155,18 +153,9 @@ export const fetchBodyParts = () => {
 };
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: card_background_color,
-    alignItems: "center",
-    borderRadius: 10,
-    width: "90%",
-    padding: 15,
-    flex: 1,
-  },
   title: {
     fontFamily: "fontHeader",
     fontSize: 20,
-    textAlign: "center",
     color: card_text_color,
   },
   image: {
@@ -177,7 +166,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1.0,
     width: "80%",
     alignItems: "center",
-    justifyContent: "center",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -187,7 +175,6 @@ const styles = StyleSheet.create({
   },
   button: {
     paddingVertical: 10,
-    paddingHorizontal: 20,
     backgroundColor: button_background_color,
     borderRadius: 30,
     width: "40%",
