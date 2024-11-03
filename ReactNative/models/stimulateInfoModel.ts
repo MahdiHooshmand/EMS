@@ -18,7 +18,7 @@ type MuscleName =
 
 type StimulationType = "EMS" | "TENS";
 
-class Electrotherapy {
+export class Electrotherapy {
   private _muscle: MuscleName;
   private _frequency: number;
   private _pulseWidth: number;

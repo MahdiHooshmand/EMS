@@ -83,7 +83,29 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
   }, []);
 
   const handleStartProgram = () => {
-    //code
+    let data;
+    if (stimulationType === "EMS") {
+      data = new EMS(
+        bodyPartName,
+        frequency,
+        pulseWidth,
+        onTime,
+        offTime,
+        duration,
+      );
+    } else {
+      data = new TENS(
+        bodyPartName,
+        frequency,
+        pulseWidth,
+        onTime,
+        offTime,
+        duration,
+      );
+    }
+    containerFadeOut.animate().start(() => {
+      navigation.replace("run", { data: data });
+    });
   };
 
   return (

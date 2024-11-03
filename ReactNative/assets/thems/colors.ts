@@ -18,3 +18,5 @@ export const ble_connecting = "#FFC107";
 export const ble_verifying = "#007BFF";
 export const ble_cant_connect = "#DC3545";
 export const ble_connecting_background = "#D1E7FD";
+
+export const stop_color = "#FF3B30";

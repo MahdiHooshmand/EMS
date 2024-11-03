@@ -10,6 +10,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ConnectToDeviceScreen } from "./layouts/connectToDevice";
 import { BodyPartsScreen } from "./layouts/bodyParts";
 import { SetInfoScreen } from "./layouts/setInfoScreen";
+import { RunScreen } from "./layouts/runScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,6 +22,7 @@ export default function App() {
     errorFont: require("./assets/fonts/OpenSans-Regular.ttf"),
     fontHeader: require("./assets/fonts/OpenSans-Italic.ttf"),
     fontText: require("./assets/fonts/OpenSans-Italic.ttf"),
+    stopText: require("./assets/fonts/OpenSans-Bold.ttf"),
   });
 
   useEffect(() => {
@@ -47,6 +49,7 @@ export default function App() {
         />
         <Stack.Screen name="body-parts" component={BodyPartsScreen} />
         <Stack.Screen name="set-info" component={SetInfoScreen} />
+        <Stack.Screen name="run" component={RunScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
