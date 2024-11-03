@@ -9,14 +9,8 @@ import {
   StyleSheet,
   Text,
   Animated,
-  ActivityIndicator,
-  View,
 } from "react-native";
-import {
-  background_color,
-  button_text_color,
-  placeholder_color,
-} from "../assets/thems/colors";
+import { background_color, placeholder_color } from "../assets/thems/colors";
 import { useEffect, useState } from "react";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
@@ -116,9 +110,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     marginVertical: 20,
-  },
-  indicatorView: {
-    margin: 24,
-    justifyContent: "center",
   },
 });
