@@ -23,6 +23,20 @@ import { useEffect, useState } from "react";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { PeripheralModel } from "../models/peripheralCardModel";
 
+type CardStyle = {
+  backgroundColor: string;
+  alignItems: "center";
+  borderBottomLeftRadius: number;
+  borderTopLeftRadius: number;
+  borderBottomRightRadius: number;
+  borderTopRightRadius: number;
+  margin: number;
+  height: number;
+  flexDirection: "row";
+  opacity: Animated.Value;
+  transform: { translateY: Animated.Value }[];
+};
+
 interface Props {
   initialPeripheral: PeripheralModel;
   fadeOut: FadeOut;
@@ -59,40 +73,52 @@ export const PeripheralCard = ({
     }, 2000);
   };
 
+  const getCardStyle = (isValid: boolean, connection: number): CardStyle => ({
+    backgroundColor: isValid
+      ? connection === 1
+        ? card_background_color
+        : ble_connecting_background
+      : card_background_invalid_color,
+    alignItems: "center",
+    borderBottomLeftRadius: 10,
+    borderTopLeftRadius: 10,
+    borderBottomRightRadius: 40,
+    borderTopRightRadius: 40,
+    margin: 5,
+    height: 80,
+    flexDirection: "row",
+    opacity: cardFadeIn.fadeAnim,
+    transform: [{ translateY: cardFadeIn.translateY }],
+  });
+
+  const getStatusStyle = (isValid: boolean, connection: number) => ({
+    width: 4,
+    height: 60,
+    margin: 20,
+    borderRadius: 2,
+    backgroundColor: isValid
+      ? connection === 1
+        ? ble_ready_to_connect
+        : connection === 2
+          ? ble_connecting
+          : ble_verifying
+      : ble_cant_connect,
+  });
+
   return (
     <Animated.View
-      style={[
-        peripheral.isValid
-          ? peripheral.connection === 1
-            ? styles.validCard
-            : [styles.validCard, { backgroundColor: ble_connecting_background }]
-          : styles.inValidCard,
-        {
-          opacity: cardFadeIn.fadeAnim,
-          translateY: cardFadeIn.translateY,
-        },
-      ]}
+      style={getCardStyle(peripheral.isValid, peripheral.connection)}
     >
-      <View
-        style={
-          peripheral.isValid
-            ? peripheral.connection === 1
-              ? styles.status_ready
-              : peripheral.connection === 2
-                ? styles.status_connecting
-                : styles.status_verifying
-            : styles.inValidStatus
-        }
-      ></View>
+      <View style={getStatusStyle(peripheral.isValid, peripheral.connection)} />
       <View style={styles.Container}>
         <View style={styles.nameContainer}>
-          {peripheral.isValid ? (
-            <Text style={styles.validName}>
-              {"Febina EMS\n" + peripheral.name.slice(10)}
-            </Text>
-          ) : (
-            <Text style={styles.inValidName}>{peripheral.name}</Text>
-          )}
+          <Text
+            style={peripheral.isValid ? styles.validName : styles.inValidName}
+          >
+            {peripheral.isValid
+              ? "Febina EMS\n" + peripheral.name.slice(10)
+              : peripheral.name}
+          </Text>
         </View>
         <MaterialCommunityIcons
           style={styles.signalIcon}
@@ -140,69 +166,11 @@ export const PeripheralCard = ({
 };
 
 const styles = StyleSheet.create({
-  validCard: {
-    backgroundColor: card_background_color,
-    alignItems: "center",
-    alignSelf: "center",
-    borderBottomLeftRadius: 10,
-    borderTopLeftRadius: 10,
-    borderBottomRightRadius: 40,
-    borderTopRightRadius: 40,
-    margin: 5,
-    height: 80,
-    flexDirection: "row",
-  },
-  inValidCard: {
-    backgroundColor: card_background_invalid_color,
-    alignItems: "center",
-    borderBottomLeftRadius: 10,
-    borderTopLeftRadius: 10,
-    borderBottomRightRadius: 40,
-    borderTopRightRadius: 40,
-    margin: 5,
-    height: 80,
-    flexDirection: "row",
-    alignSelf: "center",
-  },
-  status_ready: {
-    backgroundColor: ble_ready_to_connect,
-    width: 4,
-    height: 60,
-    margin: 20,
-    borderRadius: 2,
-    alignContent: "flex-start",
-  },
-  status_connecting: {
-    backgroundColor: ble_connecting,
-    width: 4,
-    height: 60,
-    margin: 20,
-    borderRadius: 2,
-    alignContent: "flex-start",
-  },
-  status_verifying: {
-    backgroundColor: ble_verifying,
-    width: 4,
-    height: 60,
-    margin: 20,
-    borderRadius: 2,
-    alignContent: "flex-start",
-  },
-  inValidStatus: {
-    backgroundColor: ble_cant_connect,
-    width: 4,
-    height: 60,
-    margin: 20,
-    borderRadius: 2,
-    alignContent: "flex-start",
-  },
   Container: {
-    alignSelf: "center",
     flex: 1,
     marginRight: 15,
     height: 60,
     flexDirection: "row",
-    justifyContent: "flex-end",
     alignItems: "center",
   },
   signalIcon: {
@@ -235,7 +203,6 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     justifyContent: "center",
-    alignItems: "center",
   },
   inValidIcon: {
     borderRadius: 25,
