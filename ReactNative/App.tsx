@@ -1,4 +1,3 @@
-// EMS/App.tsx
 import { StatusBar } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
@@ -39,7 +38,7 @@ export default function App() {
     <NavigationContainer>
       <StatusBar barStyle="light-content" backgroundColor={background_color} />
       <Stack.Navigator
-        screenOptions={{ headerShown: false }}
+        screenOptions={{ headerShown: false, animation: "none" }}
         initialRouteName="login"
       >
         <Stack.Screen name="login" component={Login} />
