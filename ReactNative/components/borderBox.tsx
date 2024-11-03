@@ -32,6 +32,5 @@ const styles = StyleSheet.create({
     borderColor: card_border_color,
     borderRadius: 15,
     padding: 10,
-    alignItems: "center",
   },
 });
