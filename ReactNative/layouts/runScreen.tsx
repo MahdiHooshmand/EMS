@@ -48,7 +48,6 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
           stimulationType: data.stimulationType,
         });
       });
-      setStopping(false);
     }, 500);
   };
 

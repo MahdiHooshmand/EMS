@@ -47,6 +47,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
   const [onTime, setOnTime] = useState<number>(1.0);
   const [offTime, setOffTime] = useState<number>(4.0);
   const [duration, setDuration] = useState<number>(5);
+  const [isStarting, setIsStarting] = useState(false);
 
   useEffect(() => {
     if (stimulationType === "EMS") {
@@ -84,6 +85,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
   }, []);
 
   const handleStartProgram = () => {
+    if (isStarting) return;
     let data;
     if (stimulationType === "EMS") {
       data = new EMS(
@@ -104,9 +106,12 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
         duration,
       );
     }
-    containerFadeOut.animate().start(() => {
-      navigation.replace("run", { data: data, source: source });
-    });
+    setIsStarting(true);
+    setTimeout(() => {
+      containerFadeOut.animate().start(() => {
+        navigation.replace("run", { data: data, source: source });
+      });
+    }, 1000);
   };
 
   return (
@@ -178,6 +183,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
           onPress={handleStartProgram}
           materialIconName={"play-arrow"}
           text={"START"}
+          isWaiting={isStarting}
         />
       </Animated.View>
     </SafeAreaView>

@@ -88,18 +88,13 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
             />
           )}
         </BorderBox>
-        {isLoading ? (
-          <View style={styles.indicatorView}>
-            <ActivityIndicator size="large" color={button_text_color} />
-          </View>
-        ) : (
-          <OneButton
-            buttonFadeIn={buttonFadeIn}
-            onPress={handleScanDevice}
-            materialIconName={"bluetooth-searching"}
-            text={"Scan Devices"}
-          />
-        )}
+        <OneButton
+          buttonFadeIn={buttonFadeIn}
+          onPress={handleScanDevice}
+          materialIconName={"bluetooth-searching"}
+          text={"Scan Devices"}
+          isWaiting={isLoading}
+        />
       </Animated.View>
     </SafeAreaView>
   );
