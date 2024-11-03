@@ -59,7 +59,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
       );
       setPulseWidthItems(
         EMS.validPulseWidths.map((pulseWidth) => ({
-          label: `${pulseWidth} us`,
+          label: `${pulseWidth} µs`,
           value: pulseWidth,
         })),
       );
@@ -72,7 +72,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
       );
       setPulseWidthItems(
         TENS.validPulseWidths.map((pulseWidth) => ({
-          label: `${pulseWidth} us`,
+          label: `${pulseWidth} µs`,
           value: pulseWidth,
         })),
       );
