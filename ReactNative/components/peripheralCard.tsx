@@ -105,21 +105,54 @@ export const PeripheralCard = ({
       : ble_cant_connect,
   });
 
+  const NameContainer = () => {
+    return (
+      <View style={styles.nameContainer}>
+        <Text
+          style={peripheral.isValid ? styles.validName : styles.inValidName}
+        >
+          {peripheral.isValid
+            ? "Febina EMS\n" + peripheral.name.slice(10)
+            : peripheral.name}
+        </Text>
+      </View>
+    );
+  };
+
+  const AddIconContainer = () => {
+    return (
+      <View style={styles.addIconContainer}>
+        {peripheral.connection === 2 || peripheral.connection === 3 ? (
+          <ActivityIndicator size="large" color={card_text_color} />
+        ) : peripheral.isValid ? (
+          <Pressable
+            onPress={connect}
+            style={({ pressed }) => [
+              pressed ? styles.addIconPressed : styles.addIcon,
+            ]}
+          >
+            <SimpleLineIcons name={"plus"} size={50} color={card_text_color} />
+          </Pressable>
+        ) : (
+          <Pressable style={styles.inValidIcon}>
+            <SimpleLineIcons
+              name={"question"}
+              size={50}
+              color={card_text_color}
+            />
+          </Pressable>
+        )}
+      </View>
+    );
+  };
+
   return (
     <Animated.View
       style={getCardStyle(peripheral.isValid, peripheral.connection)}
     >
       <View style={getStatusStyle(peripheral.isValid, peripheral.connection)} />
       <View style={styles.Container}>
-        <View style={styles.nameContainer}>
-          <Text
-            style={peripheral.isValid ? styles.validName : styles.inValidName}
-          >
-            {peripheral.isValid
-              ? "Febina EMS\n" + peripheral.name.slice(10)
-              : peripheral.name}
-          </Text>
-        </View>
+        <NameContainer />
         <MaterialCommunityIcons
           style={styles.signalIcon}
           name={
@@ -134,32 +167,7 @@ export const PeripheralCard = ({
           size={24}
           color={card_text_color}
         />
-        <View style={styles.addIconContainer}>
-          {peripheral.connection === 2 || peripheral.connection === 3 ? (
-            <ActivityIndicator size="large" color={card_text_color} />
-          ) : peripheral.isValid ? (
-            <Pressable
-              onPress={connect}
-              style={({ pressed }) => [
-                pressed ? styles.addIconPressed : styles.addIcon,
-              ]}
-            >
-              <SimpleLineIcons
-                name={"plus"}
-                size={50}
-                color={card_text_color}
-              />
-            </Pressable>
-          ) : (
-            <Pressable style={styles.inValidIcon}>
-              <SimpleLineIcons
-                name={"question"}
-                size={50}
-                color={card_text_color}
-              />
-            </Pressable>
-          )}
-        </View>
+        <AddIconContainer />
       </View>
     </Animated.View>
   );
