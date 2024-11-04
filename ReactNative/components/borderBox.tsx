@@ -1,3 +1,4 @@
+// BorderBox component to display children with fade-in animation and border
 import React, { ReactNode } from "react";
 import { Animated, StyleSheet } from "react-native";
 import { card_border_color } from "../assets/thems/colors";
@@ -8,6 +9,12 @@ interface BorderBoxProps {
   fadeAnim: FadeIn;
 }
 
+/**
+ * A bordered box with fade-in animation.
+ * @param children Children to be rendered inside the box.
+ * @param fadeAnim Fade-in animation state.
+ * @constructor = BorderBox
+ */
 export const BorderBox: React.FC<BorderBoxProps> = ({ children, fadeAnim }) => {
   return (
     <Animated.View
@@ -24,6 +31,9 @@ export const BorderBox: React.FC<BorderBoxProps> = ({ children, fadeAnim }) => {
   );
 };
 
+/**
+ * Default styles for the bordered box.
+ */
 const styles = StyleSheet.create({
   card: {
     width: "90%",

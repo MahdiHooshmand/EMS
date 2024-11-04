@@ -1,3 +1,4 @@
+// OneButton component renders a button with a Material Icon and a text label.
 import {
   ActivityIndicator,
   Animated,
@@ -22,6 +23,15 @@ interface Props {
   isWaiting: boolean;
 }
 
+/**
+ * OneButton component renders a button with a Material Icon and a text label.
+ * @param buttonFadeIn - animation object for the button's fade in animation'
+ * @param onPress - function to be called when the button is pressed
+ * @param materialIconName - name of the Material Icon to be used
+ * @param text - text to be displayed on the button
+ * @param isWaiting - whether the button is in a waiting state or not
+ * @constructor - This component renders a button with a Material Icon and a text label.
+ */
 export const OneButton = ({
   buttonFadeIn,
   onPress,
@@ -29,6 +39,7 @@ export const OneButton = ({
   text,
   isWaiting,
 }: Props) => {
+  // Handle button press event
   const styledPressed = () => {
     if (isWaiting) return;
     onPress();
@@ -66,6 +77,7 @@ export const OneButton = ({
   );
 };
 
+// Define styles for the component.
 const styles = StyleSheet.create({
   footer: {
     height: 90,

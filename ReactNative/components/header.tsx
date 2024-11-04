@@ -1,3 +1,4 @@
+// Define the styles for the Header component
 import { Animated, Image, Pressable, StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { button_background_color, text_color } from "../assets/thems/colors";
@@ -11,12 +12,23 @@ interface Props {
   backPage: string;
 }
 
+/**
+ * Header component is responsible for displaying the app's logo and a back button.'
+ * @param headerFadeIn - An instance of the FadeIn animation for the header.
+ * @param fadeOut - An instance of the FadeOut animation for the container.
+ * @param navigation - The navigation object used to navigate between screens.
+ * @param backPage - The page to navigate back to when the back button is pressed.
+ * @constructor - Header component constructor.
+ */
 export const Header = ({
   headerFadeIn,
   fadeOut,
   navigation,
   backPage,
 }: Props) => {
+  /**
+   * State variable to track if the back button is pressed.
+   */
   const [isBackButtonPressed, setIsBackButtonPressed] = useState(false);
 
   const handleBackPress = () => {
@@ -25,6 +37,10 @@ export const Header = ({
     });
   };
 
+  /**
+   * Header component render method.
+   * @returns - The header component's UI.
+   */
   return (
     <Animated.View
       style={[
@@ -60,6 +76,9 @@ export const Header = ({
   );
 };
 
+/**
+ * Define the styles for the Header component.
+ */
 const styles = StyleSheet.create({
   header: {
     flexDirection: "row",

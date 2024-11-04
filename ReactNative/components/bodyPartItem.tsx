@@ -1,3 +1,4 @@
+// Export the BodyPartCard component
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import {
@@ -16,12 +17,23 @@ interface BodyPartCardProps {
   fadeOut: FadeOut;
 }
 
+/**
+ * BodyPartCard component displays a card with a body part name, image, and buttons for E
+ * @param name of the body part
+ * @param source of the image
+ * @param fadeOut animation
+ * @param navigation for navigation
+ * @constructor - BodyPartCard
+ */
 export const BodyPartCard: React.FC<BodyPartCardProps> = ({
   name,
   source,
   fadeOut,
   navigation,
 }) => {
+  /**
+   * Handle EMS button press
+   */
   const handleEMSPress = () => {
     fadeOut.animate().start(() => {
       navigation.replace("set-info", {
@@ -31,7 +43,9 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
       });
     });
   };
-
+  /**
+   * Handle TENS button press
+   */
   const handleTENSPress = () => {
     fadeOut.animate().start(() => {
       navigation.replace("set-info", {
@@ -42,6 +56,9 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
     });
   };
 
+  /**
+   * Render the BodyPartCard component
+   */
   return (
     <CardList>
       <Text style={styles.title}>{name}</Text>
@@ -73,6 +90,9 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
 };
 
 export const fetchBodyParts = () => {
+  /**
+   * Fetch body parts data from API
+   */
   return [
     {
       id: 1,
@@ -152,6 +172,9 @@ export const fetchBodyParts = () => {
   ];
 };
 
+/**
+ * Styles for the BodyPartCard component
+ */
 const styles = StyleSheet.create({
   title: {
     fontFamily: "fontHeader",
