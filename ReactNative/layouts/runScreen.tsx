@@ -13,7 +13,6 @@ import { FadeIn, FadeOut } from "../assets/thems/animations";
 import {
   background_color,
   button_text_color,
-  card_background_color,
   card_text_color,
   stop_color,
   text_color,
@@ -78,60 +77,68 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
     return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   };
 
+  const CardContainer = () => {
+    return (
+      <CardView fadeInAnim={infoFadeIn}>
+        <View style={styles.cardHeader}>
+          <Image source={source} style={styles.image} resizeMode={"contain"} />
+          <View style={styles.cardHeaderInfo}>
+            <Text style={styles.title}>{data.stimulationType}</Text>
+            <Text style={styles.title}>{data.muscle}</Text>
+          </View>
+        </View>
+        <View style={styles.cardBody}>
+          <Text style={styles.label}>
+            on time : {data.onTime.toFixed(1)} second
+          </Text>
+          <Text style={styles.label}>
+            off time : {data.offTime.toFixed(1)} second
+          </Text>
+          <Text style={styles.label}>Frequency: {data.frequency} Hz</Text>
+          <Text style={styles.label}>Pulse Width: {data.pulseWidth} µs</Text>
+        </View>
+      </CardView>
+    );
+  };
+
+  const StopContainer = () => {
+    return (
+      <Animated.View
+        style={[
+          styles.stopView,
+          {
+            opacity: stopFadeIn.fadeAnim,
+            transform: [{ translateY: stopFadeIn.translateY }],
+          },
+        ]}
+      >
+        <TouchableOpacity style={styles.stopButton} onPress={stop}>
+          {stopping ? (
+            <ActivityIndicator size="large" color={button_text_color} />
+          ) : (
+            <>
+              {isInitialCountdown ? (
+                <Text style={styles.stopLabel}>{countdown}</Text>
+              ) : (
+                <Text style={styles.countdownText}>
+                  {formatTime(countdown)}
+                </Text>
+              )}
+              <Text style={styles.stopLabel}>STOP</Text>
+            </>
+          )}
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View
         style={[styles.container, { opacity: containerFadeOut.fadeAnim }]}
       >
-        <CardView fadeInAnim={infoFadeIn}>
-          <View style={styles.cardHeader}>
-            <Image
-              source={source}
-              style={styles.image}
-              resizeMode={"contain"}
-            />
-            <View style={styles.cardHeaderInfo}>
-              <Text style={styles.title}>{data.stimulationType}</Text>
-              <Text style={styles.title}>{data.muscle}</Text>
-            </View>
-          </View>
-          <View style={styles.cardBody}>
-            <Text style={styles.label}>
-              on time : {data.onTime.toFixed(1)} second
-            </Text>
-            <Text style={styles.label}>
-              off time : {data.offTime.toFixed(1)} second
-            </Text>
-            <Text style={styles.label}>Frequency: {data.frequency} Hz</Text>
-            <Text style={styles.label}>Pulse Width: {data.pulseWidth} µs</Text>
-          </View>
-        </CardView>
-        <Animated.View
-          style={[
-            styles.stopView,
-            {
-              opacity: stopFadeIn.fadeAnim,
-              transform: [{ translateY: stopFadeIn.translateY }],
-            },
-          ]}
-        >
-          <TouchableOpacity style={styles.stopButton} onPress={stop}>
-            {stopping ? (
-              <ActivityIndicator size="large" color={button_text_color} />
-            ) : (
-              <>
-                {isInitialCountdown ? (
-                  <Text style={styles.stopLabel}>{countdown}</Text>
-                ) : (
-                  <Text style={styles.countdownText}>
-                    {formatTime(countdown)}
-                  </Text>
-                )}
-                <Text style={styles.stopLabel}>STOP</Text>
-              </>
-            )}
-          </TouchableOpacity>
-        </Animated.View>
+        <CardContainer />
+        <StopContainer />
       </Animated.View>
     </SafeAreaView>
   );
