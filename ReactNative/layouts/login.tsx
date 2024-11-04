@@ -85,10 +85,9 @@ export function Login({ navigation }: Props) {
     }
   }, [username, password]);
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <Animated.View style={[styles.container, { opacity: fadeOut.fadeAnim }]}>
-        <View style={styles.header_gap} />
+  const BigLogoContainer = () => {
+    return (
+      <>
         {!keyboardStatus && (
           <Animated.View
             style={[styles.big_logo_container, fades[0].getStyles()]}
@@ -100,41 +99,56 @@ export function Login({ navigation }: Props) {
             />
           </Animated.View>
         )}
+      </>
+    );
+  };
+
+  const SubmitContainer = () => {
+    return (
+      <View style={styles.submit_container}>
+        <InputAuth
+          fadeIn={fades[1]}
+          title="UserName"
+          value={username}
+          placeholder="Enter Username..."
+          handleInput={(text) => handleInput("username", text)}
+          secureTextEntry={false}
+        />
+        <InputAuth
+          fadeIn={fades[2]}
+          title="Password"
+          value={password}
+          placeholder="Enter Password"
+          handleInput={(text) => handleInput("password", text)}
+          secureTextEntry={true}
+        />
+        <Animated.View style={fades[3].getStyles()}>
+          <Pressable
+            onPress={login}
+            style={({ pressed }) => [
+              styles.login_button,
+              pressed && styles.login_button_pressed,
+            ]}
+          >
+            <Text style={styles.login_text}>Login</Text>
+            <MaterialIcons name="login" size={24} color={button_text_color} />
+          </Pressable>
+        </Animated.View>
+      </View>
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <Animated.View style={[styles.container, { opacity: fadeOut.fadeAnim }]}>
+        <View style={styles.header_gap} />
+        <BigLogoContainer />
         <View style={styles.error_container}>
           <Text style={styles.error_text}>
             {showError ? "Wrong username or password" : ""}
           </Text>
         </View>
-        <View style={styles.submit_container}>
-          <InputAuth
-            fadeIn={fades[1]}
-            title="UserName"
-            value={username}
-            placeholder="Enter Username..."
-            handleInput={(text) => handleInput("username", text)}
-            secureTextEntry={false}
-          />
-          <InputAuth
-            fadeIn={fades[2]}
-            title="Password"
-            value={password}
-            placeholder="Enter Password"
-            handleInput={(text) => handleInput("password", text)}
-            secureTextEntry={true}
-          />
-          <Animated.View style={fades[3].getStyles()}>
-            <Pressable
-              onPress={login}
-              style={({ pressed }) => [
-                styles.login_button,
-                pressed && styles.login_button_pressed,
-              ]}
-            >
-              <Text style={styles.login_text}>Login</Text>
-              <MaterialIcons name="login" size={24} color={button_text_color} />
-            </Pressable>
-          </Animated.View>
-        </View>
+        <SubmitContainer />
         <View style={styles.footer_gap} />
       </Animated.View>
     </SafeAreaView>
