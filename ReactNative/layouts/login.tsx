@@ -1,3 +1,4 @@
+// The Login component is responsible for handling user authentication.
 import {
   Image,
   Pressable,
@@ -26,15 +27,25 @@ interface Props {
   navigation: any;
 }
 
+/**
+ * The Login component is responsible for handling user authentication.
+ * It displays a login form with username and password fields, and a login button.
+ * The component also includes error handling and animations.
+ *
+ * @param navigation - The navigation object used to navigate to other screens.
+ */
 export function Login({ navigation }: Props) {
+  // State variables
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   const [showError, setShowError] = useState(false);
 
+  // Animation instances
   const fades = [new FadeIn(0), new FadeIn(1), new FadeIn(2), new FadeIn(3)];
   const fadeOut = new FadeOut();
 
+  // Function to handle input changes
   const handleInput = useCallback(
     (inputType: "username" | "password", inputText: string) => {
       inputType === "username"
@@ -45,6 +56,7 @@ export function Login({ navigation }: Props) {
     [],
   );
 
+  // Keyboard event listeners
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () =>
       setKeyboardStatus(true),
@@ -53,16 +65,19 @@ export function Login({ navigation }: Props) {
       setKeyboardStatus(false),
     );
 
+    // Cleanup function
     return () => {
       showSubscription.remove();
       hideSubscription.remove();
     };
   }, []);
 
+  // Animation effect
   useEffect(() => {
     Animated.parallel(fades.map((fade) => fade.animate())).start();
   }, []);
 
+  // Login function
   const login = useCallback(() => {
     Keyboard.dismiss();
     if (!username || !password) {
@@ -85,6 +100,7 @@ export function Login({ navigation }: Props) {
     }
   }, [username, password]);
 
+  // Component for the big logo
   const BigLogoContainer = () => {
     return (
       <Animated.View style={[styles.big_logo_container, fades[0].getStyles()]}>
@@ -97,6 +113,7 @@ export function Login({ navigation }: Props) {
     );
   };
 
+  // Component for the login button
   const LoginButton = () => {
     return (
       <Animated.View style={fades[3].getStyles()}>
@@ -114,6 +131,7 @@ export function Login({ navigation }: Props) {
     );
   };
 
+  // Render the login screen
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={[styles.container, { opacity: fadeOut.fadeAnim }]}>
@@ -149,6 +167,14 @@ export function Login({ navigation }: Props) {
   );
 }
 
+/**
+ * Replace the background_color, button_background_color, button_text_color, error_text_color, and button_pressed_background_color with the actual colors for the background, button background, button text, error text, and pressed button background.
+ *
+ * Example usage:
+ * const background_color = "#f8f9fa";
+ * const button_background_color = "#007bff";
+ * const button_text_color = "#fff";
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

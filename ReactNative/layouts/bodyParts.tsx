@@ -1,3 +1,4 @@
+// Define the styles for the Login component
 import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
@@ -12,12 +13,25 @@ import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { background_color } from "../assets/thems/colors";
 import { BodyPartCard, fetchBodyParts } from "../components/bodyPartItem"; // ایمپورت تابع
 
+/**
+ * Fetch body parts data from a remote API or local storage.
+ *
+ * Returns:
+ * - An array of body part data.
+ */
 interface BodyPartData {
   id: number;
   name: string;
   source: any;
 }
 
+/**
+ * BodyPartsScreen component is responsible for displaying a list of body parts and allowing the user to select one.
+ * It includes a header with a back button, a body with a list of body parts, and a footer with a start button.
+ *
+ * Props:
+ * - navigation: The navigation object used to navigate between screens.
+ */
 export const BodyPartsScreen = ({ navigation }: any) => {
   const headerAnimation = new FadeIn(0);
   const listAnimation = new FadeIn(1);
@@ -25,10 +39,12 @@ export const BodyPartsScreen = ({ navigation }: any) => {
 
   const [bodyPartList, setBodyPartList] = useState<BodyPartData[]>([]);
 
+  // Fetch body parts data when the component mounts or when the body part list changes
   useEffect(() => {
     setBodyPartList(fetchBodyParts());
   }, []);
 
+  // Apply the animations when the body part list changes or when the component mounts
   useEffect(() => {
     if (bodyPartList.length > 0) {
       Animated.parallel([
@@ -38,6 +54,23 @@ export const BodyPartsScreen = ({ navigation }: any) => {
     }
   }, [bodyPartList]);
 
+  /**
+   * Render the BodyPartsScreen component with the fetched body part list.
+   *
+   * Returns:
+   * - A SafeAreaView containing the Header, BorderBox, and FlatList components.
+   * - The Header component includes a back button.
+   * - The BorderBox component includes a fade-in animation.
+   * - The FlatList component displays a list of body parts with BodyPartCard components.
+   * - The View component at the bottom of the screen is used as a footer.
+   *
+   * Props:
+   * - navigation: The navigation object used to navigate between screens.
+   * - headerAnimation: An instance of the FadeIn animation for the header.
+   * - listAnimation: An instance of the FadeIn animation for the list.
+   * - containerFadeOut: An instance of the FadeOut animation for the container.
+   * - bodyPartList: An array of body part data.
+   */
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View
@@ -70,6 +103,14 @@ export const BodyPartsScreen = ({ navigation }: any) => {
   );
 };
 
+/**
+ * Define the styles for the BodyPartsScreen component.
+ *
+ * Returns:
+ * - An object containing the styles for the component.
+ * - The container styles apply to the SafeAreaView.
+ * - The list styles apply to the FlatList component.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

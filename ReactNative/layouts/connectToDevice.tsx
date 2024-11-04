@@ -1,3 +1,4 @@
+// ConnectToDeviceScreenProps interface to define the props expected by the ConnectToDeviceScreen component.
 import { PeripheralCard } from "../components/peripheralCard";
 import {
   PeripheralModel,
@@ -17,7 +18,27 @@ import { Header } from "../components/header";
 import { BorderBox } from "../components/borderBox";
 import { OneButton } from "../components/footer";
 
+/**
+ * ConnectToDeviceScreenProps interface to define the props expected by the ConnectToDeviceScreen component.
+ *
+ * Props:
+ * navigation: Object - The navigation object provided by React Navigation.
+ *
+ * State:
+ */
 export const ConnectToDeviceScreen = ({ navigation }: any) => {
+  /**
+   * State variables to hold the fade animation values for the header, list, and button.
+   * fadeAnim: Animated value to control the opacity of the header.
+   * listAnim: Animated value to control the opacity of the list.
+   * buttonAnim: Animated value to control the opacity of the button.
+   *
+   * Initialize the state variables for the peripheral devices and loading status.
+   * peripheralDevices: Array of PeripheralModel objects representing the discovered devices.
+   * isLoading: Boolean to indicate whether the device scan is in progress.
+   *
+   * Set the initial values for peripheralDevices and isLoading.
+   */
   const headerFadeIn = new FadeIn(0);
   const listFadeIn = new FadeIn(1);
   const buttonFadeIn = new FadeIn(2);
@@ -28,6 +49,10 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
   );
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * Effect hook to start the fade animation for the header, list, and button when the component mounts.
+   * Use Animated.parallel to run the fade animations concurrently.
+   */
   useEffect(() => {
     Animated.parallel([
       headerFadeIn.animate(),
@@ -36,6 +61,12 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
     ]).start();
   }, []);
 
+  /**
+   * Effect hook to handle the scanning of devices.
+   * Set the isLoading state to true and simulate a delay of 2 seconds to simulate the scanning process.
+   * After the delay, create a new array of PeripheralModel objects and update the peripheralDevices state.
+   * Finally, set the isLoading state to false.
+   */
   const handleScanDevice = () => {
     setIsLoading(true);
     setTimeout(() => {
@@ -45,6 +76,11 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
     }, 2000);
   };
 
+  /**
+   * Render the ConnectToDeviceScreen component.
+   * Display the header, list, and button with the appropriate fade animations.
+   * If the isLoading state is true, display a loading indicator.
+   */
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View
@@ -94,6 +130,14 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
   );
 };
 
+/**
+ * Styles for the ConnectToDeviceScreen component.
+ * Includes the container, list, and empty message styles.
+ *
+ * Styles:
+ * - container: Sets the flex to 1, background color, and center alignment.
+ * - list: Sets the width to 100%.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

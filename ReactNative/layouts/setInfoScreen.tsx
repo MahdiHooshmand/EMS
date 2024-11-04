@@ -1,3 +1,4 @@
+// SetInfoScreen component is responsible for displaying the stimulation settings for a specific body part.
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -15,17 +16,49 @@ import { OneButton } from "../components/footer";
 import { Combo, Seekbar } from "../components/formComponents";
 import { CardView } from "../components/card";
 
+/**
+ * Props for the SetInfoScreen component.
+ */
 interface Props {
   navigation: any;
   route: any;
 }
 
+/**
+ * Frequency and pulse width items for the EMS and TENS stimulation types.
+ */
 interface PickerItem {
   label: string;
   value: number;
 }
 
+/**
+ * SetInfoScreen component is responsible for displaying the stimulation settings for a specific body part.
+ * It includes a header, form components for frequency, pulse width, on time, off time, and duration,
+ * a card view for the selected body part, and a footer with a start button.
+ *
+ * Props:
+ * - navigation: The navigation object used to navigate between screens.
+ */
 export const SetInfoScreen = ({ navigation, route }: Props) => {
+  /**
+   * Get the body part name, source, and stimulation type from the route params.
+   * Set up the necessary state variables for frequency, pulse width, on time, off time, and duration.
+   * Set up the animation objects for container fade out, header animation, and list animation.
+   * Initialize the state variables for isStarting.
+   * Fetch the frequency and pulse width items based on the stimulation type.
+   * Apply the necessary animations when the component mounts.
+   *
+   * Props:
+   * - navigation: The navigation object used to navigate between screens.
+   * - route: The route object containing the body part name, source, and stimulation type.
+   * - stimulationType: The type of stimulation (EMS or TENS).
+   *
+   * Return:
+   * - None.
+   *
+   * Note: This component uses the Animated API for animations.
+   */
   const { bodyPartName, source, stimulationType } = route.params;
   const containerFadeOut = new FadeOut();
   const headerAnimation = new FadeIn(0);
@@ -45,6 +78,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
   const [duration, setDuration] = useState<number>(5);
   const [isStarting, setIsStarting] = useState(false);
 
+  // Apply the necessary animations when the component mounts.
   useEffect(() => {
     setFrequencyItems(
       (stimulationType === "EMS" ? EMS : TENS).validFrequencies.map(
@@ -64,6 +98,10 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
     ]).start();
   }, []);
 
+  /**
+   * Handle the frequency and pulse width selection.
+   * Initiates the start of the electrotherapy program.
+   */
   const handleStartProgram = () => {
     if (isStarting) return;
     const data = new Electrotherapy(
@@ -83,6 +121,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
     }, 1000);
   };
 
+  // Render the SetInfoScreen component.
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View
@@ -159,6 +198,14 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
   );
 };
 
+/**
+ * Styles for the SetInfoScreen component.
+ * Includes the container, image, title, and form components.
+ *
+ * Styles:
+ * - container: Sets the flex to 1, background color, and center alignment.
+ * - image: Sets the aspect ratio, width, and center alignment.
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,

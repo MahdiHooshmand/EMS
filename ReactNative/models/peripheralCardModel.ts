@@ -1,9 +1,25 @@
+/**
+ * Represents a peripheral device model with various properties.
+ */
 export class PeripheralModel {
+  /** The name of the peripheral device. */
   public readonly name: string;
+
+  /** The quality of the peripheral device's signal or performance. */
   public readonly quality: number;
+
+  /** Indicates whether the peripheral device is valid (starts with "Febina EMS"). */
   public readonly isValid: boolean;
+
+  /** The connection status or strength of the peripheral device. */
   public readonly connection: number;
 
+  /**
+   * Creates a new instance of the PeripheralModel.
+   * @param name - The name of the peripheral device.
+   * @param quality - The quality of the peripheral device's signal or performance.
+   * @param connection - The connection status or strength of the peripheral device.
+   */
   constructor(name: string, quality: number, connection: number) {
     this.name = name;
     this.quality = quality;
@@ -12,6 +28,10 @@ export class PeripheralModel {
   }
 }
 
+/**
+ * A mock function for creating fake peripheral devices.
+ * @returns An array of fake peripheral devices.
+ */
 export const FakePeripheralModel = () => {
   const connections = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
   const newDevices: PeripheralModel[] = connections.map((connection, index) => {

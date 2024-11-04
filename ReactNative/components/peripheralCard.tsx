@@ -1,3 +1,4 @@
+// Render the BodyPartsScreen component
 import {
   Animated,
   Pressable,
@@ -23,6 +24,13 @@ import { useEffect, useState } from "react";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { PeripheralModel } from "../models/peripheralCardModel";
 
+/*
+ * Type definition for CardStyle
+ *
+ * This type defines the style properties for the card component. It includes
+ * background colors, border radii, margins, and heights. The opacity and transform
+ * properties are used for animations.
+ */
 type CardStyle = {
   backgroundColor: string;
   alignItems: "center";
@@ -37,24 +45,50 @@ type CardStyle = {
   transform: { translateY: Animated.Value }[];
 };
 
+/*
+ * Type definition for Props
+ *
+ * This type defines the props for the PeripheralCard component. It includes
+ * initial peripheral card data, fadeOut animation instance, and navigation prop.
+ *
+ * Props:
+ */
 interface Props {
   initialPeripheral: PeripheralModel;
   fadeOut: FadeOut;
   navigation: any;
 }
 
+/**
+ * Peripheral Card component
+ *
+ * This component represents a card for a peripheral device, displaying its status,
+ * name, and connection options. It includes animations and handles user interactions
+ * for connecting to the peripheral.
+ *
+ * Props:
+ * - initialPeripheral: Initial peripheral card data
+ * - fadeOut: FadeOut animation instance
+ * - navigation: Navigation prop to navigate to the body parts screen
+ */
 export const PeripheralCard = ({
   initialPeripheral,
   fadeOut,
   navigation,
 }: Props) => {
+  // State to manage the peripheral data
   const [peripheral, setPeripheral] = useState(initialPeripheral);
   const cardFadeIn = new FadeIn(0);
 
+  // Effect to start the fade-in animation when the component mounts
   useEffect(() => {
     cardFadeIn.animate().start();
   }, []);
 
+  /**
+   * Initiates the connection process to the peripheral.
+   * Updates the peripheral's connection status and navigates to the body parts screen upon success.
+   */
   const connect = () => {
     setPeripheral((prev) => ({
       ...prev,
@@ -73,6 +107,13 @@ export const PeripheralCard = ({
     }, 2000);
   };
 
+  /**
+   * Returns the style for the card based on its validity and connection status.
+   *
+   * @param isValid - Boolean indicating if the peripheral is valid
+   * @param connection - Connection status of the peripheral
+   * @returns CardStyle - The style object for the card
+   */
   const getCardStyle = (isValid: boolean, connection: number): CardStyle => ({
     backgroundColor: isValid
       ? connection === 1
@@ -91,6 +132,13 @@ export const PeripheralCard = ({
     transform: [{ translateY: cardFadeIn.translateY }],
   });
 
+  /**
+   * Returns the style for the status indicator based on the peripheral's validity and connection status.
+   *
+   * @param isValid - Boolean indicating if the peripheral is valid
+   * @param connection - Connection status of the peripheral
+   * @returns Object - The style object for the status indicator
+   */
   const getStatusStyle = (isValid: boolean, connection: number) => ({
     width: 4,
     height: 60,
@@ -105,6 +153,10 @@ export const PeripheralCard = ({
       : ble_cant_connect,
   });
 
+  /**
+   * Component to display the name of the peripheral.
+   * The style changes based on the validity of the peripheral.
+   */
   const NameContainer = () => {
     return (
       <View style={styles.nameContainer}>
@@ -119,6 +171,10 @@ export const PeripheralCard = ({
     );
   };
 
+  /**
+   * Component to display the add icon or activity indicator based on the connection status.
+   * Handles user interaction for initiating a connection.
+   */
   const AddIconContainer = () => {
     return (
       <View style={styles.addIconContainer}>
@@ -146,6 +202,7 @@ export const PeripheralCard = ({
     );
   };
 
+  // Render the peripheral card
   return (
     <Animated.View
       style={getCardStyle(peripheral.isValid, peripheral.connection)}
@@ -173,6 +230,9 @@ export const PeripheralCard = ({
   );
 };
 
+/*
+ * Style definitions for the PeripheralCard component
+ */
 const styles = StyleSheet.create({
   Container: {
     flex: 1,

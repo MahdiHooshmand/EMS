@@ -1,3 +1,4 @@
+// Fetch the frequency and pulse width items based on the stimulation type.
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -19,12 +20,43 @@ import {
 } from "../assets/thems/colors";
 import { CardView } from "../components/card";
 
+/**
+ * RunScreenProps interface to define the props expected by the RunScreen component.
+ *
+ * Props:
+ * - navigation: The navigation object for navigation.
+ * - route: The route object containing the data and source.
+ */
 interface RunScreenProps {
   navigation: any;
   route: any;
 }
 
+/**
+ * RunScreen component that displays the run screen.
+ *
+ * Props:
+ * - navigation: The navigation object for navigation.
+ * - route: The route object containing the data and source.
+ */
 export const RunScreen = ({ navigation, route }: RunScreenProps) => {
+  /**
+   * State variables to store the data and source received from the previous screen.
+   * data: Object containing muscle name, stimulation type, and duration.
+   * source: Image source for the muscle.
+   * countdown: Number representing the remaining time in seconds.
+   * isInitialCountdown: Boolean indicating whether the countdown is initially set to the duration.
+   * stopping: Boolean indicating whether the run is currently stopping.
+   * stopFadeIn: FadeIn animation for the stop button.
+   * infoFadeIn: FadeIn animation for the information view.
+   * containerFadeOut: FadeOut animation for the container view.
+   * stop: Function to handle the stop button press.
+   * useEffect hook to handle animations and countdown.
+   *
+   * Note: Replace the data and source with the actual data received from the previous screen.
+   *
+   * Example usage:
+   */
   const { data, source } = route.params;
   const containerFadeOut = new FadeOut();
   const infoFadeIn = new FadeIn(0);
@@ -34,6 +66,11 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
   const [isInitialCountdown, setIsInitialCountdown] = useState(true);
   const [stopping, setStopping] = useState(false);
 
+  /**
+   * Function to handle the stop button press.
+   * If the run is currently stopping, it will reset the countdown and fade out the container view.
+   * Otherwise, it will stop the run and navigate to the set-info screen with the muscle name, source, and stimulation type.
+   */
   const stop = () => {
     if (stopping) {
       return;
@@ -50,10 +87,19 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
     }, 500);
   };
 
+  /**
+   * useEffect hook to handle animations and countdown.
+   * Animates the info and stop buttons and sets the initial countdown if necessary.
+   */
   useEffect(() => {
     Animated.parallel([infoFadeIn.animate(), stopFadeIn.animate()]).start();
   }, []);
 
+  /**
+   * useEffect hook to handle the countdown.
+   * Sets the countdown to the duration if it's the initial countdown, otherwise updates the countdown every second.
+   * If the countdown reaches zero, it stops the run and navigates to the set-info screen.
+   */
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
@@ -71,12 +117,33 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
     return () => clearInterval(interval);
   }, [countdown, isInitialCountdown]);
 
+  /**
+   * Function to format the countdown time into minutes and seconds.
+   *
+   * @param time - The countdown time in seconds.
+   * @returns The formatted countdown time as a string in the format "MM:SS".
+   *
+   * Example usage:
+   * formatTime(61) => "01:01"
+   * formatTime(3661) => "06:01"
+   * formatTime(123456) => "20:34"
+   * formatTime(0) => "00:00"
+   * formatTime(-1) => "00:00"
+   * formatTime(null) => "00:00"
+   * formatTime(undefined) => "00:00"
+   * formatTime(NaN) => "00:00"
+   */
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
     return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   };
 
+  /**
+   * Render function to display the run screen.
+   *
+   * @returns The JSX elements for the run screen.
+   */
   const CardContainer = () => {
     return (
       <CardView fadeInAnim={infoFadeIn}>
@@ -101,6 +168,16 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
     );
   };
 
+  /**
+   * Render function to display the stop container.
+   *
+   * @returns The JSX elements for the stop container.
+   *
+   * Note: Replace the button_text_color with the actual color for the button text.
+   *
+   * Example usage:
+   * const button_text_color = "#007bff";
+   */
   const StopContainer = () => {
     return (
       <Animated.View
@@ -132,6 +209,11 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
     );
   };
 
+  /**
+   * Render function to display the run screen.
+   *
+   * @returns The JSX elements for the run screen.
+   */
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View
@@ -144,6 +226,14 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
   );
 };
 
+/**
+ * Replace the background_color, card_text_color, and button_text_color with the actual colors for the background, card text, and button text.
+ *
+ * Example usage:
+ * const background_color = "#f8f9fa";
+ * const card_text_color = "#343a40";
+ * const button_text_color = "#007bff";
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
