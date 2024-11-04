@@ -1,6 +1,7 @@
 import { StatusBar } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
+import * as OpenSans from "@expo-google-fonts/open-sans";
 import { useEffect } from "react";
 import { Login } from "./layouts/login";
 import { background_color } from "./assets/thems/colors";
@@ -17,11 +18,11 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    fontTitle: require("./assets/fonts/OpenSans-BoldItalic.ttf"),
-    errorFont: require("./assets/fonts/OpenSans-Regular.ttf"),
-    fontHeader: require("./assets/fonts/OpenSans-Italic.ttf"),
-    fontText: require("./assets/fonts/OpenSans-Italic.ttf"),
-    stopText: require("./assets/fonts/OpenSans-Bold.ttf"),
+    fontTitle: OpenSans.OpenSans_700Bold_Italic,
+    errorFont: OpenSans.OpenSans_300Light,
+    fontHeader: OpenSans.OpenSans_500Medium_Italic,
+    fontText: OpenSans.OpenSans_400Regular_Italic,
+    stopText: OpenSans.OpenSans_700Bold,
   });
 
   useEffect(() => {
