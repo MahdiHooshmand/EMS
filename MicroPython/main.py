@@ -1,6 +1,5 @@
-import machine
-import math
+import Auth
 
-print("hello")
-if True:
-    pass
+Auth.run()
+
+print("authentication app start successfully.")
