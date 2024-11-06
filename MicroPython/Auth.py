@@ -49,4 +49,3 @@ async def peripheral_task():
 
 async def run():
     await asyncio.gather(asyncio.create_task(peripheral_task()))
-

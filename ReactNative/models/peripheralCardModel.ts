@@ -12,7 +12,10 @@ export class PeripheralModel {
   public readonly isValid: boolean;
 
   /** The connection status or strength of the peripheral device. */
-  public readonly connection: number;
+  public connection: number;
+
+  /** A unique identifier for the peripheral device. */
+  public readonly id: string;
 
   /**
    * Creates a new instance of the PeripheralModel.
@@ -20,11 +23,12 @@ export class PeripheralModel {
    * @param quality - The quality of the peripheral device's signal or performance.
    * @param connection - The connection status or strength of the peripheral device.
    */
-  constructor(name: string, quality: number, connection: number) {
+  constructor(name: string, quality: number, connection: number, id: string) {
     this.name = name;
     this.quality = quality;
     this.isValid = this.name.startsWith("Febina EMS");
     this.connection = connection;
+    this.id = id;
   }
 }
 
@@ -39,9 +43,10 @@ export const FakePeripheralModel = () => {
       `Febina EMS 2502${index + 4}`,
       -50 + index * 10,
       connection,
+      `2502${index + 4}`,
     );
   });
 
-  newDevices.push(new PeripheralModel("hands free", -153, 0));
+  newDevices.push(new PeripheralModel("hands free", -153, 0, "fake id 1"));
   return newDevices;
 };

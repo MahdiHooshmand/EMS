@@ -1,9 +1,6 @@
 // ConnectToDeviceScreenProps interface to define the props expected by the ConnectToDeviceScreen component.
 import { PeripheralCard } from "../components/peripheralCard";
-import {
-  PeripheralModel,
-  FakePeripheralModel,
-} from "../models/peripheralCardModel";
+import { PeripheralModel } from "../models/peripheralCardModel";
 import {
   FlatList,
   SafeAreaView,
@@ -17,6 +14,7 @@ import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
 import { BorderBox } from "../components/borderBox";
 import { OneButton } from "../components/footer";
+import { initBle, scanForPeripherals } from "../utills/bluetooth";
 
 /**
  * ConnectToDeviceScreenProps interface to define the props expected by the ConnectToDeviceScreen component.
@@ -51,30 +49,25 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
 
   /**
    * Effect hook to start the fade animation for the header, list, and button when the component mounts.
-   * Use Animated.parallel to run the fade animations concurrently.
+   * Use Animated. parallel to run the fade animations concurrently.
    */
   useEffect(() => {
     Animated.parallel([
       headerFadeIn.animate(),
       listFadeIn.animate(),
       buttonFadeIn.animate(),
-    ]).start();
+    ]).start(() => {
+      setIsLoading(true);
+      initBle({
+        peripherals: peripheralDevices,
+        setPeripherals: setPeripheralDevices,
+        isScanning: isLoading,
+        setIsScanning: setIsLoading,
+      }).then(() => {
+        setIsLoading(false);
+      });
+    });
   }, []);
-
-  /**
-   * Effect hook to handle the scanning of devices.
-   * Set the isLoading state to true and simulate a delay of 2 seconds to simulate the scanning process.
-   * After the delay, create a new array of PeripheralModel objects and update the peripheralDevices state.
-   * Finally, set the isLoading state to false.
-   */
-  const handleScanDevice = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      const newDevices = FakePeripheralModel();
-      setPeripheralDevices(newDevices);
-      setIsLoading(false);
-    }, 2000);
-  };
 
   /**
    * Render the ConnectToDeviceScreen component.
@@ -120,7 +113,7 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
         </BorderBox>
         <OneButton
           buttonFadeIn={buttonFadeIn}
-          onPress={handleScanDevice}
+          onPress={scanForPeripherals}
           materialIconName={"bluetooth-searching"}
           text={"Scan Devices"}
           isWaiting={isLoading}
