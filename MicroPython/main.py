@@ -1,9 +1,9 @@
 import Auth
 import asyncio
 
-asyncio.run(Auth.auth())
+connection = asyncio.run(Auth.search_for_connection())
 
-print("authentication app start successfully.")
+print("Connection from", connection.device)
 
 while True:
     pass
