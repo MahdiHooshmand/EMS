@@ -1,6 +1,7 @@
 import Auth
+import asyncio
 
-Auth.run()
+asyncio.run(Auth.auth())
 
 print("authentication app start successfully.")
 

@@ -7,10 +7,15 @@ from micropython import const
 import asyncio
 import aioble
 
-from assets.blutooth_const import ENV_SERVICE, ADV_INTERVAL_MS, bluetooth_name
+from assets.blutooth_const import (
+    ENV_SERVICE,
+    ADV_INTERVAL_MS,
+    bluetooth_name,
+)
 
 # Human Interface Device
 _GENERIC_VALUE = const(960)
+auth_service = aioble.Service(ENV_SERVICE)
 
 
 async def peripheral_task():
@@ -47,5 +52,5 @@ async def peripheral_task():
             await connection.disconnected(timeout_ms=None)
 
 
-async def run():
+async def auth():
     await asyncio.gather(asyncio.create_task(peripheral_task()))
