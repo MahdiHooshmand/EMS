@@ -49,7 +49,9 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
   );
 
   useEffect(() => {
+    console.log("peripheralDevicesRef.current updating.");
     setPeripheralDevices(peripheralDevicesRef.current);
+    console.log("peripheralDevices updated");
   }, [peripheralDevicesRef.current]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -107,9 +109,7 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
               style={styles.list}
               data={peripheralDevices}
               renderItem={({ item }) => {
-                if (!item.isInitialized) {
-                  item.initialize();
-                }
+                console.log("Rendering peripheral card: ", item.name);
                 return (
                   <PeripheralCard
                     initialPeripheral={item}

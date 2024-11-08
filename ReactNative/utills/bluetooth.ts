@@ -58,6 +58,12 @@ const onDiscoverPeripheral = (peripheral: Peripheral) => {
   if (!peripheral.name) {
     peripheral.name = "NO NAME";
   }
+  console.log(peripheral.name);
+  for (let pi in _peripheralsRef.current) {
+    if (_peripheralsRef.current[pi].id === peripheral.id) {
+      return;
+    }
+  }
   const p = new PeripheralModel(
     peripheral.name,
     peripheral.rssi,
@@ -65,7 +71,9 @@ const onDiscoverPeripheral = (peripheral: Peripheral) => {
     peripheral.id,
     peripheral,
   );
+  console.log("Adding peripheral to list.");
   _peripheralsRef.current = [..._peripheralsRef.current, p];
+  console.log("emitting new peripheral.");
 };
 
 const onStopScan = () => {

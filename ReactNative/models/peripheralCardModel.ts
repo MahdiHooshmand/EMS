@@ -16,7 +16,7 @@ export class PeripheralModel {
   public name: string;
 
   /** The quality of the peripheral device's signal or performance. */
-  public qualityRef: MutableRefObject<number>;
+  public qualityRef: MutableRefObject<number> | null = null;
   public quality: number = 0;
   public setQuality: (quality: number) => void = (quality: number) => {};
 
@@ -24,7 +24,7 @@ export class PeripheralModel {
   public isValid: boolean;
 
   /** The connection status or strength of the peripheral device. */
-  public connectionRef: MutableRefObject<ConnectionStatus>;
+  public connectionRef: MutableRefObject<ConnectionStatus> | null = null;
   public connection: ConnectionStatus = ConnectionStatus.READY_TO_CONNECT;
   public setConnection: (connection: ConnectionStatus) => void = (
     connection: ConnectionStatus,
@@ -56,9 +56,9 @@ export class PeripheralModel {
   ) {
     this.isInitialized = false;
     this.name = name;
-    this.qualityRef = useRef(quality);
+    this.quality = quality;
     this.isValid = name.startsWith("Febina EMS");
-    this.connectionRef = useRef(connection);
+    this.connection = connection;
     this.id = id;
     this.peripheral = peripheral;
   }
@@ -68,17 +68,23 @@ export class PeripheralModel {
    */
   public initialize(): void {
     this.isInitialized = true;
+    this.qualityRef = useRef(this.quality);
+    this.connectionRef = useRef(this.connection);
 
     [this.quality, this.setQuality] = useState(this.qualityRef.current);
     useEffect(() => {
-      this.setQuality(this.qualityRef.current);
+      if (this.qualityRef) {
+        this.setQuality(this.qualityRef.current);
+      }
     }, [this.qualityRef.current]);
 
     [this.connection, this.setConnection] = useState(
       this.connectionRef.current,
     );
     useEffect(() => {
-      this.setConnection(this.connectionRef.current);
+      if (this.connectionRef) {
+        this.setConnection(this.connectionRef.current);
+      }
     }, [this.connectionRef.current]);
   }
 }

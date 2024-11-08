@@ -77,11 +77,7 @@ export const PeripheralCard = ({
   navigation,
 }: Props) => {
   // State to manage the peripheral data
-  const peripheralRef = useRef<PeripheralModel>(initialPeripheral);
-  const [peripheral, setPeripheral] = useState(peripheralRef.current);
-  useEffect(() => {
-    setPeripheral(peripheralRef.current);
-  }, [peripheralRef]);
+  const peripheral = initialPeripheral;
   const cardFadeIn = new FadeIn(0);
 
   // Effect to start the fade-in animation when the component mounts
