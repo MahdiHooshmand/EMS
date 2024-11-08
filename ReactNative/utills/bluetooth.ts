@@ -16,7 +16,11 @@ import {
   SECONDS_TO_SCAN_FOR,
   SERVICE_UUIDS,
 } from "../assets/strings/ble_conf";
-import { PeripheralModel } from "../models/peripheralCardModel";
+import {
+  ConnectionStatus,
+  PeripheralModel,
+} from "../models/peripheralCardModel";
+import { MutableRefObject } from "react";
 
 declare module "react-native-ble-manager" {
   interface Peripheral {
@@ -24,8 +28,7 @@ declare module "react-native-ble-manager" {
   }
 }
 
-let _setPeripherals: (value: PeripheralModel[]) => void;
-let _peripherals: PeripheralModel[];
+let _peripheralsRef: MutableRefObject<PeripheralModel[]>;
 let _isScanning: boolean = false;
 let _setIsScanning: (value: boolean) => void;
 
@@ -34,6 +37,7 @@ export const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
 export let listeners: any[] = [];
 
+//
 const setListeners = () => {
   listeners = [
     bleManagerEmitter.addListener(
@@ -48,37 +52,37 @@ const setListeners = () => {
   ];
 };
 
-// The scanning find a new peripheral.
 const onDiscoverPeripheral = (peripheral: Peripheral) => {
   console.log("new peripheral.");
+  console.log(peripheral.id);
   if (!peripheral.name) {
     peripheral.name = "NO NAME";
   }
-  peripheral.info = new PeripheralModel(
+  const p = new PeripheralModel(
     peripheral.name,
     peripheral.rssi,
-    1,
+    ConnectionStatus.READY_TO_CONNECT,
     peripheral.id,
+    peripheral,
   );
-  _setPeripherals([..._peripherals, peripheral.info]);
+  _peripheralsRef.current = [..._peripheralsRef.current, p];
 };
 
-// The scanning for peripherals is ended.
 const onStopScan = () => {
   console.log("scanning finished.");
   _setIsScanning(false);
 };
 
-// A peripheral was disconnected.
 const onDisconnectedPeripheral = (event: BleDisconnectPeripheralEvent) => {
-  for (let p in _peripherals) {
-    if (_peripherals[p].id === event.peripheral) {
-      _peripherals[p].connection = 1;
+  for (let p in _peripheralsRef.current) {
+    if (_peripheralsRef.current[p].id === event.peripheral) {
+      _peripheralsRef.current[p].connection = ConnectionStatus.READY_TO_CONNECT;
       break;
     }
   }
 };
 
+//
 const handleAndroidPermissions = () => {
   if (Platform.OS === "android" && Platform.Version >= 31) {
     PermissionsAndroid.requestMultiple([
@@ -122,6 +126,7 @@ const handleAndroidPermissions = () => {
   }
 };
 
+//
 const enableBluetooth = async () => {
   try {
     await BleManager.enableBluetooth();
@@ -130,29 +135,29 @@ const enableBluetooth = async () => {
   }
 };
 
+//
 interface initBleProps {
-  setPeripherals: (value: PeripheralModel[]) => void;
-  peripherals: PeripheralModel[];
+  peripheralsRef: MutableRefObject<PeripheralModel[]>;
   isScanning: boolean;
   setIsScanning: (value: boolean) => void;
 }
 
+//
 export const initBle = async ({
-  peripherals,
-  setPeripherals,
+  peripheralsRef,
   isScanning,
   setIsScanning,
 }: initBleProps) => {
   await BleManager.start({ showAlert: false });
   handleAndroidPermissions();
   await enableBluetooth();
-  _setPeripherals = setPeripherals;
-  _peripherals = peripherals;
+  _peripheralsRef = peripheralsRef;
   _isScanning = isScanning;
   _setIsScanning = setIsScanning;
   setListeners();
 };
 
+//
 export const scanForPeripherals = () => {
   if (!_isScanning) {
     console.log("start Scanning.");

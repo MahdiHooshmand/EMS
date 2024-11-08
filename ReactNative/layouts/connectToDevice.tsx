@@ -9,7 +9,7 @@ import {
   Animated,
 } from "react-native";
 import { background_color, placeholder_color } from "../assets/thems/colors";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
 import { BorderBox } from "../components/borderBox";
@@ -42,9 +42,16 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
   const buttonFadeIn = new FadeIn(2);
   const fadeOut = new FadeOut();
 
-  const [peripheralDevices, setPeripheralDevices] = useState<PeripheralModel[]>(
-    [],
+  const peripheralDevicesRef = useRef<PeripheralModel[]>([]);
+
+  const [peripheralDevices, setPeripheralDevices] = useState(
+    peripheralDevicesRef.current,
   );
+
+  useEffect(() => {
+    setPeripheralDevices(peripheralDevicesRef.current);
+  }, [peripheralDevicesRef.current]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   /**
@@ -52,15 +59,14 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
    * Use Animated. parallel to run the fade animations concurrently.
    */
   useEffect(() => {
+    setIsLoading(true);
     Animated.parallel([
       headerFadeIn.animate(),
       listFadeIn.animate(),
       buttonFadeIn.animate(),
     ]).start(() => {
-      setIsLoading(true);
       initBle({
-        peripherals: peripheralDevices,
-        setPeripherals: setPeripheralDevices,
+        peripheralsRef: peripheralDevicesRef,
         isScanning: isLoading,
         setIsScanning: setIsLoading,
       }).then(() => {
@@ -100,13 +106,18 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
             <FlatList
               style={styles.list}
               data={peripheralDevices}
-              renderItem={({ item }) => (
-                <PeripheralCard
-                  initialPeripheral={item}
-                  fadeOut={fadeOut}
-                  navigation={navigation}
-                />
-              )}
+              renderItem={({ item }) => {
+                if (!item.isInitialized) {
+                  item.initialize();
+                }
+                return (
+                  <PeripheralCard
+                    initialPeripheral={item}
+                    fadeOut={fadeOut}
+                    navigation={navigation}
+                  />
+                );
+              }}
               keyExtractor={(item) => item.name}
             />
           )}

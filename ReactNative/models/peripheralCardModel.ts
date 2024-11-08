@@ -1,52 +1,84 @@
+import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { Peripheral } from "react-native-ble-manager";
+
+export enum ConnectionStatus {
+  READY_TO_CONNECT = 1,
+  CONNECTING = 2,
+  VERIFYING = 3,
+  CONNECTED = 4,
+}
+
 /**
  * Represents a peripheral device model with various properties.
  */
 export class PeripheralModel {
   /** The name of the peripheral device. */
-  public readonly name: string;
+  public name: string;
 
   /** The quality of the peripheral device's signal or performance. */
-  public readonly quality: number;
+  public qualityRef: MutableRefObject<number>;
+  public quality: number = 0;
+  public setQuality: (quality: number) => void = (quality: number) => {};
 
   /** Indicates whether the peripheral device is valid (starts with "Febina EMS"). */
-  public readonly isValid: boolean;
+  public isValid: boolean;
 
   /** The connection status or strength of the peripheral device. */
-  public connection: number;
+  public connectionRef: MutableRefObject<ConnectionStatus>;
+  public connection: ConnectionStatus = ConnectionStatus.READY_TO_CONNECT;
+  public setConnection: (connection: ConnectionStatus) => void = (
+    connection: ConnectionStatus,
+  ) => {};
 
   /** A unique identifier for the peripheral device. */
-  public readonly id: string;
+  public id: string = "";
+
+  /** The peripheral device object. */
+  public peripheral: Peripheral;
+
+  /** Indicates whether the peripheral device has been initialized. */
+  public isInitialized: boolean;
 
   /**
    * Creates a new instance of the PeripheralModel.
    * @param name - The name of the peripheral device.
    * @param quality - The quality of the peripheral device's signal or performance.
    * @param connection - The connection status or strength of the peripheral device.
+   * @param id - The unique identifier for the peripheral device.
+   * @param peripheral - The peripheral device object.
    */
-  constructor(name: string, quality: number, connection: number, id: string) {
+  constructor(
+    name: string,
+    quality: number,
+    connection: number,
+    id: string,
+    peripheral: Peripheral,
+  ) {
+    this.isInitialized = false;
     this.name = name;
-    this.quality = quality;
-    this.isValid = this.name.startsWith("Febina EMS");
-    this.connection = connection;
+    this.qualityRef = useRef(quality);
+    this.isValid = name.startsWith("Febina EMS");
+    this.connectionRef = useRef(connection);
     this.id = id;
+    this.peripheral = peripheral;
+  }
+
+  /**
+   * Initializes the peripheral device model.
+   */
+  public initialize(): void {
+    this.isInitialized = true;
+
+    [this.quality, this.setQuality] = useState(this.qualityRef.current);
+    useEffect(() => {
+      this.setQuality(this.qualityRef.current);
+    }, [this.qualityRef.current]);
+
+    [this.connection, this.setConnection] = useState(
+      this.connectionRef.current,
+    );
+    useEffect(() => {
+      this.setConnection(this.connectionRef.current);
+    }, [this.connectionRef.current]);
   }
 }
-
-/**
- * A mock function for creating fake peripheral devices.
- * @returns An array of fake peripheral devices.
- */
-export const FakePeripheralModel = () => {
-  const connections = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-  const newDevices: PeripheralModel[] = connections.map((connection, index) => {
-    return new PeripheralModel(
-      `Febina EMS 2502${index + 4}`,
-      -50 + index * 10,
-      connection,
-      `2502${index + 4}`,
-    );
-  });
-
-  newDevices.push(new PeripheralModel("hands free", -153, 0, "fake id 1"));
-  return newDevices;
-};

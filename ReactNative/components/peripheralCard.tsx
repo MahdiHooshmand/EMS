@@ -20,7 +20,7 @@ import {
 } from "../assets/thems/colors";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { PeripheralModel } from "../models/peripheralCardModel";
 
@@ -77,7 +77,11 @@ export const PeripheralCard = ({
   navigation,
 }: Props) => {
   // State to manage the peripheral data
-  const [peripheral, setPeripheral] = useState(initialPeripheral);
+  const peripheralRef = useRef<PeripheralModel>(initialPeripheral);
+  const [peripheral, setPeripheral] = useState(peripheralRef.current);
+  useEffect(() => {
+    setPeripheral(peripheralRef.current);
+  }, [peripheralRef]);
   const cardFadeIn = new FadeIn(0);
 
   // Effect to start the fade-in animation when the component mounts
@@ -89,23 +93,7 @@ export const PeripheralCard = ({
    * Initiates the connection process to the peripheral.
    * Updates the peripheral's connection status and navigates to the body parts screen upon success.
    */
-  const connect = () => {
-    setPeripheral((prev) => ({
-      ...prev,
-      connection: 2,
-    }));
-    setTimeout(() => {
-      setPeripheral((prev) => ({
-        ...prev,
-        connection: 3,
-      }));
-      setTimeout(() => {
-        fadeOut.animate().start(() => {
-          navigation.navigate("body-parts");
-        });
-      }, 2000);
-    }, 2000);
-  };
+  const connect = () => {};
 
   /**
    * Returns the style for the card based on its validity and connection status.
