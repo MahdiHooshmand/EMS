@@ -20,7 +20,6 @@ import {
   ConnectionStatus,
   PeripheralModel,
 } from "../models/peripheralCardModel";
-import { MutableRefObject } from "react";
 
 declare module "react-native-ble-manager" {
   interface Peripheral {
