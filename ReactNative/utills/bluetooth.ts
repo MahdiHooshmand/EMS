@@ -28,7 +28,8 @@ declare module "react-native-ble-manager" {
   }
 }
 
-let _peripheralsRef: MutableRefObject<PeripheralModel[]>;
+let _peripherals: PeripheralModel[];
+let _setPeripherals: (value: PeripheralModel[]) => void;
 let _isScanning: boolean = false;
 let _setIsScanning: (value: boolean) => void;
 
@@ -59,8 +60,8 @@ const onDiscoverPeripheral = (peripheral: Peripheral) => {
     peripheral.name = "NO NAME";
   }
   console.log(peripheral.name);
-  for (let pi in _peripheralsRef.current) {
-    if (_peripheralsRef.current[pi].id === peripheral.id) {
+  for (let pi in _peripherals) {
+    if (_peripherals[pi].id === peripheral.id) {
       return;
     }
   }
@@ -72,7 +73,7 @@ const onDiscoverPeripheral = (peripheral: Peripheral) => {
     peripheral,
   );
   console.log("Adding peripheral to list.");
-  _peripheralsRef.current = [..._peripheralsRef.current, p];
+  _setPeripherals([..._peripherals, p]);
   console.log("emitting new peripheral.");
 };
 
@@ -82,9 +83,9 @@ const onStopScan = () => {
 };
 
 const onDisconnectedPeripheral = (event: BleDisconnectPeripheralEvent) => {
-  for (let p in _peripheralsRef.current) {
-    if (_peripheralsRef.current[p].id === event.peripheral) {
-      _peripheralsRef.current[p].connection = ConnectionStatus.READY_TO_CONNECT;
+  for (let p in _peripherals) {
+    if (_peripherals[p].id === event.peripheral) {
+      _peripherals[p].connection = ConnectionStatus.READY_TO_CONNECT;
       break;
     }
   }
@@ -145,21 +146,24 @@ const enableBluetooth = async () => {
 
 //
 interface initBleProps {
-  peripheralsRef: MutableRefObject<PeripheralModel[]>;
+  peripherals: PeripheralModel[];
+  setPeripherals: (value: PeripheralModel[]) => void;
   isScanning: boolean;
   setIsScanning: (value: boolean) => void;
 }
 
 //
 export const initBle = async ({
-  peripheralsRef,
+  peripherals,
+  setPeripherals,
   isScanning,
   setIsScanning,
 }: initBleProps) => {
   await BleManager.start({ showAlert: false });
   handleAndroidPermissions();
   await enableBluetooth();
-  _peripheralsRef = peripheralsRef;
+  _peripherals = peripherals;
+  _setPeripherals = setPeripherals;
   _isScanning = isScanning;
   _setIsScanning = setIsScanning;
   setListeners();

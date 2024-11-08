@@ -42,17 +42,9 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
   const buttonFadeIn = new FadeIn(2);
   const fadeOut = new FadeOut();
 
-  const peripheralDevicesRef = useRef<PeripheralModel[]>([]);
-
-  const [peripheralDevices, setPeripheralDevices] = useState(
-    peripheralDevicesRef.current,
+  const [peripheralDevices, setPeripheralDevices] = useState<PeripheralModel[]>(
+    [],
   );
-
-  useEffect(() => {
-    console.log("peripheralDevicesRef.current updating.");
-    setPeripheralDevices(peripheralDevicesRef.current);
-    console.log("peripheralDevices updated");
-  }, [peripheralDevicesRef.current]);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -68,7 +60,8 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
       buttonFadeIn.animate(),
     ]).start(() => {
       initBle({
-        peripheralsRef: peripheralDevicesRef,
+        peripherals: peripheralDevices,
+        setPeripherals: setPeripheralDevices,
         isScanning: isLoading,
         setIsScanning: setIsLoading,
       }).then(() => {
