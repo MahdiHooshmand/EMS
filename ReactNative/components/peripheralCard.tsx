@@ -20,9 +20,10 @@ import {
 } from "../assets/thems/colors";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { PeripheralModel } from "../models/peripheralCardModel";
+import { connectPeripheral } from "../utills/bluetooth";
 
 /*
  * Type definition for CardStyle
@@ -89,7 +90,9 @@ export const PeripheralCard = ({
    * Initiates the connection process to the peripheral.
    * Updates the peripheral's connection status and navigates to the body parts screen upon success.
    */
-  const connect = () => {};
+  const connect = () => {
+    connectPeripheral(peripheral).then();
+  };
 
   /**
    * Returns the style for the card based on its validity and connection status.

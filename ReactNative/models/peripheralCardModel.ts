@@ -15,22 +15,21 @@ export class PeripheralModel {
   public name: string;
 
   /** The quality of the peripheral device's signal or performance. */
-  public quality: number = 0;
+  public quality: number;
 
   /** Indicates whether the peripheral device is valid (starts with "Febina EMS"). */
   public isValid: boolean;
 
   /** The connection status or strength of the peripheral device. */
-  public connection: ConnectionStatus = ConnectionStatus.READY_TO_CONNECT;
+  public connection: ConnectionStatus;
 
   /** A unique identifier for the peripheral device. */
-  public id: string = "";
+  public id: string;
 
   /** The peripheral device object. */
   public peripheral: Peripheral;
 
   /** Indicates whether the peripheral device has been initialized. */
-  public isInitialized: boolean;
 
   /**
    * Creates a new instance of the PeripheralModel.
@@ -47,7 +46,6 @@ export class PeripheralModel {
     id: string,
     peripheral: Peripheral,
   ) {
-    this.isInitialized = false;
     this.name = name;
     this.quality = quality;
     this.isValid = name.startsWith("Febina EMS");

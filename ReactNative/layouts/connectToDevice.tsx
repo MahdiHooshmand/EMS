@@ -45,6 +45,7 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
   const [peripheralDevices, setPeripheralDevices] = useState<PeripheralModel[]>(
     [],
   );
+  const peripheralDevicesRef = useRef(peripheralDevices);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -60,7 +61,7 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
       buttonFadeIn.animate(),
     ]).start(() => {
       initBle({
-        peripherals: peripheralDevices,
+        peripheralsRef: peripheralDevicesRef,
         setPeripherals: setPeripheralDevices,
         isScanning: isLoading,
         setIsScanning: setIsLoading,
