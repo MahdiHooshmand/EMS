@@ -1,7 +1,5 @@
 import Auth
 import asyncio
-
-from Auth import username, password
 from Models import AndroidDevice
 
 
@@ -9,7 +7,10 @@ async def main():
     connection = await Auth.search_for_connection()
     print("Connection from", connection.device)
     username, password, token = await Auth.handle_auth_request(connection)
-    AndroidDevice(username, password, connection.device, token)
+    mac_address = ":".join(f"{byte:02x}" for byte in connection.device.addr)
+    AndroidDevice(username, password, mac_address, token)
+    print(mac_address, "authenticated successfully!")
+
     while connection.is_connected:
         await asyncio.sleep(1)
 
