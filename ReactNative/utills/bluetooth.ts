@@ -276,17 +276,17 @@ export const connectPeripheral = async (peripheral: PeripheralModel) => {
     }
   }
   console.log("sending username and password to peripheral.");
-  let foundingAuthService = true;
-  while (foundingAuthService) {
+  let authServiceFounded = false;
+  while (!authServiceFounded) {
     let tempData = await BleManager.retrieveServices(peripheral.id);
     const services = tempData.services;
     if (services) {
-      for (let i = 0; i < services.length; i++) {
-        if (services[i].uuid === "1010") {
-          console.log("Found Auth service");
-          foundingAuthService = false;
-          break;
-        }
+      authServiceFounded = services.some((service) => service.uuid === "1010");
+      if (authServiceFounded) {
+        console.log(`Found Auth service: ${JSON.stringify(tempData)}`);
+      } else {
+        console.log(`Auth service not found${JSON.stringify(tempData)}`);
+        await sleep(500);
       }
     }
   }
@@ -304,64 +304,11 @@ export const connectPeripheral = async (peripheral: PeripheralModel) => {
       console.error("Error reading token:", error);
     }
   }
+  const response = Array.from(new TextEncoder().encode("OK"));
+  await BleManager.write(peripheral.id, "1010", "1014", response);
 };
 
 export const stopScan = async () => {
   await BleManager.stopScan();
   _setIsScanning(false);
-};
-
-data = {
-  advertising: {
-    isConnectable: true,
-    localName: "Febina EMS 10001",
-    manufacturerData: {},
-    manufacturerRawData: { CDVType: "ArrayBuffer", bytes: [Array], data: "" },
-    rawData: {
-      CDVType: "ArrayBuffer",
-      bytes: [Array],
-      data: "AgEGAwMAEBEJRmViaW5hIEVNUyAxMDAwMQMZwAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
-    },
-    serviceData: {},
-    serviceUUIDs: ["1000"],
-    txPowerLevel: -2147483648,
-  },
-  characteristics: [
-    { characteristic: "2a00", properties: [Object], service: "1800" },
-    { characteristic: "2a01", properties: [Object], service: "1800" },
-    {
-      characteristic: "2a05",
-      descriptors: [Array],
-      properties: [Object],
-      service: "1801",
-    },
-    {
-      characteristic: "1011",
-      descriptors: [Array],
-      properties: [Object],
-      service: "1010",
-    },
-    {
-      characteristic: "1012",
-      descriptors: [Array],
-      properties: [Object],
-      service: "1010",
-    },
-    {
-      characteristic: "1013",
-      descriptors: [Array],
-      properties: [Object],
-      service: "1010",
-    },
-    {
-      characteristic: "1014",
-      descriptors: [Array],
-      properties: [Object],
-      service: "1010",
-    },
-  ],
-  id: "30:C9:22:32:C9:92",
-  name: "Febina EMS 10001",
-  rssi: -81,
-  services: [{ uuid: "1800" }, { uuid: "1801" }, { uuid: "1010" }],
 };

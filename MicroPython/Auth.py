@@ -63,7 +63,6 @@ response = aioble.Characteristic(
     initial=struct.pack("<h", 0),
 )
 aioble.register_services(auth)
-auth.active = False
 
 
 async def search_for_connection():
@@ -73,10 +72,6 @@ async def search_for_connection():
         services=[ENV_SERVICE],
         appearance=_GENERIC_VALUE,
     )
-
-
-def enable_auth_service():
-    auth.active = True
 
 
 async def handle_auth_request(connection):
@@ -107,21 +102,12 @@ async def handle_auth_request(connection):
             received_response = received_response_bytes.decode("utf-8")
             if received_response == "OK":
                 print("Response OK received. Disabling auth service...")
-                auth.active = False
+                token.write(struct.pack("<h", 0), send_update=True)
+                username.write(struct.pack("<h", 0), send_update=True)
+                password.write(struct.pack("<h", 0), send_update=True)
+                response.write(struct.pack("<h", 0), send_update=True)
+                username.read = False
+                password.read = False
+                token.read = False
+                response.read = False
                 return un, pw, token
-
-        # if validate_credentials(received_username, received_password):
-        #     print("Credentials valid. Sending token...")
-        #     token.set_value(struct.pack("<h", AUTH_TOKEN_VALUE))
-        #     await token.notify()  # ارسال توکن به دستگاه متصل
-        #
-        #     # منتظر دریافت پاسخ OK از دستگاه متصل
-        #     await response.written()
-        #     received_response = struct.unpack("<h", response.value())[0]
-        #
-        #     if received_response == RESPONSE_OK:
-        #         print("Response OK received. Disabling auth service...")
-        #         disable_auth_service()
-        #         break
-        # else:
-        #     print("Invalid credentials. Try again.")
