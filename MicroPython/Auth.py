@@ -79,7 +79,7 @@ def enable_auth_service():
     auth.active = True
 
 
-async def handle_auth_request():
+async def handle_auth_request(connection):
     auth.active = True
     print("Waiting for username and password...")
 
@@ -94,13 +94,14 @@ async def handle_auth_request():
         received_password = received_password_bytes.decode("utf-8")
 
         print("Received credentials:", received_username, received_password)
-        is_auth, un, pw, token = AndroidDevice.validate_credentials(
+        is_auth, un, pw, tk = AndroidDevice.validate_credentials(
             received_username, received_password
         )
         if is_auth:
-            print("Credentials valid. Sending token:", token)
-            token.set_value(struct.pack("<h", token))
-            await token.notify()
+            print("Credentials valid. Sending token:", tk)
+            tk_bytes = tk.encode("utf-8")
+            token.write(tk_bytes, send_update=True)
+            token.notify(connection)
             await response.written()
             received_response_bytes = username.read()
             received_response = received_response_bytes.decode("utf-8")

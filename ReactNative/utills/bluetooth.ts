@@ -294,9 +294,74 @@ export const connectPeripheral = async (peripheral: PeripheralModel) => {
   await BleManager.write(peripheral.id, "1010", "1011", username);
   const password = Array.from(new TextEncoder().encode("admin"));
   await BleManager.write(peripheral.id, "1010", "1012", password);
+  let token = "";
+  while (token.length < 10) {
+    try {
+      const tokenData = await BleManager.read(peripheral.id, "1010", "1013");
+      token = String.fromCharCode(...tokenData);
+      console.log("Received Token:", token);
+    } catch (error) {
+      console.error("Error reading token:", error);
+    }
+  }
 };
 
 export const stopScan = async () => {
   await BleManager.stopScan();
   _setIsScanning(false);
+};
+
+data = {
+  advertising: {
+    isConnectable: true,
+    localName: "Febina EMS 10001",
+    manufacturerData: {},
+    manufacturerRawData: { CDVType: "ArrayBuffer", bytes: [Array], data: "" },
+    rawData: {
+      CDVType: "ArrayBuffer",
+      bytes: [Array],
+      data: "AgEGAwMAEBEJRmViaW5hIEVNUyAxMDAwMQMZwAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+    },
+    serviceData: {},
+    serviceUUIDs: ["1000"],
+    txPowerLevel: -2147483648,
+  },
+  characteristics: [
+    { characteristic: "2a00", properties: [Object], service: "1800" },
+    { characteristic: "2a01", properties: [Object], service: "1800" },
+    {
+      characteristic: "2a05",
+      descriptors: [Array],
+      properties: [Object],
+      service: "1801",
+    },
+    {
+      characteristic: "1011",
+      descriptors: [Array],
+      properties: [Object],
+      service: "1010",
+    },
+    {
+      characteristic: "1012",
+      descriptors: [Array],
+      properties: [Object],
+      service: "1010",
+    },
+    {
+      characteristic: "1013",
+      descriptors: [Array],
+      properties: [Object],
+      service: "1010",
+    },
+    {
+      characteristic: "1014",
+      descriptors: [Array],
+      properties: [Object],
+      service: "1010",
+    },
+  ],
+  id: "30:C9:22:32:C9:92",
+  name: "Febina EMS 10001",
+  rssi: -81,
+  services: [{ uuid: "1800" }, { uuid: "1801" }, { uuid: "1010" }],
 };

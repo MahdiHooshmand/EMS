@@ -8,7 +8,7 @@ from Models import AndroidDevice
 async def main():
     connection = await Auth.search_for_connection()
     print("Connection from", connection.device)
-    username, password, token = await Auth.handle_auth_request()
+    username, password, token = await Auth.handle_auth_request(connection)
     AndroidDevice(username, password, connection.device, token)
     while connection.is_connected:
         await asyncio.sleep(1)
