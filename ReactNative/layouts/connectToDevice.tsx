@@ -14,7 +14,7 @@ import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
 import { BorderBox } from "../components/borderBox";
 import { OneButton } from "../components/footer";
-import { initBle, scanForPeripherals } from "../utills/bluetooth";
+import { initAuth, scanForPeripherals } from "../utills/auth";
 
 /**
  * ConnectToDeviceScreenProps interface to define the props expected by the ConnectToDeviceScreen component.
@@ -60,7 +60,7 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
       listFadeIn.animate(),
       buttonFadeIn.animate(),
     ]).start(() => {
-      initBle({
+      initAuth({
         peripheralsRef: peripheralDevicesRef,
         setPeripherals: setPeripheralDevices,
         isScanning: isLoading,

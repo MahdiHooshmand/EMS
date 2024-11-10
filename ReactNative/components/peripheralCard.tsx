@@ -23,7 +23,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useEffect } from "react";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { PeripheralModel } from "../models/peripheralCardModel";
-import { connectPeripheral } from "../utills/bluetooth";
+import { connectPeripheralWithAuthenticate } from "../utills/auth";
 
 /*
  * Type definition for CardStyle
@@ -91,7 +91,7 @@ export const PeripheralCard = ({
    * Updates the peripheral's connection status and navigates to the body parts screen upon success.
    */
   const connect = () => {
-    connectPeripheral(peripheral).then();
+    connectPeripheralWithAuthenticate(peripheral).then();
   };
 
   /**
