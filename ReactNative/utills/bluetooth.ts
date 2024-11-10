@@ -228,6 +228,7 @@ const updatePeripheralQuality = (peripheralId: string, quality: number) => {
 };
 
 export const connectPeripheral = async (peripheral: PeripheralModel) => {
+  await stopScan();
   const connectedPeripherals = await BleManager.getConnectedPeripherals();
   if (connectedPeripherals.length > 0) {
     connectedPeripherals.map(async (item) => {
@@ -248,6 +249,10 @@ export const connectPeripheral = async (peripheral: PeripheralModel) => {
       updatePeripheralQuality(peripheral.id, quality);
       console.debug(
         `[connectPeripheral][${peripheral.id}] retrieved current RSSI value: ${peripheral.quality}.`,
+      );
+      updatePeripheralConnectionStatus(
+        peripheral.id,
+        ConnectionStatus.VERIFYING,
       );
     } catch (error) {
       console.error(
@@ -270,4 +275,28 @@ export const connectPeripheral = async (peripheral: PeripheralModel) => {
       }
     }
   }
+  console.log("sending username and password to peripheral.");
+  let foundingAuthService = true;
+  while (foundingAuthService) {
+    let tempData = await BleManager.retrieveServices(peripheral.id);
+    const services = tempData.services;
+    if (services) {
+      for (let i = 0; i < services.length; i++) {
+        if (services[i].uuid === "1010") {
+          console.log("Found Auth service");
+          foundingAuthService = false;
+          break;
+        }
+      }
+    }
+  }
+  const username = Array.from(new TextEncoder().encode("Admin"));
+  await BleManager.write(peripheral.id, "1010", "1011", username);
+  const password = Array.from(new TextEncoder().encode("admin"));
+  await BleManager.write(peripheral.id, "1010", "1012", password);
+};
+
+export const stopScan = async () => {
+  await BleManager.stopScan();
+  _setIsScanning(false);
 };

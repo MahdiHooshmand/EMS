@@ -42,7 +42,7 @@ export class PeripheralModel {
   constructor(
     name: string,
     quality: number,
-    connection: number,
+    connection: ConnectionStatus,
     id: string,
     peripheral: Peripheral,
   ) {

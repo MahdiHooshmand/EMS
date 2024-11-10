@@ -1,6 +1,7 @@
 import hashlib
 from assets.credential import Credentials
 import os
+import binascii
 
 
 class AndroidDevice:
@@ -8,27 +9,16 @@ class AndroidDevice:
     A class representing an Android device with authentication capabilities.
     """
 
-    def __init__(self):
+    def __init__(self, username, password, ip_address, token):
         """
         Initialize an AndroidDevice instance.
 
         Sets up initial values for username, password, IP address, authentication status, and token.
         """
-        self._username = None
-        self._password = None
-        self._ip_address = None
-        self._is_authenticated = False
-        self._token = None
-
-    @property
-    def is_authenticated(self):
-        """
-        Check if the device is authenticated.
-
-        Returns:
-            bool: True if the device is authenticated, False otherwise.
-        """
-        return self._is_authenticated
+        self._username = username
+        self._password = password
+        self._ip_address = ip_address
+        self._token = token
 
     @property
     def username(self):
@@ -80,42 +70,21 @@ class AndroidDevice:
         """
         random_bytes = os.urandom(32)
         hash_object = hashlib.sha256(random_bytes)
-        token = hash_object.hexdigest()
+        token = binascii.hexlify(hash_object.digest()).decode("utf-8")
         return token
 
-    def authenticate(self, username, password, ip_address):
-        """
-        Authenticate the device with the provided credentials.
-
-        Args:
-            username (str): The username to authenticate with.
-            password (str): The password to authenticate with.
-            ip_address (str): The IP address of the device.
-
-        If authentication is successful, updates the device's attributes and generates a token.
-        If authentication fails, no action is taken.
-        """
+    @staticmethod
+    def validate_credentials(username, password):
         hash_user = hashlib.sha256(username.encode("utf-8"))
         hash_pass = hashlib.sha256(password.encode("utf-8"))
-        if hash_user.hexdigest() == Credentials.get(
+        hash_user_hex = binascii.hexlify(hash_user.digest()).decode("utf-8")
+        hash_pass_hex = binascii.hexlify(hash_pass.digest()).decode("utf-8")
+
+        print(hash_user_hex, hash_pass_hex)
+        if hash_user_hex == Credentials.get(
             "username"
-        ) and hash_pass.hexdigest() == Credentials.get("password"):
-            self._username = hash_user.hexdigest()
-            self._password = hash_pass.hexdigest()
-            self._ip_address = ip_address
-            self._is_authenticated = True
-            self._token = self.__generate_random_token()
+        ) and hash_pass_hex == Credentials.get("password"):
+            token = AndroidDevice.__generate_random_token()
+            return True, hash_user_hex, hash_pass_hex, token
         else:
-            pass
-
-    def deauthenticate(self):
-        """
-        Deauthenticate the device.
-
-        Resets all authentication-related attributes to their initial state.
-        """
-        self._username = None
-        self._password = None
-        self._ip_address = None
-        self._is_authenticated = False
-        self._token = None
+            return False, None, None, None
