@@ -121,86 +121,89 @@ const updatePeripheralQuality = (peripheralId: string, quality: number) => {
   _setPeripherals([..._peripheralsRef.current]);
 };
 
-export const connectPeripheralWithAuthenticate = async (
-  peripheral: PeripheralModel,
-) => {
-  await BleManager.stopScan();
-  _setIsScanning(false);
-  const connectedPeripherals = await BleManager.getConnectedPeripherals();
-  if (connectedPeripherals.length > 0) {
-    connectedPeripherals.map(async (item) => {
-      await BleManager.disconnect(item.id);
-    });
+const connectDevice = async (peripheralId: string) => {
+  try {
+    await BleManager.connect(peripheralId);
+    updatePeripheralConnectionStatus(peripheralId, ConnectionStatus.VERIFYING);
+    const quality = await BleManager.readRSSI(peripheralId);
+    updatePeripheralQuality(peripheralId, quality);
+  } catch (error) {
+    console.error(`Failed to connect to ${peripheralId}:`, error);
   }
-  updatePeripheralConnectionStatus(peripheral.id, ConnectionStatus.CONNECTING);
-  let tempTryCount = 0;
-  while (peripheral.connection === ConnectionStatus.CONNECTING) {
-    try {
-      await BleManager.connect(peripheral.id);
-      updatePeripheralConnectionStatus(
-        peripheral.id,
-        ConnectionStatus.VERIFYING,
+};
+
+const authenticateDevice = async (peripheral: PeripheralModel) => {
+  let authServiceFound = false;
+  while (!authServiceFound) {
+    const servicesData = await BleManager.retrieveServices(peripheral.id);
+    if (servicesData.services) {
+      authServiceFound = servicesData.services.some(
+        (service) => service.uuid === "1010",
       );
-      await sleep(2000);
-      const quality = await BleManager.readRSSI(peripheral.id);
-      updatePeripheralQuality(peripheral.id, quality);
-      console.debug(
-        `[connectPeripheral][${peripheral.id}] retrieved current RSSI value: ${peripheral.quality}.`,
-      );
-      updatePeripheralConnectionStatus(
-        peripheral.id,
-        ConnectionStatus.VERIFYING,
-      );
-    } catch (error) {
-      console.error(
-        `[connectPeripheral][${peripheral.id}] connectPeripheral error`,
-        error,
-        ".trying again.",
-      );
-      tempTryCount = tempTryCount + 1;
-      if (tempTryCount === 4) {
-        console.error(
-          `[connectPeripheral][${peripheral.id}] connectPeripheral error`,
-          error,
-          ".trying again.",
-        );
-        updatePeripheralConnectionStatus(
-          peripheral.id,
-          ConnectionStatus.READY_TO_CONNECT,
-        );
-        return;
-      }
+    } else {
+      authServiceFound = false;
     }
+    if (!authServiceFound) await sleep(500);
   }
-  console.log("sending username and password to peripheral.");
-  let authServiceFounded = false;
-  while (!authServiceFounded) {
-    let tempData = await BleManager.retrieveServices(peripheral.id);
-    const services = tempData.services;
-    if (services) {
-      authServiceFounded = services.some((service) => service.uuid === "1010");
-      if (authServiceFounded) {
-        console.log(`Found Auth service: ${JSON.stringify(tempData)}`);
-      } else {
-        console.log(`Auth service not found${JSON.stringify(tempData)}`);
-        await sleep(500);
-      }
-    }
-  }
-  const username = Array.from(new TextEncoder().encode("Admin"));
-  await BleManager.write(peripheral.id, "1010", "1011", username);
-  const password = Array.from(new TextEncoder().encode("admin"));
-  await BleManager.write(peripheral.id, "1010", "1012", password);
+
+  console.log("Auth service found. Sending credentials...");
+  await BleManager.write(
+    peripheral.id,
+    "1010",
+    "1011",
+    Array.from(new TextEncoder().encode("Admin")),
+  );
+  await BleManager.write(
+    peripheral.id,
+    "1010",
+    "1012",
+    Array.from(new TextEncoder().encode("admin")),
+  );
+
   let token = "";
   while (token.length < 10) {
     try {
       const tokenData = await BleManager.read(peripheral.id, "1010", "1013");
       token = String.fromCharCode(...tokenData);
-      console.log("Received Token:", token);
     } catch (error) {
       console.error("Error reading token:", error);
     }
   }
-  const response = Array.from(new TextEncoder().encode("OK"));
-  await BleManager.write(peripheral.id, "1010", "1014", response);
+
+  await BleManager.write(
+    peripheral.id,
+    "1010",
+    "1014",
+    Array.from(new TextEncoder().encode("OK")),
+  );
+};
+
+export const connectPeripheralWithAuthenticate = async (
+  peripheral: PeripheralModel,
+) => {
+  await BleManager.stopScan();
+  _setIsScanning(false);
+
+  const connectedPeripherals = await BleManager.getConnectedPeripherals();
+  for (const connectedPeripheral of connectedPeripherals) {
+    await BleManager.disconnect(connectedPeripheral.id);
+  }
+
+  updatePeripheralConnectionStatus(peripheral.id, ConnectionStatus.CONNECTING);
+
+  let retries = 0;
+  while (peripheral.connection === ConnectionStatus.CONNECTING && retries < 4) {
+    await connectDevice(peripheral.id);
+    retries++;
+    if (peripheral.connection !== ConnectionStatus.CONNECTING) break;
+    if (retries === 4) {
+      updatePeripheralConnectionStatus(
+        peripheral.id,
+        ConnectionStatus.READY_TO_CONNECT,
+      );
+      return;
+    }
+  }
+
+  await authenticateDevice(peripheral);
 };
