@@ -37,7 +37,7 @@ const onDiscoverPeripheral = (peripheral: Peripheral) => {
 };
 
 const onStopScan = () => {
-  console.log("scanning finished.");
+  console.log("Scanning finished.");
   _setIsScanning(false);
 };
 
@@ -51,7 +51,7 @@ const onDisconnectedPeripheral = (event: BleDisconnectPeripheralEvent) => {
   }
 };
 
-interface initAuthProps {
+interface InitAuthProps {
   peripheralsRef: MutableRefObject<PeripheralModel[]>;
   setPeripherals: (value: PeripheralModel[]) => void;
   isScanning: boolean;
@@ -63,30 +63,30 @@ export const initAuth = async ({
   setPeripherals,
   isScanning,
   setIsScanning,
-}: initAuthProps) => {
+}: InitAuthProps) => {
   await Bluetooth.initBle();
   _peripheralsRef = peripheralsRef;
   _setPeripherals = setPeripherals;
   _isScanning = isScanning;
   _setIsScanning = setIsScanning;
+
   Bluetooth.setListeners({
-    onDiscoverPeripheral: onDiscoverPeripheral,
-    onStopScan: onStopScan,
-    onDisconnectedPeripheral: onDisconnectedPeripheral,
+    onDiscoverPeripheral,
+    onStopScan,
+    onDisconnectedPeripheral,
   });
 };
 
 export const scanForPeripherals = () => {
   if (!_isScanning) {
-    console.log("start Scanning.");
+    console.log("Starting scan...");
     _setIsScanning(true);
     Bluetooth.scanForPeripherals();
   }
 };
 
-function sleep(ms: number) {
-  return new Promise<void>((resolve) => setTimeout(resolve, ms));
-}
+const sleep = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 const updatePeripheralConnectionStatus = (
   peripheralId: string,
@@ -94,27 +94,21 @@ const updatePeripheralConnectionStatus = (
 ) => {
   for (let p in _peripheralsRef.current) {
     if (_peripheralsRef.current[p].id === peripheralId) {
-      console.log(
-        `updating connection status for peripheral: ${peripheralId} to ${connectionStatus}...  .`,
-      );
       _peripheralsRef.current[p].connection = connectionStatus;
+      _setPeripherals([..._peripheralsRef.current]);
       break;
     }
   }
-  _setPeripherals([..._peripheralsRef.current]);
 };
 
 const updatePeripheralQuality = (peripheralId: string, quality: number) => {
   for (let p in _peripheralsRef.current) {
     if (_peripheralsRef.current[p].id === peripheralId) {
-      console.log(
-        `updating quality for peripheral: ${peripheralId} to ${quality}...  .`,
-      );
       _peripheralsRef.current[p].quality = quality;
+      _setPeripherals([..._peripheralsRef.current]);
       break;
     }
   }
-  _setPeripherals([..._peripheralsRef.current]);
 };
 
 const connectDevice = async (peripheralId: string) => {
