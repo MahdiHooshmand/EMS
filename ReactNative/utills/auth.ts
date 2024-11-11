@@ -15,29 +15,25 @@ let _isScanning: boolean = false;
 let _setIsScanning: (value: boolean) => void;
 
 const onDiscoverPeripheral = (peripheral: Peripheral) => {
-  console.log("new peripheral.");
-  console.log(peripheral.id);
+  console.log("new peripheral detected:", peripheral.id);
+
   if (!peripheral.name) {
     peripheral.name = "NO NAME";
   }
-  console.log(peripheral.name);
 
-  for (let pi in _peripheralsRef.current) {
-    if (_peripheralsRef.current[pi].id === peripheral.id) {
-      return;
-    }
+  if (_peripheralsRef.current.some((p) => p.id === peripheral.id)) {
+    return;
   }
-  const p = new PeripheralModel(
+
+  const newPeripheral = new PeripheralModel(
     peripheral.name,
     peripheral.rssi,
     ConnectionStatus.READY_TO_CONNECT,
     peripheral.id,
     peripheral,
   );
-  console.log("Adding peripheral to list.");
-  _peripheralsRef.current = [..._peripheralsRef.current, p];
+  _peripheralsRef.current = [..._peripheralsRef.current, newPeripheral];
   _setPeripherals([..._peripheralsRef.current]);
-  console.log("emitting new peripheral.");
 };
 
 const onStopScan = () => {
