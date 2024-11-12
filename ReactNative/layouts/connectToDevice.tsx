@@ -113,7 +113,6 @@ export const ConnectToDeviceScreen = ({
               style={styles.list}
               data={peripheralDevices}
               renderItem={({ item }) => {
-                console.log("Rendering peripheral card: ", item.name);
                 return (
                   <PeripheralCard
                     initialPeripheral={item}
