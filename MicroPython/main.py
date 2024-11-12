@@ -3,6 +3,25 @@ import asyncio
 from Models import AndroidDevice
 
 
+"""
+This is the main function of the authentication service. It handles the authentication process for Android devices.
+
+Parameters:
+None
+
+Returns:
+None
+
+The function performs the following steps:
+1. Calls the `search_for_connection` function from the `Auth` module to establish a connection with an Android device.
+2. Prints the MAC address of the connected device.
+3. Calls the `handle_auth_request` function from the `Auth` module to handle the authentication request from the connected device.
+4. Extracts the username, password, and token from the authentication response.
+5. Constructs the MAC address of the connected device.
+6. Creates an instance of the `AndroidDevice` class from the `Models` module with the extracted credentials.
+7. Prints a success message indicating that the device has been authenticated.
+8. Continuously checks the `is_connected` attribute of the `connection` object and sleeps for 1 second if the connection is still active.
+"""
 async def main():
     connection = await Auth.search_for_connection()
     print("Connection from", connection.device)
@@ -15,6 +34,15 @@ async def main():
         await asyncio.sleep(1)
 
 
+"""
+This script is the entry point for the authentication service. It initializes the asyncio event loop, runs the main authentication process, and ensures that the loop is closed properly once the process is complete.
+
+Parameters:
+None
+
+Returns:
+None
+"""
 print("starting the authentication service... Press Ctrl+C to stop. \n")
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
