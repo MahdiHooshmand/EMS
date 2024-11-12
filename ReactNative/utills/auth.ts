@@ -31,7 +31,7 @@ let _setIsScanning: (value: boolean) => void;
 
 /**
  * Handles the discovery of a new Bluetooth peripheral device.
- * 
+ *
  * This function is triggered when a new peripheral is detected during a Bluetooth scan.
  * It checks if the peripheral is already known and, if not, adds it to the list of peripherals.
  *
@@ -117,6 +117,12 @@ export const initAuth = async ({
   });
 };
 
+/**
+ * Initiates a scan for Bluetooth peripherals if not already scanning.
+ *
+ * This function checks the scanning status, and if not already scanning,
+ * it logs a message, updates the scanning status, and initiates the scan for peripherals.
+ */
 export const scanForPeripherals = () => {
   if (!_isScanning) {
     console.log("Starting scan...");
@@ -125,9 +131,29 @@ export const scanForPeripherals = () => {
   }
 };
 
+/**
+ * Pauses the execution of the function for a specified number of milliseconds.
+ *
+ * This is an asynchronous function that returns a promise that resolves after the specified delay.
+ * This allows for non-blocking pauses in asynchronous code, such as in a loop or after an API call.
+ *
+ * @param ms - The number of milliseconds to pause the execution of the function.
+ *
+ * @returns A promise that resolves after the specified delay.
+ */
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+/**
+ * Updates the connection status of a specific peripheral device.
+ *
+ * This function iterates through the list of peripherals maintained in a React ref
+ * and updates the connection status of the peripheral that matches the provided ID.
+ * It then triggers a state update to reflect the change in the UI.
+ *
+ * @param peripheralId - The unique identifier of the peripheral device.
+ * @param connectionStatus - The new connection status to be assigned to the peripheral.
+ */
 const updatePeripheralConnectionStatus = (
   peripheralId: string,
   connectionStatus: ConnectionStatus,
@@ -141,6 +167,16 @@ const updatePeripheralConnectionStatus = (
   }
 };
 
+/**
+ * Updates the quality of a specific peripheral device.
+ *
+ * This function iterates through the list of peripherals maintained in a React ref
+ * and updates the quality of the peripheral that matches the provided ID.
+ * It then triggers a state update to reflect the change in the UI.
+ *
+ * @param peripheralId - The unique identifier of the peripheral device.
+ * @param quality - The new quality value to be assigned to the peripheral.
+ */
 const updatePeripheralQuality = (peripheralId: string, quality: number) => {
   for (let p in _peripheralsRef.current) {
     if (_peripheralsRef.current[p].id === peripheralId) {
@@ -151,6 +187,13 @@ const updatePeripheralQuality = (peripheralId: string, quality: number) => {
   }
 };
 
+/**
+ * Establishes a connection to a Bluetooth peripheral device and updates its connection status and quality.
+ *
+ * @param peripheralId - The unique identifier of the Bluetooth peripheral device to connect to.
+ *
+ * @returns A Promise that resolves when the connection is established, or it rejects if the connection fails.
+ */
 const connectDevice = async (peripheralId: string) => {
   try {
     await BleManager.connect(peripheralId);
@@ -162,6 +205,18 @@ const connectDevice = async (peripheralId: string) => {
   }
 };
 
+/**
+ * Authenticates a Bluetooth peripheral device using the provided credentials.
+ *
+ * This function attempts to establish a connection to the authentication service
+ * on the specified Bluetooth peripheral. It sends the username and password
+ * to the device and retrieves a token for authentication. The function also
+ * updates the connection status of the peripheral to indicate successful authentication.
+ *
+ * @param peripheral - The Bluetooth peripheral device to authenticate.
+ * @param user - The username for authentication.
+ * @param pass - The password for authentication.
+ */
 const authenticateDevice = async (
   peripheral: PeripheralModel,
   user: string,
@@ -218,6 +273,14 @@ const authenticateDevice = async (
   updatePeripheralConnectionStatus(peripheral.id, ConnectionStatus.CONNECTED);
 };
 
+/**
+ * Establishes a connection to a Bluetooth peripheral, authenticates it using the provided credentials,
+ * and updates the peripheral's connection status and token.
+ *
+ * @param peripheral - The peripheral device to connect to and authenticate.
+ * @param user - The username for authentication.
+ * @param pass - The password for authentication.
+ */
 export const connectPeripheralWithAuthenticate = async (
   peripheral: PeripheralModel,
   user: string,
