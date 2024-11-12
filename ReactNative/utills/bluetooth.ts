@@ -17,17 +17,56 @@ import {
   SERVICE_UUIDS,
 } from "../assets/strings/ble_conf";
 
+/**
+ * Module for BLE Manager native functionality.
+ */
 const BleManagerModule = NativeModules.BleManager;
+
+/**
+ * Event emitter for BLE Manager events.
+ */
 export const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
+/**
+ * Array to store event listeners.
+ */
 export let listeners: any[] = [];
 
+/**
+ * Interface defining the parameters for setting up BLE event listeners.
+ */
 interface setListenersParams {
+  /**
+   * Callback function triggered when a peripheral is discovered.
+   * @param peripheral - The discovered peripheral device.
+   */
   onDiscoverPeripheral: (peripheral: Peripheral) => void;
+
+  /**
+   * Callback function triggered when the BLE scan stops.
+   */
   onStopScan: () => void;
+
+  /**
+   * Callback function triggered when a peripheral is disconnected.
+   * @param event - The disconnect event containing information about the disconnected peripheral.
+   */
   onDisconnectedPeripheral: (event: BleDisconnectPeripheralEvent) => void;
 }
 
+/**
+ * Sets up event listeners for BLE operations.
+ * 
+ * This function creates and assigns event listeners for discovering peripherals,
+ * stopping scans, and disconnecting peripherals. The listeners are stored in the
+ * global `listeners` array.
+ *
+ * @param {Object} params - The parameters object.
+ * @param {(peripheral: Peripheral) => void} params.onDiscoverPeripheral - Callback function triggered when a peripheral is discovered.
+ * @param {() => void} params.onStopScan - Callback function triggered when the BLE scan stops.
+ * @param {(event: BleDisconnectPeripheralEvent) => void} params.onDisconnectedPeripheral - Callback function triggered when a peripheral is disconnected.
+ * @returns {void} This function does not return a value.
+ */
 export const setListeners = ({
   onDiscoverPeripheral,
   onStopScan,
@@ -46,6 +85,17 @@ export const setListeners = ({
   ];
 };
 
+/**
+ * Handles Android permissions for Bluetooth functionality.
+ * 
+ * This function checks the Android version and requests appropriate permissions:
+ * - For Android 12+ (API 31+): Requests BLUETOOTH_SCAN and BLUETOOTH_CONNECT permissions.
+ * - For Android 6+ (API 23+) but below 12: Checks and requests ACCESS_FINE_LOCATION permission.
+ * 
+ * The function logs the user's response to the permission requests.
+ * 
+ * @returns {void} This function does not return a value.
+ */
 const handleAndroidPermissions = () => {
   if (Platform.OS === "android" && Platform.Version >= 31) {
     PermissionsAndroid.requestMultiple([
@@ -89,6 +139,17 @@ const handleAndroidPermissions = () => {
   }
 };
 
+/**
+ * Attempts to enable Bluetooth functionality on the device.
+ * 
+ * This asynchronous function uses the BleManager to enable Bluetooth.
+ * If an error occurs during the process, it will be caught and logged to the console.
+ * 
+ * @returns {Promise<void>} A promise that resolves when Bluetooth is successfully enabled,
+ *                          or rejects if an error occurs during the process.
+ * 
+ * @throws {Error} Logs any error that occurs while trying to enable Bluetooth.
+ */
 const enableBluetooth = async () => {
   try {
     await BleManager.enableBluetooth();
@@ -97,12 +158,37 @@ const enableBluetooth = async () => {
   }
 };
 
+/**
+ * Initializes Bluetooth Low Energy (BLE) functionality.
+ * 
+ * This asynchronous function performs three main tasks:
+ * 1. Starts the BleManager without showing an alert.
+ * 2. Handles Android-specific BLE permissions.
+ * 3. Enables Bluetooth on the device.
+ * 
+ * It should be called before any other BLE operations are performed.
+ * 
+ * @returns {Promise<void>} A promise that resolves when BLE initialization is complete.
+ * 
+ * @throws {Error} May throw an error if BleManager fails to start or if Bluetooth cannot be enabled.
+ */
 export const initBle = async () => {
   await BleManager.start({ showAlert: false });
   handleAndroidPermissions();
   await enableBluetooth();
 };
 
+/**
+ * Initiates a Bluetooth Low Energy (BLE) scan for peripheral devices.
+ * 
+ * This function uses the BleManager to scan for BLE devices with specific service UUIDs.
+ * It configures the scan with predefined parameters for duration and duplicate filtering.
+ * The scan is set to use a sticky match mode, low latency scan mode, and reports all matches.
+ * 
+ * @throws {Error} If there's an error during the BLE scan process, it will be caught and logged.
+ * 
+ * @returns {void} This function doesn't return a value, but initiates a BLE scan process.
+ */
 export const scanForPeripherals = () => {
   try {
     BleManager.scan(SERVICE_UUIDS, SECONDS_TO_SCAN_FOR, ALLOW_DUPLICATES, {

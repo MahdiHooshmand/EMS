@@ -28,7 +28,7 @@ import {
 } from "../models/peripheralCardModel";
 import { connectPeripheralWithAuthenticate } from "../utills/auth";
 
-/*
+/**
  * Type definition for CardStyle
  *
  * This type defines the style properties for the card component. It includes
@@ -49,7 +49,7 @@ type CardStyle = {
   transform: { translateY: Animated.Value }[];
 };
 
-/*
+/**
  * Type definition for Props
  *
  * This type defines the props for the PeripheralCard component. It includes
@@ -76,6 +76,8 @@ interface Props {
  * - initialPeripheral: Initial peripheral card data
  * - fadeOut: FadeOut animation instance
  * - navigation: Navigation prop to navigate to the body parts screen
+ * - user: User credentials for authentication
+ * - pass: User credentials for authentication
  */
 export const PeripheralCard = ({
   initialPeripheral,

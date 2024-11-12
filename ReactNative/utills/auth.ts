@@ -16,11 +16,30 @@ import {
   USERNAME_CHARACTERISTIC_UUID,
 } from "../assets/thems/ble_services";
 
+/**
+ * Updates the internal state references for peripherals and scanning status.
+ *
+ * @param peripheralsRef - A mutable reference object that holds an array of PeripheralModel instances.
+ * @param setPeripherals - A function to update the list of peripherals.
+ * @param isScanning - A boolean indicating whether a scan is currently in progress.
+ * @param setIsScanning - A function to update the scanning status.
+ */
 let _peripheralsRef: MutableRefObject<PeripheralModel[]>;
 let _setPeripherals: (value: PeripheralModel[]) => void;
 let _isScanning: boolean = false;
 let _setIsScanning: (value: boolean) => void;
 
+/**
+ * Handles the discovery of a new Bluetooth peripheral device.
+ * 
+ * This function is triggered when a new peripheral is detected during a Bluetooth scan.
+ * It checks if the peripheral is already known and, if not, adds it to the list of peripherals.
+ *
+ * @param peripheral - The peripheral object representing the newly discovered Bluetooth device.
+ *   - `id`: A unique identifier for the peripheral.
+ *   - `name`: The name of the peripheral. If not provided, defaults to "NO NAME".
+ *   - `rssi`: The signal strength of the peripheral.
+ */
 const onDiscoverPeripheral = (peripheral: Peripheral) => {
   console.log("new peripheral detected:", peripheral.id);
 
@@ -43,6 +62,12 @@ const onDiscoverPeripheral = (peripheral: Peripheral) => {
   _setPeripherals([..._peripheralsRef.current]);
 };
 
+/**
+ * Handles the event when a Bluetooth scan is stopped.
+ *
+ * This function logs a message indicating that the scanning process has finished
+ * and updates the scanning status to false.
+ */
 const onStopScan = () => {
   console.log("Scanning finished.");
   _setIsScanning(false);
@@ -65,6 +90,14 @@ interface InitAuthProps {
   setIsScanning: (value: boolean) => void;
 }
 
+/**
+ * Initializes the authentication process by setting up necessary references and listeners.
+ *
+ * @param peripheralsRef - A mutable reference object that holds an array of PeripheralModel instances.
+ * @param setPeripherals - A function to update the list of peripherals.
+ * @param isScanning - A boolean indicating whether a scan is currently in progress.
+ * @param setIsScanning - A function to update the scanning status.
+ */
 export const initAuth = async ({
   peripheralsRef,
   setPeripherals,

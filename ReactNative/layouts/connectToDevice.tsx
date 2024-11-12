@@ -26,6 +26,7 @@ interface ConnectToDeviceScreenProps {
  *
  * Props:
  * navigation: Object - The navigation object provided by React Navigation.
+ * route: Object - The route object provided by React Navigation.
  *
  * State:
  */
