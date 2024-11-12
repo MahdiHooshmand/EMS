@@ -92,7 +92,14 @@ export function Login({ navigation }: Props) {
       hashUsername === credential.username &&
       hashPassword === credential.password
     ) {
-      fadeOut.animate().start(() => navigation.replace("connect-to-device"));
+      fadeOut
+        .animate()
+        .start(() =>
+          navigation.replace("connect-to-device", {
+            user: username,
+            pass: password,
+          }),
+        );
     } else {
       setShowError(true);
       setUsername("");

@@ -1,28 +1,31 @@
 // Render the BodyPartsScreen component
 import {
+  ActivityIndicator,
   Animated,
   Pressable,
   StyleSheet,
   Text,
   View,
-  ActivityIndicator,
 } from "react-native";
 import {
-  card_background_invalid_color,
+  ble_cant_connect,
   ble_connecting,
+  ble_connecting_background,
   ble_ready_to_connect,
   ble_verifying,
-  ble_cant_connect,
-  card_background_color,
-  card_text_color,
   button_pressed_background_color,
-  ble_connecting_background,
+  card_background_color,
+  card_background_invalid_color,
+  card_text_color,
 } from "../assets/thems/colors";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useEffect } from "react";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
-import { PeripheralModel } from "../models/peripheralCardModel";
+import {
+  ConnectionStatus,
+  PeripheralModel,
+} from "../models/peripheralCardModel";
 import { connectPeripheralWithAuthenticate } from "../utills/auth";
 
 /*
@@ -58,6 +61,8 @@ interface Props {
   initialPeripheral: PeripheralModel;
   fadeOut: FadeOut;
   navigation: any;
+  user: string;
+  pass: string;
 }
 
 /**
@@ -76,6 +81,8 @@ export const PeripheralCard = ({
   initialPeripheral,
   fadeOut,
   navigation,
+  user,
+  pass,
 }: Props) => {
   // State to manage the peripheral data
   const peripheral = initialPeripheral;
@@ -91,7 +98,15 @@ export const PeripheralCard = ({
    * Updates the peripheral's connection status and navigates to the body parts screen upon success.
    */
   const connect = () => {
-    connectPeripheralWithAuthenticate(peripheral).then();
+    connectPeripheralWithAuthenticate(peripheral, user, pass).then(() => {
+      if (peripheral.connection === ConnectionStatus.CONNECTED) {
+        fadeOut
+          .animate()
+          .start(() =>
+            navigation.replace("body-parts", { peripheral: peripheral }),
+          );
+      }
+    });
   };
 
   /**

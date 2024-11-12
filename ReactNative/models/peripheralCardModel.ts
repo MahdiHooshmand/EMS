@@ -29,6 +29,8 @@ export class PeripheralModel {
   /** The peripheral device object. */
   public peripheral: Peripheral;
 
+  public token: string = "";
+
   /** Indicates whether the peripheral device has been initialized. */
 
   /**

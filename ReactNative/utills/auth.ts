@@ -122,7 +122,11 @@ const connectDevice = async (peripheralId: string) => {
   }
 };
 
-const authenticateDevice = async (peripheral: PeripheralModel) => {
+const authenticateDevice = async (
+  peripheral: PeripheralModel,
+  user: string,
+  pass: string,
+) => {
   let authServiceFound = false;
   while (!authServiceFound) {
     const servicesData = await BleManager.retrieveServices(peripheral.id);
@@ -141,13 +145,13 @@ const authenticateDevice = async (peripheral: PeripheralModel) => {
     peripheral.id,
     "1010",
     "1011",
-    Array.from(new TextEncoder().encode("Admin")),
+    Array.from(new TextEncoder().encode(user)),
   );
   await BleManager.write(
     peripheral.id,
     "1010",
     "1012",
-    Array.from(new TextEncoder().encode("admin")),
+    Array.from(new TextEncoder().encode(pass)),
   );
 
   let token = "";
@@ -159,6 +163,7 @@ const authenticateDevice = async (peripheral: PeripheralModel) => {
       console.error("Error reading token:", error);
     }
   }
+  peripheral.token = token;
 
   await BleManager.write(
     peripheral.id,
@@ -166,10 +171,13 @@ const authenticateDevice = async (peripheral: PeripheralModel) => {
     "1014",
     Array.from(new TextEncoder().encode("OK")),
   );
+  updatePeripheralConnectionStatus(peripheral.id, ConnectionStatus.CONNECTED);
 };
 
 export const connectPeripheralWithAuthenticate = async (
   peripheral: PeripheralModel,
+  user: string,
+  pass: string,
 ) => {
   await BleManager.stopScan();
   _setIsScanning(false);
@@ -195,5 +203,5 @@ export const connectPeripheralWithAuthenticate = async (
     }
   }
 
-  await authenticateDevice(peripheral);
+  await authenticateDevice(peripheral, user, pass);
 };

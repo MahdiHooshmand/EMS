@@ -79,7 +79,7 @@ export const BodyPartsScreen = ({ navigation }: any) => {
         <Header
           headerFadeIn={headerAnimation}
           fadeOut={containerFadeOut}
-          backPage={"connect-to-device"}
+          backPage={"login"}
           navigation={navigation}
         />
         <BorderBox fadeAnim={listAnimation}>

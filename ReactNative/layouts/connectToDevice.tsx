@@ -16,6 +16,11 @@ import { BorderBox } from "../components/borderBox";
 import { OneButton } from "../components/footer";
 import { initAuth, scanForPeripherals } from "../utills/auth";
 
+interface ConnectToDeviceScreenProps {
+  navigation: any;
+  route: any;
+}
+
 /**
  * ConnectToDeviceScreenProps interface to define the props expected by the ConnectToDeviceScreen component.
  *
@@ -24,7 +29,10 @@ import { initAuth, scanForPeripherals } from "../utills/auth";
  *
  * State:
  */
-export const ConnectToDeviceScreen = ({ navigation }: any) => {
+export const ConnectToDeviceScreen = ({
+  navigation,
+  route,
+}: ConnectToDeviceScreenProps) => {
   /**
    * State variables to hold the fade animation values for the header, list, and button.
    * fadeAnim: Animated value to control the opacity of the header.
@@ -37,6 +45,7 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
    *
    * Set the initial values for peripheralDevices and isLoading.
    */
+  const { user, pass } = route.params;
   const headerFadeIn = new FadeIn(0);
   const listFadeIn = new FadeIn(1);
   const buttonFadeIn = new FadeIn(2);
@@ -109,6 +118,8 @@ export const ConnectToDeviceScreen = ({ navigation }: any) => {
                     initialPeripheral={item}
                     fadeOut={fadeOut}
                     navigation={navigation}
+                    user={user}
+                    pass={pass}
                   />
                 );
               }}
