@@ -22,10 +22,10 @@ import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { sha256 } from "js-sha256";
 import { credential } from "../assets/strings/accounts";
 import { InputAuth } from "../components/inputAuth";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
 
-interface Props {
-  navigation: any;
-}
+type Props = NativeStackScreenProps<RootStackParamList, "login">;
 
 /**
  * The Login component is responsible for handling user authentication.
@@ -92,14 +92,12 @@ export function Login({ navigation }: Props) {
       hashUsername === credential.username &&
       hashPassword === credential.password
     ) {
-      fadeOut
-        .animate()
-        .start(() =>
-          navigation.replace("connect-to-device", {
-            user: username,
-            pass: password,
-          }),
-        );
+      fadeOut.animate().start(() =>
+        navigation.replace("connect-to-device", {
+          user: username,
+          pass: password,
+        }),
+      );
     } else {
       setShowError(true);
       setUsername("");

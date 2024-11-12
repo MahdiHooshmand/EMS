@@ -11,7 +11,9 @@ import { Header } from "../components/header";
 import { BorderBox } from "../components/borderBox";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { background_color } from "../assets/thems/colors";
-import { BodyPartCard, fetchBodyParts } from "../components/bodyPartItem"; // ایمپورت تابع
+import { BodyPartCard, fetchBodyParts } from "../components/bodyPartItem";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App"; // ایمپورت تابع
 
 /**
  * Fetch body parts data from a remote API or local storage.
@@ -25,6 +27,8 @@ interface BodyPartData {
   source: any;
 }
 
+type Props = NativeStackScreenProps<RootStackParamList, "body-parts">;
+
 /**
  * BodyPartsScreen component is responsible for displaying a list of body parts and allowing the user to select one.
  * It includes a header with a back button, a body with a list of body parts, and a footer with a start button.
@@ -32,7 +36,8 @@ interface BodyPartData {
  * Props:
  * - navigation: The navigation object used to navigate between screens.
  */
-export const BodyPartsScreen = ({ navigation }: any) => {
+export const BodyPartsScreen = ({ navigation, route }: Props) => {
+  const { peripheral } = route.params;
   const headerAnimation = new FadeIn(0);
   const listAnimation = new FadeIn(1);
   const containerFadeOut = new FadeOut();
@@ -92,6 +97,7 @@ export const BodyPartsScreen = ({ navigation }: any) => {
                 source={item.source}
                 fadeOut={containerFadeOut}
                 navigation={navigation}
+                peripheral={peripheral}
               />
             )}
             keyExtractor={(item) => item.id.toString()}

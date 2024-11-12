@@ -2,7 +2,7 @@
 /**
  * Represents a muscle group for easy identification.
  */
-type MuscleName =
+export type MuscleName =
   | "ABDOMINALS"
   | "OBLIQUES"
   | "TRAPEZIUS"
@@ -22,7 +22,7 @@ type MuscleName =
 /**
  * Represents the type of electrical stimulation (EMS or TENS).
  */
-type StimulationType = "EMS" | "TENS";
+export type StimulationType = "EMS" | "TENS";
 
 /**
  * Represents an electrotherapy treatment with various parameters.

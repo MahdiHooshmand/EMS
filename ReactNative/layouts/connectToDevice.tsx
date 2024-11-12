@@ -15,11 +15,10 @@ import { Header } from "../components/header";
 import { BorderBox } from "../components/borderBox";
 import { OneButton } from "../components/footer";
 import { initAuth, scanForPeripherals } from "../utills/auth";
+import { RootStackParamList } from "../App";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-interface ConnectToDeviceScreenProps {
-  navigation: any;
-  route: any;
-}
+type Props = NativeStackScreenProps<RootStackParamList, "connect-to-device">;
 
 /**
  * ConnectToDeviceScreenProps interface to define the props expected by the ConnectToDeviceScreen component.
@@ -30,10 +29,7 @@ interface ConnectToDeviceScreenProps {
  *
  * State:
  */
-export const ConnectToDeviceScreen = ({
-  navigation,
-  route,
-}: ConnectToDeviceScreenProps) => {
+export const ConnectToDeviceScreen = ({ navigation, route }: Props) => {
   /**
    * State variables to hold the fade animation values for the header, list, and button.
    * fadeAnim: Animated value to control the opacity of the header.

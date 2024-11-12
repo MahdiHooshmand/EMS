@@ -15,14 +15,10 @@ import { Electrotherapy, EMS, TENS } from "../models/stimulateInfoModel";
 import { OneButton } from "../components/footer";
 import { Combo, Seekbar } from "../components/formComponents";
 import { CardView } from "../components/card";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
 
-/**
- * Props for the SetInfoScreen component.
- */
-interface Props {
-  navigation: any;
-  route: any;
-}
+type Props = NativeStackScreenProps<RootStackParamList, "set-info">;
 
 /**
  * Frequency and pulse width items for the EMS and TENS stimulation types.
@@ -59,7 +55,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
    *
    * Note: This component uses the Animated API for animations.
    */
-  const { bodyPartName, source, stimulationType } = route.params;
+  const { bodyPartName, source, stimulationType, peripheral } = route.params;
   const containerFadeOut = new FadeOut();
   const headerAnimation = new FadeIn(0);
   const listAnimation = new FadeIn(1);
@@ -116,7 +112,11 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
     setIsStarting(true);
     setTimeout(() => {
       containerFadeOut.animate().start(() => {
-        navigation.replace("run", { data: data, source: source });
+        navigation.replace("run", {
+          data: data,
+          source: source,
+          peripheral: peripheral,
+        });
       });
     }, 1000);
   };

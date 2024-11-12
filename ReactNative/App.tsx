@@ -11,10 +11,38 @@ import { ConnectToDeviceScreen } from "./layouts/connectToDevice";
 import { BodyPartsScreen } from "./layouts/bodyParts";
 import { SetInfoScreen } from "./layouts/setInfoScreen";
 import { RunScreen } from "./layouts/runScreen";
+import {
+  Electrotherapy,
+  MuscleName,
+  StimulationType,
+} from "./models/stimulateInfoModel";
+import { PeripheralModel } from "./models/peripheralCardModel";
 
 SplashScreen.preventAutoHideAsync();
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  login: undefined;
+  "connect-to-device": {
+    user: string;
+    pass: string;
+  };
+  "body-parts": {
+    peripheral: PeripheralModel;
+  };
+  "set-info": {
+    bodyPartName: MuscleName;
+    source: any;
+    stimulationType: StimulationType;
+    peripheral: PeripheralModel;
+  };
+  run: {
+    data: Electrotherapy;
+    source: any;
+    peripheral: PeripheralModel;
+  };
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   const [fontsLoaded] = useFonts({

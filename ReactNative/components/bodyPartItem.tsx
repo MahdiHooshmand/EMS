@@ -9,12 +9,14 @@ import {
 } from "../assets/thems/colors";
 import { FadeOut } from "../assets/thems/animations";
 import { CardList } from "./card";
+import { PeripheralModel } from "../models/peripheralCardModel";
 
 interface BodyPartCardProps {
   name: string;
   source: any;
   navigation: any;
   fadeOut: FadeOut;
+  peripheral: PeripheralModel;
 }
 
 /**
@@ -23,6 +25,7 @@ interface BodyPartCardProps {
  * @param source of the image
  * @param fadeOut animation
  * @param navigation for navigation
+ * @param peripheral object containing information about the body part
  * @constructor - BodyPartCard
  */
 export const BodyPartCard: React.FC<BodyPartCardProps> = ({
@@ -30,6 +33,7 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
   source,
   fadeOut,
   navigation,
+  peripheral,
 }) => {
   /**
    * Handle EMS button press
@@ -40,6 +44,7 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
         bodyPartName: name,
         source: source,
         stimulationType: "EMS",
+        peripheral: peripheral,
       });
     });
   };
@@ -52,6 +57,7 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
         bodyPartName: name,
         source: source,
         stimulationType: "TENS",
+        peripheral: peripheral,
       });
     });
   };

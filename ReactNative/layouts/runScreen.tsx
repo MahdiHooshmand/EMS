@@ -19,6 +19,8 @@ import {
   text_color,
 } from "../assets/thems/colors";
 import { CardView } from "../components/card";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../App";
 
 /**
  * RunScreenProps interface to define the props expected by the RunScreen component.
@@ -27,10 +29,7 @@ import { CardView } from "../components/card";
  * - navigation: The navigation object for navigation.
  * - route: The route object containing the data and source.
  */
-interface RunScreenProps {
-  navigation: any;
-  route: any;
-}
+type Props = NativeStackScreenProps<RootStackParamList, "run">;
 
 /**
  * RunScreen component that displays the run screen.
@@ -39,7 +38,7 @@ interface RunScreenProps {
  * - navigation: The navigation object for navigation.
  * - route: The route object containing the data and source.
  */
-export const RunScreen = ({ navigation, route }: RunScreenProps) => {
+export const RunScreen = ({ navigation, route }: Props) => {
   /**
    * State variables to store the data and source received from the previous screen.
    * data: Object containing muscle name, stimulation type, and duration.
@@ -57,7 +56,7 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
    *
    * Example usage:
    */
-  const { data, source } = route.params;
+  const { data, source, peripheral } = route.params;
   const containerFadeOut = new FadeOut();
   const infoFadeIn = new FadeIn(0);
   const stopFadeIn = new FadeIn(1);
@@ -76,15 +75,14 @@ export const RunScreen = ({ navigation, route }: RunScreenProps) => {
       return;
     }
     setStopping(true);
-    setTimeout(() => {
-      containerFadeOut.animate().start(() => {
-        navigation.replace("set-info", {
-          bodyPartName: data.muscle,
-          source: source,
-          stimulationType: data.stimulationType,
-        });
+    containerFadeOut.animate().start(() => {
+      navigation.replace("set-info", {
+        bodyPartName: data.muscle,
+        source: source,
+        stimulationType: data.stimulationType,
+        peripheral: peripheral,
       });
-    }, 500);
+    });
   };
 
   /**
