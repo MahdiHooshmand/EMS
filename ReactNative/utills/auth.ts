@@ -8,6 +8,13 @@ import BleManager, {
   Peripheral,
 } from "react-native-ble-manager";
 import * as Bluetooth from "./bluetooth";
+import {
+  AUTH_SERVICE_UUID,
+  PASSWORD_CHARACTERISTIC_UUID,
+  RESPONSE_CHARACTERISTIC_UUID,
+  TOKEN_CHARACTERISTIC_UUID,
+  USERNAME_CHARACTERISTIC_UUID,
+} from "../assets/thems/ble_services";
 
 let _peripheralsRef: MutableRefObject<PeripheralModel[]>;
 let _setPeripherals: (value: PeripheralModel[]) => void;
@@ -132,7 +139,7 @@ const authenticateDevice = async (
     const servicesData = await BleManager.retrieveServices(peripheral.id);
     if (servicesData.services) {
       authServiceFound = servicesData.services.some(
-        (service) => service.uuid === "1010",
+        (service) => service.uuid === AUTH_SERVICE_UUID,
       );
     } else {
       authServiceFound = false;
@@ -143,21 +150,25 @@ const authenticateDevice = async (
   console.log("Auth service found. Sending credentials...");
   await BleManager.write(
     peripheral.id,
-    "1010",
-    "1011",
+    AUTH_SERVICE_UUID,
+    USERNAME_CHARACTERISTIC_UUID,
     Array.from(new TextEncoder().encode(user)),
   );
   await BleManager.write(
     peripheral.id,
-    "1010",
-    "1012",
+    AUTH_SERVICE_UUID,
+    PASSWORD_CHARACTERISTIC_UUID,
     Array.from(new TextEncoder().encode(pass)),
   );
 
   let token = "";
   while (token.length < 10) {
     try {
-      const tokenData = await BleManager.read(peripheral.id, "1010", "1013");
+      const tokenData = await BleManager.read(
+        peripheral.id,
+        AUTH_SERVICE_UUID,
+        TOKEN_CHARACTERISTIC_UUID,
+      );
       token = String.fromCharCode(...tokenData);
     } catch (error) {
       console.error("Error reading token:", error);
@@ -167,8 +178,8 @@ const authenticateDevice = async (
 
   await BleManager.write(
     peripheral.id,
-    "1010",
-    "1014",
+    AUTH_SERVICE_UUID,
+    RESPONSE_CHARACTERISTIC_UUID,
     Array.from(new TextEncoder().encode("OK")),
   );
   updatePeripheralConnectionStatus(peripheral.id, ConnectionStatus.CONNECTED);
