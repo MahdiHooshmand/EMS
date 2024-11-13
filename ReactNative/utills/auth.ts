@@ -224,7 +224,9 @@ const authenticateDevice = async (
 ) => {
   let authServiceFound = false;
   while (!authServiceFound) {
+    console.log("Looking for auth service...");
     const servicesData = await BleManager.retrieveServices(peripheral.id);
+    console.log("Services data:", servicesData);
     if (servicesData.services) {
       authServiceFound = servicesData.services.some(
         (service) => service.uuid === AUTH_SERVICE_UUID,

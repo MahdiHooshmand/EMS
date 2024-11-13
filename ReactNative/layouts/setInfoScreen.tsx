@@ -17,6 +17,7 @@ import { Combo, Seekbar } from "../components/formComponents";
 import { CardView } from "../components/card";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
+import { SET } from "../utills/BluetoothAPI";
 
 type Props = NativeStackScreenProps<RootStackParamList, "set-info">;
 
@@ -100,6 +101,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
    */
   const handleStartProgram = () => {
     if (isStarting) return;
+    setIsStarting(true);
     const data = new Electrotherapy(
       bodyPartName,
       frequency,
@@ -109,8 +111,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
       offTime,
       duration,
     );
-    setIsStarting(true);
-    setTimeout(() => {
+    SET(peripheral, data).then(() => {
       containerFadeOut.animate().start(() => {
         navigation.replace("run", {
           data: data,
@@ -118,7 +119,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
           peripheral: peripheral,
         });
       });
-    }, 1000);
+    });
   };
 
   // Render the SetInfoScreen component.

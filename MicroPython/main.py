@@ -1,4 +1,4 @@
-import Auth
+from ble_services import AuthService, RunService
 import asyncio
 from Models import AndroidDevice
 
@@ -22,13 +22,16 @@ The function performs the following steps:
 7. Prints a success message indicating that the device has been authenticated.
 8. Continuously checks the `is_connected` attribute of the `connection` object and sleeps for 1 second if the connection is still active.
 """
+
+
 async def main():
-    connection = await Auth.search_for_connection()
+    connection = await AuthService.search_for_connection()
     print("Connection from", connection.device)
-    username, password, token = await Auth.handle_auth_request(connection)
+    username, password, token = await AuthService.handle_auth_request(connection)
     mac_address = ":".join(f"{byte:02x}" for byte in connection.device.addr)
     AndroidDevice(username, password, mac_address, token)
     print(mac_address, "authenticated successfully!")
+    await RunService.handle_command()
 
     while connection.is_connected:
         await asyncio.sleep(1)

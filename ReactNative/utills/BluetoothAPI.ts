@@ -20,6 +20,7 @@ const sendCommand = async (
     command: command,
     ...(additionalInfo || {}),
   });
+  console.log("sending command: ", data);
 
   try {
     await BleManager.write(
