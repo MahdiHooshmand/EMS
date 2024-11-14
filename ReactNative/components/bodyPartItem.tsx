@@ -10,9 +10,11 @@ import {
 import { FadeOut } from "../assets/thems/animations";
 import { CardList } from "./card";
 import { PeripheralModel } from "../models/peripheralCardModel";
+import { Electrotherapy, MuscleName } from "../models/stimulateInfoModel";
+import { BodyPartData } from "../layouts/bodyParts";
 
 interface BodyPartCardProps {
-  name: string;
+  name: MuscleName;
   source: any;
   navigation: any;
   fadeOut: FadeOut;
@@ -41,10 +43,9 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
   const handleEMSPress = () => {
     fadeOut.animate().start(() => {
       navigation.replace("set-info", {
-        bodyPartName: name,
         source: source,
-        stimulationType: "EMS",
         peripheral: peripheral,
+        data: new Electrotherapy(name, 500, 300, "EMS", 1.0, 4.0, 5),
       });
     });
   };
@@ -54,10 +55,9 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
   const handleTENSPress = () => {
     fadeOut.animate().start(() => {
       navigation.replace("set-info", {
-        bodyPartName: name,
         source: source,
-        stimulationType: "TENS",
         peripheral: peripheral,
+        data: new Electrotherapy(name, 80, 200, "TENS", 1.0, 4.0, 5),
       });
     });
   };
@@ -95,7 +95,7 @@ export const BodyPartCard: React.FC<BodyPartCardProps> = ({
   );
 };
 
-export const fetchBodyParts = () => {
+export const fetchBodyParts: () => BodyPartData[] = () => {
   /**
    * Fetch body parts data from API
    */

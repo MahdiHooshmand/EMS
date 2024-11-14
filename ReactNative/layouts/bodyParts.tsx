@@ -15,6 +15,7 @@ import { background_color } from "../assets/thems/colors";
 import { BodyPartCard, fetchBodyParts } from "../components/bodyPartItem";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
+import { MuscleName } from "../models/stimulateInfoModel";
 
 /**
  * Fetch body parts data from a remote API or local storage.
@@ -22,9 +23,9 @@ import { RootStackParamList } from "../App";
  * Returns:
  * - An array of body part data.
  */
-interface BodyPartData {
+export interface BodyPartData {
   id: number;
-  name: string;
+  name: MuscleName;
   source: any;
 }
 

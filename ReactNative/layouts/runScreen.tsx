@@ -85,10 +85,9 @@ export const RunScreen = ({ navigation, route }: Props) => {
     STOP(peripheral).then(() => {
       containerFadeOut.animate().start(() => {
         navigation.replace("set-info", {
-          bodyPartName: data.muscle,
           source: source,
-          stimulationType: data.stimulationType,
           peripheral: peripheral,
+          data: data,
         });
       });
     });
@@ -117,6 +116,9 @@ export const RunScreen = ({ navigation, route }: Props) => {
    * If the countdown reaches zero, it stops the run and navigates to the set-info screen.
    */
   useEffect(() => {
+    if (stopping) {
+      return;
+    }
     let interval: NodeJS.Timeout;
 
     if (countdown > 0) {

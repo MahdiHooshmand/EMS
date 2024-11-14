@@ -57,7 +57,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
    *
    * Note: This component uses the Animated API for animations.
    */
-  const { bodyPartName, source, stimulationType, peripheral } = route.params;
+  const { source, peripheral, data } = route.params;
   const containerFadeOut = new FadeOut();
   const headerAnimation = new FadeIn(0);
   const listAnimation = new FadeIn(1);
@@ -65,15 +65,11 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
 
   const [frequencyItems, setFrequencyItems] = useState<PickerItem[]>([]);
   const [pulseWidthItems, setPulseWidthItems] = useState<PickerItem[]>([]);
-  const [frequency, setFrequency] = useState<number>(
-    stimulationType === "EMS" ? 500 : 80,
-  );
-  const [pulseWidth, setPulseWidth] = useState<number>(
-    stimulationType === "EMS" ? 300 : 200,
-  );
-  const [onTime, setOnTime] = useState<number>(1.0);
-  const [offTime, setOffTime] = useState<number>(4.0);
-  const [duration, setDuration] = useState<number>(5);
+  const [frequency, setFrequency] = useState<number>(data.frequency);
+  const [pulseWidth, setPulseWidth] = useState<number>(data.pulseWidth);
+  const [onTime, setOnTime] = useState<number>(data.onTime);
+  const [offTime, setOffTime] = useState<number>(data.offTime);
+  const [duration, setDuration] = useState<number>(data.duration);
   const [isStarting, setIsStarting] = useState(false);
 
   const backAction = () => {
@@ -86,12 +82,12 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
   // Apply the necessary animations when the component mounts.
   useEffect(() => {
     setFrequencyItems(
-      (stimulationType === "EMS" ? EMS : TENS).validFrequencies.map(
+      (data.stimulationType === "EMS" ? EMS : TENS).validFrequencies.map(
         (frequency) => ({ label: `${frequency} Hz`, value: frequency }),
       ),
     );
     setPulseWidthItems(
-      (stimulationType === "EMS" ? EMS : TENS).validPulseWidths.map(
+      (data.stimulationType === "EMS" ? EMS : TENS).validPulseWidths.map(
         (pulseWidth) => ({ label: `${pulseWidth} µs`, value: pulseWidth }),
       ),
     );
@@ -119,19 +115,19 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
   const handleStartProgram = () => {
     if (isStarting) return;
     setIsStarting(true);
-    const data = new Electrotherapy(
-      bodyPartName,
+    const new_data = new Electrotherapy(
+      data.muscle,
       frequency,
       pulseWidth,
-      stimulationType,
+      data.stimulationType,
       onTime,
       offTime,
       duration,
     );
-    SET(peripheral, data).then(() => {
+    SET(peripheral, new_data).then(() => {
       containerFadeOut.animate().start(() => {
         navigation.replace("run", {
-          data: data,
+          data: new_data,
           source: source,
           peripheral: peripheral,
         });
@@ -156,7 +152,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
               />
             </View>
             <Text style={styles.title}>
-              {stimulationType} : {bodyPartName}
+              {data.stimulationType} : {data.muscle}
             </Text>
             <Combo
               text={"Frequency : "}

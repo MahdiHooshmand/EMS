@@ -30,10 +30,9 @@ export type RootStackParamList = {
     peripheral: PeripheralModel;
   };
   "set-info": {
-    bodyPartName: MuscleName;
     source: any;
-    stimulationType: StimulationType;
     peripheral: PeripheralModel;
+    data: Electrotherapy;
   };
   run: {
     data: Electrotherapy;
