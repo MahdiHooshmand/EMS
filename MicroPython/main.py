@@ -1,6 +1,13 @@
 from ble_services import AuthService, RunService
 import asyncio
 from Models import AndroidDevice
+import machine
+
+
+async def monitor_connection(connection):
+    await connection.disconnected(timeout_ms=None)
+    print("Connection lost, performing soft reset.")
+    machine.soft_reset()
 
 
 """
@@ -26,15 +33,13 @@ The function performs the following steps:
 
 async def main():
     connection = await AuthService.search_for_connection()
+    asyncio.create_task(monitor_connection(connection))
     print("Connection from", connection.device)
     username, password, token = await AuthService.handle_auth_request(connection)
     mac_address = ":".join(f"{byte:02x}" for byte in connection.device.addr)
     android_device = AndroidDevice(username, password, mac_address, token)
     print(mac_address, "authenticated successfully!")
     await RunService.handle_command(connection, android_device)
-
-    while connection.is_connected:
-        await asyncio.sleep(1)
 
 
 """

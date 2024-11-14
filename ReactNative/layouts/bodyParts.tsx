@@ -16,6 +16,7 @@ import { BodyPartCard, fetchBodyParts } from "../components/bodyPartItem";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { MuscleName } from "../models/stimulateInfoModel";
+import { disconnectAll } from "../utills/auth";
 
 /**
  * Fetch body parts data from a remote API or local storage.
@@ -47,8 +48,10 @@ export const BodyPartsScreen = ({ navigation, route }: Props) => {
   const [bodyPartList, setBodyPartList] = useState<BodyPartData[]>([]);
 
   const backAction = () => {
-    containerFadeOut.animate().start(() => {
-      navigation.replace("login");
+    disconnectAll().then(() => {
+      containerFadeOut.animate().start(() => {
+        navigation.replace("login");
+      });
     });
     return true;
   };

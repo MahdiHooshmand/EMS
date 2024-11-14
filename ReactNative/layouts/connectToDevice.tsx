@@ -15,7 +15,12 @@ import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
 import { BorderBox } from "../components/borderBox";
 import { OneButton } from "../components/footer";
-import { initAuth, scanForPeripherals, stopScanning } from "../utills/auth";
+import {
+  disconnectAll,
+  initAuth,
+  scanForPeripherals,
+  stopScanning,
+} from "../utills/auth";
 import { RootStackParamList } from "../App";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
@@ -58,8 +63,10 @@ export const ConnectToDeviceScreen = ({ navigation, route }: Props) => {
 
   const backAction = () => {
     stopScanning().then(() => {
-      fadeOut.animate().start(() => {
-        navigation.replace("login");
+      disconnectAll().then(() => {
+        fadeOut.animate().start(() => {
+          navigation.replace("login");
+        });
       });
     });
     return true;

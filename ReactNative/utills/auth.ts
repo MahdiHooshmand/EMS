@@ -280,6 +280,13 @@ export const stopScanning = async () => {
   _setIsScanning(false);
 };
 
+export const disconnectAll = async () => {
+  const connectedPeripherals = await BleManager.getConnectedPeripherals();
+  for (const connectedPeripheral of connectedPeripherals) {
+    await BleManager.disconnect(connectedPeripheral.id);
+  }
+};
+
 /**
  * Establishes a connection to a Bluetooth peripheral, authenticates it using the provided credentials,
  * and updates the peripheral's connection status and token.
@@ -295,10 +302,7 @@ export const connectPeripheralWithAuthenticate = async (
 ) => {
   await stopScanning();
 
-  const connectedPeripherals = await BleManager.getConnectedPeripherals();
-  for (const connectedPeripheral of connectedPeripherals) {
-    await BleManager.disconnect(connectedPeripheral.id);
-  }
+  await disconnectAll();
 
   updatePeripheralConnectionStatus(peripheral.id, ConnectionStatus.CONNECTING);
 
