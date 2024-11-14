@@ -17,7 +17,7 @@ import { Combo, Seekbar } from "../components/formComponents";
 import { CardView } from "../components/card";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
-import { RUN, SET, STOP } from "../utills/BluetoothAPI";
+import { SET } from "../utills/BluetoothAPI";
 
 type Props = NativeStackScreenProps<RootStackParamList, "set-info">;
 

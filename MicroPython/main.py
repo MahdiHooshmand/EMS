@@ -29,9 +29,9 @@ async def main():
     print("Connection from", connection.device)
     username, password, token = await AuthService.handle_auth_request(connection)
     mac_address = ":".join(f"{byte:02x}" for byte in connection.device.addr)
-    AndroidDevice(username, password, mac_address, token)
+    android_device = AndroidDevice(username, password, mac_address, token)
     print(mac_address, "authenticated successfully!")
-    await RunService.handle_command(connection)
+    await RunService.handle_command(connection, android_device)
 
     while connection.is_connected:
         await asyncio.sleep(1)

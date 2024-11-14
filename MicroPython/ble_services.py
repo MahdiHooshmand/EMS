@@ -321,7 +321,7 @@ class AuthService:
 
                 # Check if response after sending token is 'OK'
                 if await AuthService.check_response_after_auth(connection):
-                    return un, pw, token
+                    return un, pw, tk
                 else:
                     print("Waiting for username and password again...")
                     continue
@@ -334,31 +334,38 @@ class AuthService:
 
 class RunService:
     @staticmethod
-    async def handle_command(connection):
-        full_data = ""
+    async def handle_command(connection, android_device):
         while True:
-            await data.written()
-            received_chunk = data.read()
-            decoded_chunk = received_chunk.decode("utf-8")
-            full_data += decoded_chunk
-            print("Received chunk:", decoded_chunk)
-            if "\n" in full_data:
-                full_data = full_data.rstrip("\n")
-                print("Full data received:", full_data)
-                break
+            full_data = ""
+            while True:
+                await data.written()
+                received_chunk = data.read()
+                decoded_chunk = received_chunk.decode("utf-8")
+                full_data += decoded_chunk
+                print("Received chunk:", decoded_chunk)
+                if "\n" in full_data:
+                    full_data = full_data.rstrip("\n")
+                    print("Full data received:", full_data)
+                    break
 
-        if full_data == "STOP":
-            print("Stopping service...")
-            await RunService.send_response("STOP", connection)
-            return
-        received_data_dict = json.loads(full_data)
-        received_token = received_data_dict.get("token")
-        received_cmd = received_data_dict.get("command")
-        received_info = received_data_dict.get("info", {})
-        print("Received token:", received_token)
-        print("Received command:", received_cmd)
-        print("Received info:", received_info)
-        await RunService.send_response(received_cmd, connection)
+            if full_data == "STOP":
+                print("Stopping service...")
+                await RunService.send_response("STOP", connection)
+            else:
+                received_data_dict = json.loads(full_data)
+                received_token = received_data_dict.get("token")
+                received_cmd = received_data_dict.get("command")
+                received_info = received_data_dict.get("info", {})
+                if received_token == android_device.token:
+                    print("Valid TOKEN")
+                else:
+                    print("Invalid TOKEN")
+                    print("Received token:", received_token)
+                    print("correct token:", android_device.token)
+                print("Received token:", received_token)
+                print("Received command:", received_cmd)
+                print("Received info:", received_info)
+                await RunService.send_response(received_cmd, connection)
 
     @staticmethod
     async def send_response(response_data, connection):
