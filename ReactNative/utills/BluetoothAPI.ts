@@ -23,12 +23,7 @@ const sendCommand = async (
   console.log("sending command: ", data);
 
   try {
-    await BleManager.write(
-      peripheral.id,
-      RUN_SERVICE_UUID,
-      RUN_CHARACTERISTIC_UUID,
-      Array.from(new TextEncoder().encode(data)),
-    );
+    await chunkAndSend(peripheral, data);
     let response = "";
     while (response !== command) {
       const responseData = await BleManager.read(
@@ -42,6 +37,27 @@ const sendCommand = async (
   } catch (error) {
     console.error(`Error executing ${command} command:`, error);
   }
+};
+
+const chunkAndSend = async (peripheral: PeripheralModel, data: string) => {
+  const encoder = new TextEncoder();
+  const encodedData = encoder.encode(data + "\n");
+  const chunkSize = 20;
+  let index = 0;
+
+  while (index < encodedData.length) {
+    const chunk = encodedData.slice(index, index + chunkSize);
+    await BleManager.write(
+      peripheral.id,
+      RUN_SERVICE_UUID,
+      RUN_CHARACTERISTIC_UUID,
+      Array.from(chunk),
+    );
+    index += chunkSize;
+    await sleep(50);
+  }
+
+  console.log("Data with terminator sent in chunks.");
 };
 
 export const SET = async (

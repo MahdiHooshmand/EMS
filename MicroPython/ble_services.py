@@ -335,15 +335,22 @@ class AuthService:
 class RunService:
     @staticmethod
     async def handle_command():
+        full_data = ""
         while True:
             await data.written()
-            received_data_bytes = data.read()
-            received_data = received_data_bytes.decode("utf-8")
-            print("Received data:", received_data)
-            received_data_dict = json.loads(received_data)
-            received_token = received_data_dict.get("token")
-            received_cmd = received_data_dict.get("command")
-            received_info = received_data_dict.get("info", {})
-            print("Received token:", received_token)
-            print("Received command:", received_cmd)
-            print("Received info:", received_info)
+            received_chunk = data.read()
+            decoded_chunk = received_chunk.decode("utf-8")
+            full_data += decoded_chunk
+            print("Received chunk:", decoded_chunk)
+            if "\n" in full_data:
+                full_data = full_data.rstrip("\n")  # حذف کاراکتر پایان
+                print("Full data received:", full_data)
+                break
+
+        received_data_dict = json.loads(full_data)
+        received_token = received_data_dict.get("token")
+        received_cmd = received_data_dict.get("command")
+        received_info = received_data_dict.get("info", {})
+        print("Received token:", received_token)
+        print("Received command:", received_cmd)
+        print("Received info:", received_info)
