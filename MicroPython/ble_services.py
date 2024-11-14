@@ -334,7 +334,7 @@ class AuthService:
 
 class RunService:
     @staticmethod
-    async def handle_command():
+    async def handle_command(connection):
         full_data = ""
         while True:
             await data.written()
@@ -343,10 +343,14 @@ class RunService:
             full_data += decoded_chunk
             print("Received chunk:", decoded_chunk)
             if "\n" in full_data:
-                full_data = full_data.rstrip("\n")  # حذف کاراکتر پایان
+                full_data = full_data.rstrip("\n")
                 print("Full data received:", full_data)
                 break
 
+        if full_data == "STOP":
+            print("Stopping service...")
+            await RunService.send_response("STOP", connection)
+            return
         received_data_dict = json.loads(full_data)
         received_token = received_data_dict.get("token")
         received_cmd = received_data_dict.get("command")
@@ -354,3 +358,10 @@ class RunService:
         print("Received token:", received_token)
         print("Received command:", received_cmd)
         print("Received info:", received_info)
+        await RunService.send_response(received_cmd, connection)
+
+    @staticmethod
+    async def send_response(response_data, connection):
+        response_bytes = response_data.encode("utf-8")
+        res.write(response_bytes, send_update=True)
+        token.notify(connection)

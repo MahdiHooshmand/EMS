@@ -15,13 +15,17 @@ const sendCommand = async (
   command: string,
   additionalInfo?: any,
 ) => {
-  const data = JSON.stringify({
-    token: peripheral.token,
-    command: command,
-    ...(additionalInfo || {}),
-  });
+  let data = "";
+  if (command === "SET" || command === "RUN") {
+    data = JSON.stringify({
+      token: peripheral.token,
+      command: command,
+      ...(additionalInfo || {}),
+    });
+  } else if (command === "STOP") {
+    data = "STOP";
+  }
   console.log("sending command: ", data);
-
   try {
     await chunkAndSend(peripheral, data);
     let response = "";
