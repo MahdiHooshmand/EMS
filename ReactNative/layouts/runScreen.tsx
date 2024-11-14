@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
+  BackHandler,
 } from "react-native";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import {
@@ -66,6 +67,11 @@ export const RunScreen = ({ navigation, route }: Props) => {
   const [isInitialCountdown, setIsInitialCountdown] = useState(true);
   const [stopping, setStopping] = useState(false);
 
+  const backAction = () => {
+    stop();
+    return true;
+  };
+
   /**
    * Function to handle the stop button press.
    * If the run is currently stopping, it will reset the countdown and fade out the container view.
@@ -94,6 +100,15 @@ export const RunScreen = ({ navigation, route }: Props) => {
    */
   useEffect(() => {
     Animated.parallel([infoFadeIn.animate(), stopFadeIn.animate()]).start();
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => {
+      backHandler.remove();
+    };
   }, []);
 
   /**

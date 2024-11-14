@@ -6,6 +6,7 @@ import {
   Animated,
   FlatList,
   View,
+  BackHandler,
 } from "react-native";
 import { Header } from "../components/header";
 import { BorderBox } from "../components/borderBox";
@@ -13,7 +14,7 @@ import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { background_color } from "../assets/thems/colors";
 import { BodyPartCard, fetchBodyParts } from "../components/bodyPartItem";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../App"; // ایمپورت تابع
+import { RootStackParamList } from "../App";
 
 /**
  * Fetch body parts data from a remote API or local storage.
@@ -44,9 +45,25 @@ export const BodyPartsScreen = ({ navigation, route }: Props) => {
 
   const [bodyPartList, setBodyPartList] = useState<BodyPartData[]>([]);
 
+  const backAction = () => {
+    containerFadeOut.animate().start(() => {
+      navigation.replace("login");
+    });
+    return true;
+  };
+
   // Fetch body parts data when the component mounts or when the body part list changes
   useEffect(() => {
     setBodyPartList(fetchBodyParts());
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => {
+      backHandler.remove();
+    };
   }, []);
 
   // Apply the animations when the body part list changes or when the component mounts
@@ -81,12 +98,7 @@ export const BodyPartsScreen = ({ navigation, route }: Props) => {
       <Animated.View
         style={[styles.container, { opacity: containerFadeOut.fadeAnim }]}
       >
-        <Header
-          headerFadeIn={headerAnimation}
-          fadeOut={containerFadeOut}
-          backPage={"login"}
-          navigation={navigation}
-        />
+        <Header headerFadeIn={headerAnimation} handleBackPress={backAction} />
         <BorderBox fadeAnim={listAnimation}>
           <FlatList
             style={styles.list}

@@ -2,40 +2,34 @@
 import { Animated, Image, Pressable, StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { button_background_color, text_color } from "../assets/thems/colors";
-import { FadeIn, FadeOut } from "../assets/thems/animations";
+import { FadeIn } from "../assets/thems/animations";
 import { useState } from "react";
 
 interface Props {
   headerFadeIn: FadeIn;
-  fadeOut: FadeOut;
-  navigation: any;
-  backPage: string;
+  handleBackPress: () => any;
 }
 
 /**
  * Header component is responsible for displaying the app's logo and a back button.'
  * @param headerFadeIn - An instance of the FadeIn animation for the header.
- * @param fadeOut - An instance of the FadeOut animation for the container.
- * @param navigation - The navigation object used to navigate between screens.
- * @param backPage - The page to navigate back to when the back button is pressed.
+ * @param handleBackPress - The callback function to handle the back button press.
  * @constructor - Header component constructor.
  */
 export const Header = ({
   headerFadeIn,
-  fadeOut,
-  navigation,
-  backPage,
+  handleBackPress,
 }: Props) => {
   /**
    * State variable to track if the back button is pressed.
    */
   const [isBackButtonPressed, setIsBackButtonPressed] = useState(false);
 
-  const handleBackPress = () => {
-    fadeOut.animate().start(() => {
-      navigation.replace(backPage);
-    });
-  };
+  // const handleBackPress = () => {
+  //   fadeOut.animate().start(() => {
+  //     navigation.replace(backPage);
+  //   });
+  // };
 
   /**
    * Header component render method.

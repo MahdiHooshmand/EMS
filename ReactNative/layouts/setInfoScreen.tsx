@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Animated,
   Image,
+  BackHandler,
 } from "react-native";
 import { background_color, card_text_color } from "../assets/thems/colors";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
@@ -75,6 +76,13 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
   const [duration, setDuration] = useState<number>(5);
   const [isStarting, setIsStarting] = useState(false);
 
+  const backAction = () => {
+    containerFadeOut.animate().start(() => {
+      navigation.replace("body-parts", { peripheral: peripheral });
+    });
+    return true;
+  };
+
   // Apply the necessary animations when the component mounts.
   useEffect(() => {
     setFrequencyItems(
@@ -93,6 +101,15 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
       listAnimation.animate(),
       buttonFadeIn.animate(),
     ]).start();
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => {
+      backHandler.remove();
+    };
   }, []);
 
   /**
@@ -128,12 +145,7 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
       <Animated.View
         style={[styles.container, { opacity: containerFadeOut.fadeAnim }]}
       >
-        <Header
-          headerFadeIn={headerAnimation}
-          fadeOut={containerFadeOut}
-          backPage={"body-parts"}
-          navigation={navigation}
-        />
+        <Header headerFadeIn={headerAnimation} handleBackPress={backAction} />
         <CardView fadeInAnim={listAnimation}>
           <Animated.ScrollView>
             <View style={styles.image_container}>

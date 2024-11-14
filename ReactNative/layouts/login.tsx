@@ -8,6 +8,7 @@ import {
   View,
   Keyboard,
   Animated,
+  BackHandler,
 } from "react-native";
 import {
   background_color,
@@ -65,16 +66,23 @@ export function Login({ navigation }: Props) {
       setKeyboardStatus(false),
     );
 
+    const backAction = () => {
+      BackHandler.exitApp();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    Animated.parallel(fades.map((fade) => fade.animate())).start();
+
     // Cleanup function
     return () => {
       showSubscription.remove();
       hideSubscription.remove();
+      backHandler.remove();
     };
-  }, []);
-
-  // Animation effect
-  useEffect(() => {
-    Animated.parallel(fades.map((fade) => fade.animate())).start();
   }, []);
 
   // Login function

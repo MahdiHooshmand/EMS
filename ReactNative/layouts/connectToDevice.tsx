@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   Animated,
+  BackHandler,
 } from "react-native";
 import { background_color, placeholder_color } from "../assets/thems/colors";
 import { useEffect, useRef, useState } from "react";
@@ -14,7 +15,7 @@ import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { Header } from "../components/header";
 import { BorderBox } from "../components/borderBox";
 import { OneButton } from "../components/footer";
-import { initAuth, scanForPeripherals } from "../utills/auth";
+import { initAuth, scanForPeripherals, stopScanning } from "../utills/auth";
 import { RootStackParamList } from "../App";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
@@ -55,12 +56,22 @@ export const ConnectToDeviceScreen = ({ navigation, route }: Props) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const backAction = () => {
+    stopScanning().then(() => {
+      fadeOut.animate().start(() => {
+        navigation.replace("login");
+      });
+    });
+    return true;
+  };
+
   /**
    * Effect hook to start the fade animation for the header, list, and button when the component mounts.
    * Use Animated. parallel to run the fade animations concurrently.
    */
   useEffect(() => {
     setIsLoading(true);
+
     Animated.parallel([
       headerFadeIn.animate(),
       listFadeIn.animate(),
@@ -75,6 +86,15 @@ export const ConnectToDeviceScreen = ({ navigation, route }: Props) => {
         setIsLoading(false);
       });
     });
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction,
+    );
+
+    return () => {
+      backHandler.remove();
+    };
   }, []);
 
   /**
@@ -92,12 +112,7 @@ export const ConnectToDeviceScreen = ({ navigation, route }: Props) => {
           },
         ]}
       >
-        <Header
-          headerFadeIn={headerFadeIn}
-          fadeOut={fadeOut}
-          backPage={"login"}
-          navigation={navigation}
-        />
+        <Header headerFadeIn={headerFadeIn} handleBackPress={backAction} />
         <BorderBox fadeAnim={listFadeIn}>
           {peripheralDevices.length === 0 ? (
             <Text style={styles.emptyMessage}>
