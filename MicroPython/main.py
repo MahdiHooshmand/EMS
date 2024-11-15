@@ -5,33 +5,48 @@ import machine
 
 
 async def monitor_connection(connection):
+    """
+    Monitors the connection with a device and performs a soft reset if the connection is lost.
+
+    This asynchronous function waits for the connection to be disconnected and then
+    performs a soft reset of the machine. It's designed to handle unexpected
+    disconnections and restart the system to maintain operational status.
+
+    Parameters:
+    connection (object): The connection object to monitor. It must have a 'disconnected'
+                         method that can be awaited.
+
+    Returns:
+    None
+
+    Note:
+    This function does not return as it triggers a soft reset upon disconnection.
+    """
     await connection.disconnected(timeout_ms=None)
     print("Connection lost, performing soft reset.")
     machine.soft_reset()
 
 
-"""
-This is the main function of the authentication service. It handles the authentication process for Android devices.
-
-Parameters:
-None
-
-Returns:
-None
-
-The function performs the following steps:
-1. Calls the `search_for_connection` function from the `Auth` module to establish a connection with an Android device.
-2. Prints the MAC address of the connected device.
-3. Calls the `handle_auth_request` function from the `Auth` module to handle the authentication request from the connected device.
-4. Extracts the username, password, and token from the authentication response.
-5. Constructs the MAC address of the connected device.
-6. Creates an instance of the `AndroidDevice` class from the `Models` module with the extracted credentials.
-7. Prints a success message indicating that the device has been authenticated.
-8. Continuously checks the `is_connected` attribute of the `connection` object and sleeps for 1 second if the connection is still active.
-"""
-
-
 async def main():
+    """
+    Main asynchronous function that handles the authentication and command execution process.
+
+    This function performs the following steps:
+    1. Searches for a BLE connection
+    2. Sets up a connection monitor
+    3. Handles the authentication request
+    4. Creates an AndroidDevice instance with the authenticated information
+    5. Handles incoming commands from the authenticated device
+
+    Parameters:
+    None
+
+    Returns:
+    None
+
+    Raises:
+    Any exceptions raised by the called asynchronous functions.
+    """
     connection = await AuthService.search_for_connection()
     asyncio.create_task(monitor_connection(connection))
     print("Connection from", connection.device)

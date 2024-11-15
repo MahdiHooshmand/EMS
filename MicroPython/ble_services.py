@@ -21,7 +21,22 @@ import json
 
 auth = aioble.Service(AUTH_SERVICE)
 run = aioble.Service(RUN_SERVICE)
+"""
+Create and configure Bluetooth Low Energy (BLE) characteristics for authentication and run service.
 
+This function initializes BLE characteristics for username, password, token, and response
+for the authentication service, and data and result for the run service. The characteristics
+are configured with their respective UUIDs, read, write, notify, and capture permissions,
+and their initial values.
+
+Parameters:
+-----------
+auth_service : aioble.Service
+    The BLE service object for the authentication service.
+run_service : aioble.Service
+    The BLE service object for the run service.
+
+"""
 username = aioble.Characteristic(
     auth,
     AUTH_USERNAME,
@@ -79,6 +94,7 @@ res = aioble.Characteristic(
     initial=struct.pack("<h", 0),
 )
 
+# Register the services and activate them
 aioble.register_services(auth, run)
 
 auth.active = True
@@ -333,8 +349,36 @@ class AuthService:
 
 
 class RunService:
+
     @staticmethod
     async def handle_command(connection, android_device):
+        """
+        Handles incoming commands from a connected BLE device and processes them accordingly.
+
+        This asynchronous function continuously listens for incoming data chunks, assembles them
+        into complete commands, and processes them. It handles special commands like 'STOP' and
+        validates incoming tokens against the stored device token.
+
+        Parameters:
+        -----------
+        connection : object
+            The BLE connection object representing the active connection with the client device.
+            Used for sending responses back to the client.
+        android_device : AndroidDevice
+            An object representing the authenticated Android device, containing the valid token
+            for command validation.
+
+        Returns:
+        --------
+        None
+            This function runs in an infinite loop and does not return unless explicitly stopped.
+
+        Side Effects:
+        -------------
+        - Prints received data and status messages to the console.
+        - Sends responses back to the connected device via BLE.
+        - Processes incoming commands and executes corresponding actions.
+        """
         while True:
             full_data = ""
             while True:
@@ -369,6 +413,28 @@ class RunService:
 
     @staticmethod
     async def send_response(response_data, connection):
+        """
+        Sends a response back to the connected BLE device.
+
+        This asynchronous function encodes the response data as UTF-8, writes it to the
+        response characteristic, and notifies the connected device of the update.
+
+        Parameters:
+        -----------
+        response_data : str
+            The response data to be sent back to the connected device.
+        connection : object
+            The BLE connection object representing the active connection with the client device.
+
+        Returns:
+        --------
+        None
+
+        Side Effects:
+        -------------
+        - Writes the response data to the BLE characteristic.
+        - Sends a notification to the connected device.
+        """
         response_bytes = response_data.encode("utf-8")
         res.write(response_bytes, send_update=True)
         token.notify(connection)

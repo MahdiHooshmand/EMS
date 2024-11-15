@@ -2,7 +2,6 @@ import hashlib
 from assets.credential import Credentials
 import os
 import binascii
-import json
 
 
 class AndroidDevice:
@@ -76,6 +75,24 @@ class AndroidDevice:
 
     @staticmethod
     def validate_credentials(username, password):
+        """
+        Validate the provided username and password against stored credentials.
+
+        This method hashes the input username and password, then compares them
+        with the stored hashed credentials. If they match, it generates a new
+        authentication token.
+
+        Parameters:
+        username (str): The username to validate.
+        password (str): The password to validate.
+
+        Returns:
+        tuple: A tuple containing four elements:
+            - bool: True if credentials are valid, False otherwise.
+            - str or None: Hashed username if valid, None otherwise.
+            - str or None: Hashed password if valid, None otherwise.
+            - str or None: New authentication token if valid, None otherwise.
+        """
         hash_user = hashlib.sha256(username.encode("utf-8"))
         hash_pass = hashlib.sha256(password.encode("utf-8"))
         hash_user_hex = binascii.hexlify(hash_user.digest()).decode("utf-8")
