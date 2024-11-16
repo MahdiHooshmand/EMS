@@ -247,7 +247,7 @@ class AuthService:
         response.read = False
 
     @staticmethod
-    async def check_response_after_auth(connection):
+    async def check_response_after_auth():
         """
         Asynchronously checks the response received after sending the authentication token.
 
@@ -336,7 +336,7 @@ class AuthService:
                 AuthService.send_token(tk, connection)
 
                 # Check if response after sending token is 'OK'
-                if await AuthService.check_response_after_auth(connection):
+                if await AuthService.check_response_after_auth():
                     return un, pw, tk
                 else:
                     print("Waiting for username and password again...")
