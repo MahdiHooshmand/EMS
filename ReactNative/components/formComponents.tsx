@@ -66,7 +66,7 @@ interface SeekbarProps {
  * @param title - The title for the slider.
  * @param valueText - The text for the value input field.
  * @param value - The current value of the slider.
- * @param setValue - A function to handle changes to the slider's value.'
+ * @param setValue - A function to handle changes to the slider's value.
  * @param step - The step size for the slider.
  * @param min - The minimum value for the slider.
  * @param max - The maximum value for the slider.
@@ -81,7 +81,7 @@ export const Seekbar = ({
   min,
   max,
 }: SeekbarProps) => {
-  // Calculate the multiplier for the value to ensure it's in the correct range for the slider.'
+  // Calculate the multiplier for the value to ensure it's in the correct range for the slider.
   const mul = 1 / step;
 
   /**
@@ -95,7 +95,7 @@ export const Seekbar = ({
    * @param title - The title for the slider.
    * @param valueText - The text for the value input field.
    * @param value - The current value of the slider.
-   * @param setValue - A function to handle changes to the slider's value.'
+   * @param setValue - A function to handle changes to the slider's value.
    * @param step - The step size for the slider.
    * @param min - The minimum value for the slider.
    * @param max - The maximum value for the slider.

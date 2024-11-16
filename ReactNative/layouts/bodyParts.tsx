@@ -47,7 +47,14 @@ export const BodyPartsScreen = ({ navigation, route }: Props) => {
 
   const [bodyPartList, setBodyPartList] = useState<BodyPartData[]>([]);
 
-  const backAction = () => {
+  /**
+   * Handles the back action when the user attempts to navigate back from the BodyPartsScreen.
+   * This function disconnects all peripherals, animates the container fade out,
+   * and then navigates back to the login screen.
+   *
+   * @returns {boolean} Always returns true to indicate that the back action has been handled.
+   */
+  const backAction = (): boolean => {
     disconnectAll().then(() => {
       containerFadeOut.animate().start(() => {
         navigation.replace("login");
@@ -56,7 +63,21 @@ export const BodyPartsScreen = ({ navigation, route }: Props) => {
     return true;
   };
 
-  // Fetch body parts data when the component mounts or when the body part list changes
+  /**
+   * Sets up the body part list and handles hardware back button press.
+   *
+   * This effect runs once when the component mounts. It performs two main tasks:
+   * 1. Fetches and sets the list of body parts.
+   * 2. Adds a listener for the hardware back button press.
+   *
+   * @effect
+   * @param {Function} setBodyPartList - Function to update the body part list state.
+   * @param {Function} fetchBodyParts - Function to fetch the list of body parts.
+   * @param {Function} backAction - Function to handle the back button press.
+   * @param {Object} BackHandler - React Native's BackHandler API.
+   *
+   * @returns {Function} Cleanup function that removes the back button event listener.
+   */
   useEffect(() => {
     setBodyPartList(fetchBodyParts());
 

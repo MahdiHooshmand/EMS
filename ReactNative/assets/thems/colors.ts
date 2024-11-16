@@ -1,3 +1,13 @@
+/**
+ * Color Constants
+ *
+ * This module exports a set of color constants used for theming and styling
+ * throughout the application. Colors are defined for various UI elements
+ * including backgrounds, text, buttons, cards, and Bluetooth connection states.
+ *
+ * All colors are represented in hexadecimal format.
+ */
+
 export const background_color = "#4B0082";
 export const text_color = "#EAB8E4";
 export const button_background_color = "#6F2C91";

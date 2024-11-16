@@ -47,7 +47,7 @@ export class FadeIn {
    *
    * @returns {Animated.CompositeAnimation} The animation sequence to be executed.
    */
-  animate = () => {
+  animate = (): Animated.CompositeAnimation => {
     this.fadeAnim.setValue(0);
     this.translateY.setValue(this.__course);
 
@@ -93,7 +93,7 @@ export class FadeOut {
    *
    * @returns {Animated.CompositeAnimation} The animation to be executed.
    */
-  animate = () => {
+  animate = (): Animated.CompositeAnimation => {
     this.fadeAnim.setValue(1);
 
     return Animated.timing(this.fadeAnim, {

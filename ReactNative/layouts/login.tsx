@@ -57,7 +57,14 @@ export function Login({ navigation }: Props) {
     [],
   );
 
-  // Keyboard event listeners
+  /**
+   * useEffect hook to manage keyboard visibility, back button handling, and animations.
+   *
+   * This effect sets up listeners for keyboard show/hide events to update the keyboard status.
+   * It also handles the hardware back button press to exit the app and starts animations in parallel.
+   *
+   * @returns A cleanup function that removes the keyboard listeners and back button handler.
+   */
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () =>
       setKeyboardStatus(true),
@@ -85,7 +92,13 @@ export function Login({ navigation }: Props) {
     };
   }, []);
 
-  // Login function
+  /**
+   * Handles the login process by validating the username and password.
+   * If the credentials are correct, it navigates to the "connect-to-device" screen.
+   * If the credentials are incorrect, it displays an error message.
+   *
+   * @returns {void} This function does not return a value.
+   */
   const login = useCallback(() => {
     Keyboard.dismiss();
     if (!username || !password) {

@@ -67,17 +67,30 @@ export const RunScreen = ({ navigation, route }: Props) => {
   const [isInitialCountdown, setIsInitialCountdown] = useState(true);
   const [stopping, setStopping] = useState(false);
 
-  const backAction = () => {
+  /**
+   * Handles the back button press action.
+   *
+   * This function is triggered when the hardware back button is pressed.
+   * It stops the current run and prevents the default back navigation behavior.
+   *
+   * @returns {boolean} - Returns true to indicate that the back action has been handled.
+   */
+  const backAction = (): boolean => {
     stop();
     return true;
   };
 
   /**
-   * Function to handle the stop button press.
-   * If the run is currently stopping, it will reset the countdown and fade out the container view.
-   * Otherwise, it will stop the run and navigate to the set-info screen with the muscle name, source, and stimulation type.
+   * Stops the current run and navigates to the "set-info" screen.
+   *
+   * This function checks if the run is already stopping. If not, it sets the stopping state to true,
+   * calls the STOP function with the peripheral, and then animates the container fade-out.
+   * Once the animation is complete, it navigates to the "set-info" screen with the provided source,
+   * peripheral, and data.
+   *
+   * @returns {void} - This function does not return a value.
    */
-  const stop = () => {
+  const stop = (): void => {
     if (stopping) {
       return;
     }
@@ -94,26 +107,58 @@ export const RunScreen = ({ navigation, route }: Props) => {
   };
 
   /**
-   * useEffect hook to handle animations and countdown.
-   * Animates the info and stop buttons and sets the initial countdown if necessary.
+   * useEffect hook to handle animations and back button actions.
+   *
+   * This useEffect hook is used to trigger animations and set up the back button event listener.
+   *
+   * @returns {void} - This function does not return a value.
+   *
+   * Example usage:
+   * useEffect(() => {
+   *   // Trigger animations
+   *   Animated.parallel([infoFadeIn.animate(), stopFadeIn.animate()]).start();
+   *
+   *   // Set up back button event listener
+   *   const backHandler = BackHandler.addEventListener(
+   *     "hardwareBackPress",
+   *     backAction,
+   *   );
+   *
+   *   // Clean up event listener on component unmount
+   *   return () => {
+   *     backHandler.remove();
+   *   };
+   * }, []);
    */
   useEffect(() => {
+    // Trigger animations
     Animated.parallel([infoFadeIn.animate(), stopFadeIn.animate()]).start();
 
+    // Set up back button event listener
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       backAction,
     );
 
+    // Clean up event listener on component unmount
     return () => {
       backHandler.remove();
     };
   }, []);
 
   /**
-   * useEffect hook to handle the countdown.
-   * Sets the countdown to the duration if it's the initial countdown, otherwise updates the countdown every second.
-   * If the countdown reaches zero, it stops the run and navigates to the set-info screen.
+   * useEffect hook to handle countdown and run operations.
+   *
+   * This useEffect hook is used to manage countdown and run operations based on the current state of the countdown and isInitialCountdown.
+   * It checks if the run is currently stopping and returns early if it is.
+   * If the countdown is greater than 0, it sets an interval to decrease the countdown by 1 every second.
+   * If the countdown is 0 and isInitialCountdown is true, it calls the RUN function with the peripheral, sets the countdown to the duration in minutes, and updates isInitialCountdown to false.
+   * If the countdown is 0 and isInitialCountdown is false, it calls the stop function to end the run.
+   * The cleanup function clears the interval to prevent memory leaks.
+   *
+   * @param {number} countdown - The current countdown time in seconds.
+   * @param {boolean} isInitialCountdown - A flag indicating whether the countdown is initially set to the duration.
+   * @returns {void} - This function does not return a value.
    */
   useEffect(() => {
     if (stopping) {

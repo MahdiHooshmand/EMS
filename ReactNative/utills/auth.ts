@@ -73,6 +73,16 @@ const onStopScan = () => {
   _setIsScanning(false);
 };
 
+/**
+ * Handles the event when a Bluetooth peripheral device is disconnected.
+ *
+ * This function updates the connection status of the disconnected peripheral
+ * in the list of peripherals maintained in a React ref. It sets the connection
+ * status of the peripheral with the provided ID back to 'READY_TO_CONNECT'.
+ *
+ * @param event - The event object containing information about the disconnection.
+ *   - `peripheral`: The ID of the peripheral that was disconnected.
+ */
 const onDisconnectedPeripheral = (event: BleDisconnectPeripheralEvent) => {
   for (let p in _peripheralsRef.current) {
     if (_peripheralsRef.current[p].id === event.peripheral) {
@@ -275,14 +285,40 @@ const authenticateDevice = async (
   updatePeripheralConnectionStatus(peripheral.id, ConnectionStatus.CONNECTED);
 };
 
+/**
+ * Stops the ongoing Bluetooth peripheral scan.
+ *
+ * This function stops the discovery of Bluetooth peripheral devices and updates the scanning status.
+ *
+ * @returns A promise that resolves when the scanning process has been stopped.
+ */
 export const stopScanning = async () => {
   await BleManager.stopScan();
   _setIsScanning(false);
 };
 
+/**
+ * Disconnects all currently connected Bluetooth peripheral devices.
+ *
+ * This function retrieves a list of connected peripherals and then iterates through the list,
+ * disconnecting each peripheral device.
+ *
+ * @returns A promise that resolves when all connected peripherals have been disconnected.
+ */
 export const disconnectAll = async () => {
+  /**
+   * Retrieves a list of peripheral objects representing the currently connected Bluetooth peripherals.
+   */
   const connectedPeripherals = await BleManager.getConnectedPeripherals();
+
+  /**
+   * Iterates through the list of connected peripherals and disconnects each peripheral device.
+   */
   for (const connectedPeripheral of connectedPeripherals) {
+    /**
+     * Disconnects the current peripheral device by its ID.
+     * @param {string} connectedPeripheral.id - The unique identifier of the peripheral to disconnect.
+     */
     await BleManager.disconnect(connectedPeripheral.id);
   }
 };

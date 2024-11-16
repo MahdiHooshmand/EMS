@@ -25,7 +25,7 @@ interface Props {
 
 /**
  * OneButton component renders a button with a Material Icon and a text label.
- * @param buttonFadeIn - animation object for the button's fade in animation'
+ * @param buttonFadeIn - animation object for the button's fade in animation
  * @param onPress - function to be called when the button is pressed
  * @param materialIconName - name of the Material Icon to be used
  * @param text - text to be displayed on the button

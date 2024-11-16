@@ -11,25 +11,16 @@ interface Props {
 }
 
 /**
- * Header component is responsible for displaying the app's logo and a back button.'
+ * Header component is responsible for displaying the app's logo and a back button.
  * @param headerFadeIn - An instance of the FadeIn animation for the header.
  * @param handleBackPress - The callback function to handle the back button press.
  * @constructor - Header component constructor.
  */
-export const Header = ({
-  headerFadeIn,
-  handleBackPress,
-}: Props) => {
+export const Header = ({ headerFadeIn, handleBackPress }: Props) => {
   /**
    * State variable to track if the back button is pressed.
    */
   const [isBackButtonPressed, setIsBackButtonPressed] = useState(false);
-
-  // const handleBackPress = () => {
-  //   fadeOut.animate().start(() => {
-  //     navigation.replace(backPage);
-  //   });
-  // };
 
   /**
    * Header component render method.

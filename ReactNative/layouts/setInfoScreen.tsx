@@ -72,37 +72,60 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
   const [duration, setDuration] = useState<number>(data.duration);
   const [isStarting, setIsStarting] = useState(false);
 
-  const backAction = () => {
+  /**
+   * The `backAction` function is a callback that handles the back button press event.
+   * It triggers the container fade out animation and navigates back to the "body-parts" screen,
+   * passing the peripheral object as a parameter.
+   *
+   * @returns {boolean} - Returns true to indicate that the back button press event has been handled.
+   */
+  const backAction = (): boolean => {
     containerFadeOut.animate().start(() => {
       navigation.replace("body-parts", { peripheral: peripheral });
     });
     return true;
   };
 
-  // Apply the necessary animations when the component mounts.
+  /**
+   * This function executes specific side effects in response to component lifecycle or state/prop changes.
+   *
+   * It performs the following tasks:
+   * 1. Sets up the frequency and pulse width items based on the stimulation type (EMS or TENS).
+   * 2. Triggers the animation for the header, list, and button.
+   * 3. Adds an event listener for the hardware back press to handle the back action.
+   * 4. Removes the event listener when the component unmounts.
+   *
+   * Since the dependency array is empty, this effect will only run once, similar to the `componentDidMount` lifecycle method.
+   */
   useEffect(() => {
+    // Sets the frequency items based on the stimulation type (EMS or TENS)
     setFrequencyItems(
       (data.stimulationType === "EMS" ? EMS : TENS).validFrequencies.map(
         (frequency) => ({ label: `${frequency} Hz`, value: frequency }),
       ),
     );
+
+    // Sets the pulse width items based on the stimulation type (EMS or TENS)
     setPulseWidthItems(
       (data.stimulationType === "EMS" ? EMS : TENS).validPulseWidths.map(
         (pulseWidth) => ({ label: `${pulseWidth} µs`, value: pulseWidth }),
       ),
     );
 
+    // Triggers the animation for the header, list, and button
     Animated.parallel([
       headerAnimation.animate(),
       listAnimation.animate(),
       buttonFadeIn.animate(),
     ]).start();
 
+    // Adds an event listener for the hardware back press to handle the back action
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       backAction,
     );
 
+    // Removes the event listener when the component unmounts
     return () => {
       backHandler.remove();
     };

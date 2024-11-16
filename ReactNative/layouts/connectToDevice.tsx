@@ -61,7 +61,13 @@ export const ConnectToDeviceScreen = ({ navigation, route }: Props) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const backAction = () => {
+  /**
+   * Handles the back action when the hardware back button is pressed.
+   * Stops scanning for peripherals, disconnects all devices, and navigates back to the login screen.
+   *
+   * @returns {boolean} - Always returns true to indicate that the back action has been handled.
+   */
+  const backAction = (): boolean => {
     stopScanning().then(() => {
       disconnectAll().then(() => {
         fadeOut.animate().start(() => {
@@ -73,8 +79,10 @@ export const ConnectToDeviceScreen = ({ navigation, route }: Props) => {
   };
 
   /**
-   * Effect hook to start the fade animation for the header, list, and button when the component mounts.
-   * Use Animated. parallel to run the fade animations concurrently.
+   * useEffect hook to handle the initialization and cleanup of the ConnectToDeviceScreen component.
+   * It sets the loading state, starts animations, initializes authentication, and manages the back button handler.
+   *
+   * @returns {void} - This hook does not return a value.
    */
   useEffect(() => {
     setIsLoading(true);
