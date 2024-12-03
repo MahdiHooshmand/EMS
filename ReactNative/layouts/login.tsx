@@ -21,10 +21,11 @@ import { useEffect, useState, useCallback } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { FadeIn, FadeOut } from "../assets/thems/animations";
 import { sha256 } from "js-sha256";
-import { credential } from "../assets/strings/accounts";
+import { credentials } from "../assets/strings/accounts";
 import { InputAuth } from "../components/inputAuth";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
+import { setNavigation } from "../utills/auth";
 
 type Props = NativeStackScreenProps<RootStackParamList, "login">;
 
@@ -41,6 +42,7 @@ export function Login({ navigation }: Props) {
   const [password, setPassword] = useState("");
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   const [showError, setShowError] = useState(false);
+  setNavigation(navigation);
 
   // Animation instances
   const fades = [new FadeIn(0), new FadeIn(1), new FadeIn(2), new FadeIn(3)];
@@ -108,18 +110,21 @@ export function Login({ navigation }: Props) {
 
     const hashUsername = sha256(username);
     const hashPassword = sha256(password);
-
-    if (
-      hashUsername === credential.username &&
-      hashPassword === credential.password
-    ) {
-      fadeOut.animate().start(() =>
-        navigation.replace("connect-to-device", {
-          user: username,
-          pass: password,
-        }),
-      );
-    } else {
+    for (const credential of credentials) {
+      if (
+        hashUsername === credential.username &&
+        hashPassword === credential.password
+      ) {
+        fadeOut.animate().start(() =>
+          navigation.replace("connect-to-device", {
+            user: username,
+            pass: password,
+          }),
+        );
+        return;
+      }
+    }
+    {
       setShowError(true);
       setUsername("");
       setPassword("");

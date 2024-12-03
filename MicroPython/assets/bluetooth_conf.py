@@ -23,6 +23,6 @@ ADV_INTERVAL_MS = 100_000
 # The interval in milliseconds between Bluetooth advertising packets. This interval determines
 # how frequently the device will broadcast its presence to other Bluetooth devices.
 
-bluetooth_name = "Febina EMS 10001"
+bluetooth_name = "Febina EMS 10004"
 # The name of the Bluetooth device. This name is advertised during Bluetooth discovery, allowing
 # other devices to easily identify this device.

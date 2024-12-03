@@ -28,6 +28,16 @@ let _peripheralsRef: MutableRefObject<PeripheralModel[]>;
 let _setPeripherals: (value: PeripheralModel[]) => void;
 let _isScanning: boolean = false;
 let _setIsScanning: (value: boolean) => void;
+let _navigation: any;
+let _connectSuccess: boolean = false;
+
+export const setNavigation = (navigation: any) => {
+  _navigation = navigation;
+};
+
+export const setConnectSuccess = (success: boolean) => {
+  _connectSuccess = success;
+};
 
 /**
  * Handles the discovery of a new Bluetooth peripheral device.
@@ -91,6 +101,11 @@ const onDisconnectedPeripheral = (event: BleDisconnectPeripheralEvent) => {
       break;
     }
   }
+  if (_connectSuccess) {
+    console.log("Disconnected from peripheral:", event.peripheral);
+    setConnectSuccess(false);
+    disconnectAll().then(()=> {_navigation.replace("login");});
+  }
 };
 
 interface InitAuthProps {
@@ -151,7 +166,7 @@ export const scanForPeripherals = () => {
  *
  * @returns A promise that resolves after the specified delay.
  */
-const sleep = (ms: number) =>
+export const sleep = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 /**

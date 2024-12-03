@@ -23,6 +23,7 @@ import { CardView } from "../components/card";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { RUN, STOP } from "../utills/BluetoothAPI";
+import { sleep } from "../utills/auth";
 
 /**
  * RunScreenProps interface to define the props expected by the RunScreen component.
@@ -91,11 +92,20 @@ export const RunScreen = ({ navigation, route }: Props) => {
    * @returns {void} - This function does not return a value.
    */
   const stop = (): void => {
+    console.log("Stop button pressed");
     if (stopping) {
       return;
     }
     setStopping(true);
-    STOP(peripheral).then(() => {
+    STOP(peripheral).then((resp) => {
+      if (resp !== "STOP"){
+        sleep(500).then(()=>{
+          console.log("stopping again.");
+          setStopping(false);
+          stop();
+        });
+        return;
+      }
       containerFadeOut.animate().start(() => {
         navigation.replace("set-info", {
           source: source,
@@ -171,7 +181,12 @@ export const RunScreen = ({ navigation, route }: Props) => {
         setCountdown((prev) => prev - 1);
       }, 1000);
     } else if (isInitialCountdown) {
-      RUN(peripheral).then();
+      RUN(peripheral).then((resp)=>{
+        if (resp!=="RUN"){
+          stop();
+          return;
+        }
+      });
       setCountdown(data.duration * 60);
       setIsInitialCountdown(false);
     } else {

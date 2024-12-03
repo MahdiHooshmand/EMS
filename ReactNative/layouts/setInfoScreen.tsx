@@ -147,14 +147,16 @@ export const SetInfoScreen = ({ navigation, route }: Props) => {
       offTime,
       duration,
     );
-    SET(peripheral, new_data).then(() => {
-      containerFadeOut.animate().start(() => {
-        navigation.replace("run", {
-          data: new_data,
-          source: source,
-          peripheral: peripheral,
+    SET(peripheral, new_data).then(resp =>{
+      if (resp === "SET"){
+        containerFadeOut.animate().start(() => {
+          navigation.replace("run", {
+            data: new_data,
+            source: source,
+            peripheral: peripheral,
+          });
         });
-      });
+      }
     });
   };
 

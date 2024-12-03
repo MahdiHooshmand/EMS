@@ -27,7 +27,7 @@ const sendCommand = async (
   peripheral: PeripheralModel,
   command: string,
   additionalInfo?: any,
-): Promise<void> => {
+): Promise<string|undefined> => {
   let data = "";
   if (command === "SET" || command === "RUN") {
     data = JSON.stringify({
@@ -43,6 +43,10 @@ const sendCommand = async (
     await chunkAndSend(peripheral, data);
     let response = "";
     while (response !== command) {
+      if (response === "INVALID_TOKEN"){
+        console.log("Invalid token, please try again");
+        return response;
+      }
       const responseData = await BleManager.read(
         peripheral.id,
         RUN_SERVICE_UUID,
@@ -51,8 +55,10 @@ const sendCommand = async (
       response = String.fromCharCode(...responseData);
       await sleep(100);
     }
+    return response;
   } catch (error) {
     console.error(`Error executing ${command} command:`, error);
+    return "INVALID_COMMAND";
   }
 };
 
@@ -137,7 +143,7 @@ export const SET = async (
   peripheral: PeripheralModel,
   info: Electrotherapy,
 ) => {
-  await sendCommand(peripheral, "SET", { info: info.toJSON() });
+  return await sendCommand(peripheral, "SET", { info: info.toJSON() });
 };
 
 /**
@@ -147,7 +153,7 @@ export const SET = async (
  * @returns A promise that resolves when the command has been sent successfully.
  */
 export const RUN = async (peripheral: PeripheralModel) => {
-  await sendCommand(peripheral, "RUN");
+  return await sendCommand(peripheral, "RUN");
 };
 
 /**
@@ -157,5 +163,5 @@ export const RUN = async (peripheral: PeripheralModel) => {
  * @returns A promise that resolves when the command has been sent successfully.
  */
 export const STOP = async (peripheral: PeripheralModel) => {
-  await sendCommand(peripheral, "STOP");
+  return await sendCommand(peripheral, "STOP");
 };

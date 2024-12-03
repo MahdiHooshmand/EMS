@@ -26,7 +26,7 @@ import {
   ConnectionStatus,
   PeripheralModel,
 } from "../models/peripheralCardModel";
-import { connectPeripheralWithAuthenticate } from "../utills/auth";
+import { connectPeripheralWithAuthenticate, setConnectSuccess } from "../utills/auth";
 
 /**
  * Type definition for CardStyle
@@ -104,8 +104,10 @@ export const PeripheralCard = ({
       if (peripheral.connection === ConnectionStatus.CONNECTED) {
         fadeOut
           .animate()
-          .start(() =>
-            navigation.replace("body-parts", { peripheral: peripheral }),
+          .start(() =>{
+            setConnectSuccess(true);
+            console.log("Connected to peripheral:", peripheral.name);
+            navigation.replace("body-parts", { peripheral: peripheral });},
           );
       }
     });

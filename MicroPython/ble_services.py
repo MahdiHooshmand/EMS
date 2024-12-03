@@ -18,6 +18,7 @@ import aioble
 import struct
 from Models import AndroidDevice
 import json
+import machine
 
 auth = aioble.Service(AUTH_SERVICE)
 run = aioble.Service(RUN_SERVICE)
@@ -73,7 +74,6 @@ response = aioble.Characteristic(
     capture=True,
     initial=struct.pack("<h", 0),
 )
-
 
 data = aioble.Characteristic(
     run,
@@ -344,8 +344,8 @@ class AuthService:
             else:
                 # Reset values and await new credentials if authentication fails
                 AuthService.reset_values()
-                print("Waiting for username and password again...")
-                continue
+                print("wrong credentials. resetting microcontroller...")
+                machine.soft_reset()
 
 
 class RunService:
@@ -382,6 +382,7 @@ class RunService:
         while True:
             full_data = ""
             while True:
+                print("waiting for data...")
                 await data.written()
                 received_chunk = data.read()
                 decoded_chunk = received_chunk.decode("utf-8")
@@ -396,20 +397,26 @@ class RunService:
                 print("Stopping service...")
                 await RunService.send_response("STOP", connection)
             else:
-                received_data_dict = json.loads(full_data)
-                received_token = received_data_dict.get("token")
-                received_cmd = received_data_dict.get("command")
-                received_info = received_data_dict.get("info", {})
-                if received_token == android_device.token:
-                    print("Valid TOKEN")
-                else:
-                    print("Invalid TOKEN")
-                    print("Received token:", received_token)
-                    print("correct token:", android_device.token)
-                print("Received token:", received_token)
-                print("Received command:", received_cmd)
-                print("Received info:", received_info)
-                await RunService.send_response(received_cmd, connection)
+                try:
+                    received_data_dict = json.loads(full_data)
+                    received_token = received_data_dict.get("token")
+                    received_cmd = received_data_dict.get("command")
+                    received_info = received_data_dict.get("info", {})
+                    if received_token == android_device.token:
+                        print("Valid TOKEN")
+                        print("Received token:", received_token)
+                        print("Received command:", received_cmd)
+                        print("Received info:", received_info)
+                        await RunService.send_response(received_cmd, connection)
+                    else:
+                        print("Invalid TOKEN")
+                        print("Received token:", received_token)
+                        print("correct token:", android_device.token)
+                        await RunService.send_response("STOP", connection)
+                except ValueError as e:
+                    print("Invalid JSON format")
+                    print("Stopping service...")
+                    await RunService.send_response("STOP", connection)
 
     @staticmethod
     async def send_response(response_data, connection):
